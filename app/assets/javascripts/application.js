@@ -8,6 +8,11 @@
 //= require underscore-min
 //= require handlebars.runtime
 //= require ember-0.9.4.min.js
-
+//= require ember-rest
+//= require ./v1/mirrorballApp.js
+//= require_tree ./v1/models
+//= require_tree ./v1/controllers
+//= require_tree ./v1/views
+//= require_tree ./v1/helpers
+//= require_tree ./v1/templates
 //= require_tree ../templates
-//= require_tree .

@@ -7,7 +7,7 @@
 //= require jquery-1.7.1.min
 //= require underscore-min
 //= require handlebars.runtime
-//= require ember-0.9.4.min.js
+//= require ember-0.9.4.js
 //= require ember-rest
 //= require ./v1/mirrorballApp.js
 //= require_tree ./v1/models

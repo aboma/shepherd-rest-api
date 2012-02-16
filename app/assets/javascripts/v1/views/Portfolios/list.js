@@ -7,15 +7,12 @@ Mirrorball.portfoliosListView = Ember.View.extend({
     this.set("portfolio", Mirrorball.portfolio.create());
   },
 
-  didInsertElement: function() {
-    //this._super();
-    //this.$('input:first').focus();
+  show: function() {
+  	//alert('showing form');
+  	Mirrorball.PortNewForm = Mirrorball.PortfolioNewView.create();
+  	Mirrorball.PortNewForm.appendTo("#MbForms");
   },
-
-  cancelForm: function() {
-    this.get("parentView").hideNew();
-  },
-
+  
   submit: function(event) {
     var self = this;
     var content = this.get('content');

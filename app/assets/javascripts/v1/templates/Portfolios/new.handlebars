@@ -1,3 +1,5 @@
-{{ view Ember.TextField viewName="portfolioName" }}
-<button type="submit">Create Portfolio</button>
-<button type="submit">Cancel</button>
+<div id='MbNewPortForm'>
+	{{ view Ember.TextField viewName="portfolioName" }}
+	<button type="submit" {{ action "submit" }} >Create Portfolio</button>
+	<button type="submit" {{ action "cancel" }} >Cancel</button>
+</div>

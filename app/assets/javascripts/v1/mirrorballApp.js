@@ -5,3 +5,7 @@ Mirrorball.init = function() {
 	Mirrorball.portView = Mirrorball.portfoliosListView.create();
 	Mirrorball.portView.appendTo("#MbLeftNav");
 };
+
+Mirrorball.log = function(object) {
+	debug.log(object);
+}

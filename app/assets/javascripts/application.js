@@ -5,6 +5,7 @@
 // the compiled file.
 //
 //= require jquery-1.7.1.min
+//= require debug-console-log-v0.4
 //= require underscore-min
 //= require handlebars.runtime
 //= require ember-0.9.4.js

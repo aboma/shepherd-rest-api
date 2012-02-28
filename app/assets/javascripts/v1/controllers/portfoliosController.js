@@ -1,20 +1,25 @@
 Mirrorball.portfoliosController = Ember.ArrayController.create({
-	content: [],
+	content: [{name: "Boma's specials"}],
+	submitting: false,
 	
 	newPortfolio: function(data) {
-		alert('saving new portfolio');
-		Mirrorball.log(data);
+		var port;
+		this.submitting = true;
+		Mirrorball.log('creating portfolio ' + data);
 		//event.preventDefault();
-	    portfolio.saveResource()
-	      .fail( function(e) {
-	        //Mirrorball.displayError(e);
-	      })
-	      .done(function() {
-	        this.pushObject(Mirrorball.Portfolio.Create(data));
-	        self.get("parentView").hideNew();
-	      });
+		port = Mirrorball.Portfolio.create(data)
+	    port.saveResource();
+	    //  .fail( function(e) {
+	   //     //Mirrorball.displayError(e);
+	   //   })
+	   //   .done(function() {
+	   //     this.pushObject(port);
+	  //    });
+	    this.pushObject(port);
+	    this.submitting = false;
+	    return true;
 	},	
 	loadPortfolios: function() {
 		//TODO
-	}	
+	}
 });

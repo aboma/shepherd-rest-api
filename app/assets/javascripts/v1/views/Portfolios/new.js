@@ -1,24 +1,37 @@
 Mirrorball.PortfolioNewView = Ember.View.extend({
-  tagName: 'form',
   templateName: 'v1/templates/Portfolios/new',
-  controllerBinding: 'Mirrorball.portfoliosController',
+  controller: null,
+  tagName: 'form',
+  isDisabled: false,
   
   didInsertElement: function() {
   	//alert('calling didInsertElement');
   	this._super();
     this.$('input:first').focus();
+    //TODO : make this a binding
   	jQuery('#MbForms').addClass('animated pulse');  	
   },
-  submit: function() {
-  	//alert('submitting form');
-  	this.get('controller').newPortfolio(this.getPath('name.value'));
-	this.clear();
+  create: function() {
+  	this.set('isDisabled', true);
+  	Mirrorball.log('newport.create');
+  	try {
+  		var pname = this.getPath('portfolioTextField.value');
+  		var controller = this.get('controller');
+  		Mirrorball.log('attempting to create portfolio ' + pname);
+  		var port = controller.newPortfolio({ name: pname});
+  		if (port) {
+  			this.destroy();
+  		}
+  	} catch (e) {
+		Mirrorball.log('error: ' + e);
+		this.set('isDisabled', false);
+	}
   },
   cancel: function() {
 	alert('cancelling form');
 	
   },
   clear: function( ){
-  	 this.setPath('portfolioName.value', null);
+  	 this.setPath('portfolioTextField.value', null);
   }
 });

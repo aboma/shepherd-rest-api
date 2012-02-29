@@ -1,5 +1,8 @@
-<h2>Portfolios</h2>
-<button {{ action "show" }}> Create </button>
+<div class="inline-heading">
+	<h3>Portfolios</h3>
+	{{#view Ember.Button action="shownew" targetBinding="controller" 
+	  disabledBinding="controller.shownewform" class="btn" }} Create {{/view}}
+</div>
 <ul>
   {{#each Mirrorball.portfoliosController}}
     <li>{{name}}</li>

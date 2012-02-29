@@ -1,6 +1,7 @@
 Mirrorball.portfoliosController = Ember.ArrayController.create({
 	content: [{name: "Boma's specials"}],
 	submitting: false,
+	shownewform: false,
 	
 	newPortfolio: function(data) {
 		var port;
@@ -21,5 +22,16 @@ Mirrorball.portfoliosController = Ember.ArrayController.create({
 	},	
 	loadPortfolios: function() {
 		//TODO
+	},
+	shownew: function() {
+    	//TODO : make this a binding
+    	this.set('shownewform', true);
+  		//jQuery('#MbForms').addClass('animated pulse');
+	},
+	create: function() {
+		alert('boom');
+	},
+	cancel: function() {
+		this.set('shownewform', false);
 	}
 });

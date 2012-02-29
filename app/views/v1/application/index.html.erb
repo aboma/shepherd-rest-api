@@ -1,14 +1,15 @@
-<script type="text/javascript">
-	$(document).ready(function() {
-		Mirrorball.init();
-	});
-</script>
-
-<div id="MbForms"></div>
+<div id="MbForms">
+	<script type="text/x-handlebars">
+		{{ view Mirrorball.PortfolioNewView controllerBinding="Mirrorball.portfoliosController" }}
+	</script>
+</div>
 <h1>Mirrorball Digital Asset Management</h1>
 <div id='MbAppContainer'>
 	<div id='MbTopNav'></div>
 	<div id='MbLeftNav'>	
+		<script type="text/x-handlebars">
+			{{ view Mirrorball.PortfoliosListView controllerBinding="Mirrorball.portfoliosController" }}
+		</script>
 	</div>
 	<div id='MbMain'></div>	
 	<div id='MbFooter'></div>

@@ -1,7 +1,7 @@
 <div id='MbNewPortForm'>
-	{{ view Ember.TextField viewName="portfolioTextField" disabledBinding="Mirrorball.PortNewForm.isDisabled" }}
-	{{#view Ember.Button action="create" targetBinding="Mirrorball.PortNewForm" 
-		disabledBinding="Mirrorball.PortNewForm.isDisabled" }} Create {{/view}}
-	{{#view Ember.Button action="cancel" targetBinding="Mirrorball.PortNewForm" 
-		disabledBinding="Mirrorball.PortNewForm.isDisabled" }} Cancel {{/view}}
+	{{ view Ember.TextField viewName="portfolioTextField" disabledBinding="Mirrorball.PortfolioNewView.isDisabled" }}
+	{{#view Ember.Button action="create" target="parentView" 
+		disabledBinding="Mirrorball.PortfolioNewView.isDisabled" class="btn btn-success" }} Create {{/view}}
+	{{#view Ember.Button action="cancel" target="parentView" 
+		disabledBinding="Mirrorball.PortfolioNewView.isDisabled" class="btn btn-danger" }} Cancel {{/view}}
 </div>

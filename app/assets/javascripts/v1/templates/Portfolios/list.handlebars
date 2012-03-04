@@ -1,10 +1,13 @@
-<div class="inline-heading">
-	<h3>Portfolios</h3>
-	{{#view Ember.Button action="shownew" targetBinding="controller" 
-	  disabledBinding="controller.shownewform" class="btn" }} Create {{/view}}
-</div>
-<ul>
-  {{#each Mirrorball.portfoliosController}}
-    <li>{{name}}</li>
-  {{/each}}
+<ul class="nav nav-list">
+	<li class="nav-header">
+		Portfolios
+		{{#view Ember.Button action="shownew" targetBinding="controller" 
+	 		disabledBinding="controller.shownewform" class="btn" }} 
+	 	Create {{/view}}
+	</li>
+  	{{#collection contentBinding="Mirrorball.portfoliosController" }}
+  		{{#view Mirrorball.PortfolioView contentBinding="content" }}
+    		<li><a href='#'>{{content.name}}</a></li>
+    	{{/view}}
+ 	{{/collection}}
 </ul>

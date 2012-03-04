@@ -1,17 +1,35 @@
-<div id="MbForms">
-	<script type="text/x-handlebars">
-		{{ view Mirrorball.PortfolioNewView controllerBinding="Mirrorball.portfoliosController" }}
-	</script>
-</div>
-<h1>Mirrorball Digital Asset Management</h1>
 <div id='MbAppContainer'>
-	<div id='MbTopNav'></div>
+	<div id="MbForms">
+	</div>
+	<div id='MbTopNav'>
+	    <div class="navbar">
+		    <div class="navbar-inner">
+			    <div class="container">
+				    <li class="brand">
+					    Mirrorball DAM
+				    </li>
+				 	<ul class="nav">
+				 	   <li class="active">
+				 		   <a href="#">Portfolios</a>
+					    </li>
+					    <li><a href="#">Admin</a></li>
+					    <li><a href="#">Search</a></li>
+				    </ul>
+	    		</div>
+    		</div>
+    	</div>		
+	</div>
 	<div id='MbLeftNav'>	
 		<script type="text/x-handlebars">
 			{{ view Mirrorball.PortfoliosListView controllerBinding="Mirrorball.portfoliosController" }}
 		</script>
 	</div>
-	<div id='MbMain'></div>	
+	<div id='MbMain'>
+		<script type="text/x-handlebars">
+			{{ view Mirrorball.PortfolioNewView controllerBinding="Mirrorball.portfoliosController" }}
+			{{ view Mirrorball.PortfolioEditView controllerBinding="Mirrorball.selectedPortfolioController" }}
+		</script>
+	</div>	
 	<div id='MbFooter'></div>
 </div>
 

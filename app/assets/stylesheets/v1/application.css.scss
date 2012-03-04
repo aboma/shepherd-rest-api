@@ -2,10 +2,42 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
+body {
+
+}
+
+#MbAppContainer {
+  margin: 40px;
+}
+
+#MbLeftNav {
+  width: 180px;
+  float: left;  
+  padding: 5px;
+}
+
+#MbMain {
+  margin-left: 190px;
+}
+
 .inline-heading {
   margin-bottom: 10px;
   h1, h2, h3, h4, h5, h6 {
     display: inline;
     vertical-align: middle;
+  }
+}
+
+div.form-horizontal {
+  width: 700px;
+  
+  button {
+    text-align: right;
+    margin-left: 10px;
+  }
+  
+  .button-group {
+    text-align: right;
+    margin-right: 320px;
   }
 }

@@ -10,8 +10,12 @@ body {
   margin: 40px;
 }
 
+div.well {
+    min-height: 300px;  
+}
+
 #MbLeftNav {
-  width: 180px;
+  width: 220px;
   float: left;  
   padding: 5px;
 }

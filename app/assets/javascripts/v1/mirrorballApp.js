@@ -1,9 +1,7 @@
 window.Mirrorball = Ember.Application.create();
 
 Mirrorball.init = function() {
-	// add portfolios list to left navigation
-	Mirrorball.portView = Mirrorball.PortfoliosListView.create();
-	Mirrorball.portView.appendTo("#MbLeftNav");
+	Mirrorball.authorizedUser = Mirrorball.User.create();
 };
 
 Mirrorball.log = function(object) {
@@ -19,7 +17,7 @@ Mirrorball.Button = JQUI.Button.extend({
 
 Mirrorball.Message = Ember.View.extend({
 	tag: 'div',
-	templateName: 'v1/templates/General/message',
+	templateName: 'v1/templates/general/message',
 	type: 'alert',
 	messageType: null,
 	message: '',

@@ -3,6 +3,8 @@ Mirrorball.Portfolio = Ember.Object.extend(Ember.Copyable, {
 	description: null,
 	id: null,
 	uri: null,
+	createdBy: null,
+	createdOn: null,
 	
 	saveResource: function() {
 		Mirrorball.log('saving portfolio resource ' + this.name);

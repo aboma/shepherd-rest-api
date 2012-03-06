@@ -27,24 +27,16 @@ Mirrorball.portfoliosController = Ember.ArrayController.create({
 		//TODO
 	},
 	shownew: function() {
-    	//TODO : make this a binding
-    	//this.set('shownewform', true);
     	var port = Mirrorball.Portfolio.create({});
     	Mirrorball.selectedPortfolioController.set('content', port);
 	},
-	create: function() {
-		alert('boom');
-	},
 	remove: function(portfolio) {
-		if (portfolio.remove());
+		if ((portfolio) && (portfolio.remove()));
 		{
 			this.removeObject(portfolio);
 			return true;
 		}
 		return false;
-	},
-	cancel: function() {
-		this.set('shownewform', false);
 	}
 });
 
@@ -71,7 +63,7 @@ Mirrorball.selectedPortfolioController = Ember.Object.create({
 		} else {
 			this.set('editableContent', null);
 		}
-	}.observes('content'),		
+	}.observes('content'),	
 	save: function() {
 		Mirrorball.log('saving edited portfolio');
 		try {

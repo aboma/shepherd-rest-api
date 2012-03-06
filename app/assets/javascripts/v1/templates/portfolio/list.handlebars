@@ -1,15 +1,15 @@
 <div class="well">
-<ul class="nav nav-list">
-	<li class="nav-header">
-		Portfolios
-		{{#view Ember.Button action="shownew" targetBinding="controller" 
-	 		disabledBinding="controller.shownewform" class="btn"}} 
-	 	Create {{/view}}
-	</li>
-  	{{#collection contentBinding="Mirrorball.portfoliosController"}}
-  		{{#view Mirrorball.PortfolioView contentBinding="content"}}
-    		<li {{bindAttr class="isSelected:active"}} ><a href='#'>{{content.name}}</a></li>
-    	{{/view}}
- 	{{/collection}}
-</ul>
+	<ul class="nav nav-list">
+		<li class="nav-header">
+			Portfolios
+			{{#view Ember.Button action="shownew" targetBinding="controller" 
+		 		disabledBinding="controller.shownewform" class="btn"}} 
+		 	Create {{/view}}
+		</li>
+	  	{{#each Mirrorball.portfoliosController}}
+	  		{{#view Mirrorball.PortfolioView contentBinding="this"}}
+	    		<li {{bindAttr class="isSelected:active"}} ><a href='#'>{{content.name}}</a></li>
+	    	{{/view}}
+	 	{{/each}}
+	</ul>
 </div>

@@ -1,5 +1,5 @@
 Mirrorball.PortfoliosListView = Ember.View.extend({
-  	templateName: 'v1/templates/portfolios/list',
+  	templateName: 'v1/templates/portfolio/list',
   	//contentBinding: 'Mirrorball.portfoliosController',
   	controllerBinding: 'Mirrorball.portfoliosController',
     isDisabled: false,

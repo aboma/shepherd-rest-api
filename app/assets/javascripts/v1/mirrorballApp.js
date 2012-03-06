@@ -17,7 +17,7 @@ Mirrorball.Button = JQUI.Button.extend({
 
 Mirrorball.Message = Ember.View.extend({
 	tag: 'div',
-	templateName: 'v1/templates/general/message',
+	templateName: 'v1/templates/message/message',
 	type: 'alert',
 	messageType: null,
 	message: '',

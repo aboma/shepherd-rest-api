@@ -1,5 +1,5 @@
 Mirrorball.PortfolioEditView = Ember.View.extend({
-	templateName: 'v1/templates/portfolios/edit',
+	templateName: 'v1/templates/portfolio/edit',
   	controllerBinding: 'Mirrorball.selectedPortfolioController',
     isDisabled: false,
 	editableContentBinding: 'Mirrorball.selectedPortfolioController.editableContent',

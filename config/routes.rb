@@ -1,13 +1,13 @@
 MirrorballDAM::Application.routes.draw do
   
-  get "application/index"
-
-  get "portfolios/index"
-
   match "/", :to => redirect("/v1")
 
   namespace :v1 do
     root :to => "application#index"
+    get "logout" => "sessions#destroy", :as => "logout"
+    get "login" => "sessions#new", :as => "login"
+    resources :users
+    resources :sessions
     resources :portfolios
   end
    

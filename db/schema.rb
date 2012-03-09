@@ -25,4 +25,12 @@ ActiveRecord::Schema.define(:version => 20120308013959) do
 
   add_index "users", ["remember_me_token"], :name => "index_users_on_remember_me_token"
 
+  create_table "portfolios", :force => :true do |t|
+    t.string  "name"
+    t.text    "description"
+    t.string  "created_by"
+    
+    t.timestamps
+  end
+  
 end

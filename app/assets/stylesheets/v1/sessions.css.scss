@@ -1,12 +1,20 @@
 // Place all the styles related to the v1/sessions controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+$darkest: #0B0A10;
+$darker: #272729;
+$base: #4B4A50;
+$grey: #535257;
+$lightgrey: #A8A6B0;
+
+
 html, body { 
   margin: 0; 
   padding: 0; 
   height: 100%; 
   vertical-align: middle; 
   font-family: 'Helvetica Neue',Arial,'Liberation Sans',FreeSans,sans-serif;
+  background-image: image-url('classy_fabric.png');
 }
 
 #floater  {
@@ -16,9 +24,11 @@ html, body {
 }
 
 #signin-container {
-    clear:both; height:240px; position:relative;
+    clear:both; 
+    height:240px; 
+    position:relative;
     -moz-transform: scale(0.5, 0.5);
-    -moz-transition: all 0.2s cubic-bezier(0, 0.35, .5, 1.3) 0s;
+    -moz-transition: all 0.4s cubic-bezier(0, 0.35, .5, 1.3) 0s;
     -webkit-transition: all 0.4s cubic-bezier(0, 0.35, .5, 1.3) 0s;
     background: #333;
     background: -moz-linear-gradient(0% 0 -90deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.95)) repeat scroll 0 0 transparent;
@@ -26,7 +36,7 @@ html, body {
     //background: -o-linear-gradient(0% 0 -90deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.95)) repeat scroll 0 0 transparent;
     border: 2px solid #999999;
     border-radius: 15px 15px 15px 15px;
-    box-shadow: 0 0 8px 0 #000000;
+    box-shadow: 0 0 20px 0 #000000;
     min-height: 200px;
     opacity: 0;
     padding: 20px;
@@ -35,83 +45,72 @@ html, body {
     text-align: left;
     width: 300px;
     z-index: 1000;
-}
 
-input[type="text"], input[type="password"] {
-    display: block;
-    margin-top: 5px;
-    margin-bottom: 15px;
-    width: 250px;
-    height: 30px;
-    -moz-transition: all 0.25s ease-in-out 0s;
-    //background: -moz-linear-gradient(0% 0 -90deg, #F1EEEE, #FFFFFF) repeat scroll 0 0 transparent;
-    //background: -webkit-gradient(linear, left top, left bottom, from(#F1EEEE), to(#FFFFFF)) repeat scroll 0 0 transparent;
-    background: none repeat scroll 0 0 #181819;
-    border-color: #0D0E0E #0D0E0E #333436;
-    border-radius: 5px 5px 5px 5px;
-    border-style: solid;
-    border-width: 1px;
-    box-shadow: 0 3px 5px black inset;
-    //border: 1px solid #F6A349;
-    //box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
-    color: #EEEEEE;
-    font-size: 16px;
-    outline: medium none;
-    padding: 2px;
-}
-input[type="text"]:focus, input[type="password"]:focus, {
-    //background: -moz-linear-gradient(0% 0 -90deg, #EBF7FA, #FFFFFF) repeat scroll 0 0 transparent;
-    //border: 2px solid #1CA7CC;
-    //box-shadow: 0 0 5px #0B739B;
-    outline: medium none;
-}
 
-#signin-container input[type="text"], #signin-container input[type="password"] {
-    //background: -moz-linear-gradient(0% 0 -90deg, #333333, #484848) repeat scroll 0 0 #333333;
-    //border: 1px solid #222325;
-}
-#signin-container input[type="text"]:focus, #signin-container input[type="password"]:focus {
-    //background: -moz-linear-gradient(0% 0 -90deg, #2D393D, #3E4B4F) repeat scroll 0 0 #333333;
-    //box-shadow: 0 0 5px #2D393D;
-}
-
-.input label {
-    color: #484848;
-    display: block;
-    font-size: 14px;
-    padding-bottom: 5px;
-    padding-top: 15px;
-}
-input[type="checkbox"] {
-    float: left;
-    margin-right: 10px;
+    input[type="text"], input[type="password"] {
+        display: block;
+        margin-top: 5px;
+        margin-bottom: 15px;
+        width: 250px;
+        height: 30px;
+        -moz-transition: all 0.1s ease-in-out 0s;
+        //background: -moz-linear-gradient(0% 0 -90deg, #F1EEEE, #FFFFFF) repeat scroll 0 0 transparent;
+        //background: -webkit-gradient(linear, left top, left bottom, from(#F1EEEE), to(#FFFFFF)) repeat scroll 0 0 transparent;
+        background: none repeat scroll 0 0 #181818;
+        border-color: #0D0E0E #0D0E0E #333436;
+        border-radius: 5px 5px 5px 5px;
+        border-style: solid;
+        border-width: 1px;
+        box-shadow: 0 5px 7px black inset;
+        border: 1px solid $grey;
+        //box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
+        color: #EEEEEE;
+        font-size: 16px;
+        outline: medium none;
+        padding: 2px;
+    }
+    input[type="text"]:focus, input[type="password"]:focus, {
+        //background: -moz-linear-gradient(0% 0 -90deg, #EBF7FA, #FFFFFF) repeat scroll 0 0 transparent;
+        box-shadow: 0 5px 7px $darkest inset;
+        background: none repeat scroll 0 0 $grey;
+    }
+    input[type="checkbox"] {
+        float: left;
+        margin-right: 10px;
+    }
+    .input label {
+        color: $lightgrey;
+        display: block;
+        font-size: 14px;
+        padding-bottom: 5px;
+        padding-top: 15px;
+    }
+    .input {
+        border-bottom: 0 none;
+        padding-bottom: 0;
+        width: 300px;
+    }
+    label {
+        color: $lightgrey;
+        text-shadow: 0 1px 2px #000000;
+    }
+    input#remember {
+        float: left;
+        margin-right: 7px;
+        margin-top: 16px;
+    }
+    input[type="submit"] {
+        float: right;
+        margin-right: 0;
+        margin-top: 12px;
+    }
+    #sign-in-button {
+        float: left;
+        width: 50px;
+    }
 }
 
 #signin-container.show {
     -moz-transform: scale(1, 1);
     opacity: 1;
-}
-
-#signin-container .input {
-    border-bottom: 0 none;
-    padding-bottom: 0;
-    width: 300px;
-}
-#signin-container label {
-    color: #FFFFFF;
-    text-shadow: 0 1px 2px #000000;
-}
-input#remember {
-    float: left;
-    margin-right: 7px;
-    margin-top: 16px;
-}
-#signin-container input[type="submit"] {
-    float: right;
-    margin-right: 0;
-    margin-top: 12px;
-}
-#sign-in-button {
-    float: left;
-    width: 50px;
 }

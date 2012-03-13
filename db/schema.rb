@@ -17,6 +17,8 @@ ActiveRecord::Schema.define(:version => 20120308013959) do
     t.string   "email"
     t.string   "crypted_password"
     t.string   "salt"
+    t.string   "last_name"
+    t.string   "first_name"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "remember_me_token"
@@ -25,12 +27,4 @@ ActiveRecord::Schema.define(:version => 20120308013959) do
 
   add_index "users", ["remember_me_token"], :name => "index_users_on_remember_me_token"
 
-  create_table "portfolios", :force => :true do |t|
-    t.string  "name"
-    t.text    "description"
-    t.string  "created_by"
-    
-    t.timestamps
-  end
-  
 end

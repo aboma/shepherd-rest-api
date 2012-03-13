@@ -6,6 +6,10 @@ $darker: #272729;
 $base: #4B4A50;
 $grey: #535257;
 $lightgrey: #A8A6B0;
+$orange: #D9690C;
+$dullyellow: #E8AF5E;
+$yellow: #E0FB22;
+$red: #9C2C04;
 
 
 html, body { 
@@ -13,7 +17,7 @@ html, body {
   padding: 0; 
   height: 100%; 
   vertical-align: middle; 
-  font-family: 'Helvetica Neue',Arial,'Liberation Sans',FreeSans,sans-serif;
+  font-family: 'geneva', 'Helvetica Neue',Arial,sans-serif;
   background-image: image-url('classy_fabric.png');
 }
 
@@ -21,6 +25,15 @@ html, body {
   float:left; 
   height:50%; 
   margin-bottom:-120px;
+}
+
+div.flash {
+  color: $dullyellow;
+  background-color: $orange;
+  border: 1px solid $dullyellow;
+  border-radius: 5px 5px 5px 5px;
+  padding: 5px;
+  margin-bottom: 10px;
 }
 
 #signin-container {
@@ -36,7 +49,7 @@ html, body {
     //background: -o-linear-gradient(0% 0 -90deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.95)) repeat scroll 0 0 transparent;
     border: 2px solid #999999;
     border-radius: 15px 15px 15px 15px;
-    box-shadow: 0 0 20px 0 #000000;
+    box-shadow: 5px 5px 10px 10px #000000;
     min-height: 200px;
     opacity: 0;
     padding: 20px;

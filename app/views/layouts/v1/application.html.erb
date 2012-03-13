@@ -1,19 +1,30 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>MirrorballDAM</title>
-  <%= stylesheet_link_tag    "application" %>
-  <%= javascript_include_tag "application" %>
-  <%= csrf_meta_tags %>
-</head>
-<body>
-
-<% if current_user %>
-  Logged in as <%= current_user.email %>.
-  <%= link_to "Log out", v1_logout_path %>
-<% end %>
-
-<%= yield %>
-
-</body>
+	<head>
+	  <title>MirrorballDAM</title>
+	  <%= stylesheet_link_tag    "application" %>
+	  <%= javascript_include_tag "application" %>
+	  <%= csrf_meta_tags %>
+	</head>
+	<body>
+		
+		<div id='app-header'>
+			<div id='login-info'>
+				<ul class="nav nav-pills">
+					<li class="dropdown active">
+						<a class="dropdown-toggle"
+						data-toggle="dropdown"
+						href="#"> <%= current_user.email %> <b class="caret"></b> 
+						</a>
+						<ul class="dropdown-menu">
+							<li><%= link_to "Log out", v1_logout_path %></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+		<%= yield %>
+	
+	</body>
 </html>

@@ -1,9 +1,22 @@
 // Place all the styles related to the v1/application controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+$darkest: #0B0A10;
+$darker: #272729;
+$base: #4B4A50;
+$grey: #535257;
+$lightgrey: #A8A6B0;
+$orange: #D9690C;
+$dullyellow: #E8AF5E;
+$yellow: #E0FB22;
+$red: #9C2C04;
 
-body {
+// change bootstrap variables before import
+@import "bootstrap";
 
+#app-header {
+  width: 100%;
+  height: 30px;
 }
 
 #MbAppContainer {

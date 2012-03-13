@@ -5,13 +5,13 @@
 // the compiled file.
 //
 //= require jquery-1.7.1.min
-//= require jquery-ui-1.9pre
 //= require debug-console-log-v0.4
 //= require underscore-min
 //= require handlebars.runtime
 //= require ember-0.9.4.js
 //= require ember-rest
-//= require bootstrap/bootstrap-buttons
+//= require bootstrap-modal
+//= require bootstrap-dropdown
 //= require v1/mirrorballUI
 //= require ./v1/mirrorballApp.js
 //= require_tree ./v1/models

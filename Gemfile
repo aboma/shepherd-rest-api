@@ -12,6 +12,7 @@ gem 'sqlite3'
 group :assets do
   gem 'handlebars_assets', '~> 0.4.0'
   gem 'sass-rails',   '~> 3.1.4'
+  gem 'bootstrap-sass', '~> 2.0.1'
   gem 'coffee-rails', '~> 3.1.1'
   gem 'uglifier', '>= 1.0.3'
   gem 'win32-open3-19'

@@ -11,7 +11,9 @@ $dullyellow: #E8AF5E;
 $yellow: #E0FB22;
 $red: #9C2C04;
 
+
 // change bootstrap variables before import
+$baseFontSize: 14px;
 @import "bootstrap";
 
   #app-header {
@@ -34,6 +36,8 @@ $red: #9C2C04;
   
   div.well {
       min-height: 300px;  
+      background-color: $base;
+      border-radius: 6px;
   }
   
   #MbLeftNav {

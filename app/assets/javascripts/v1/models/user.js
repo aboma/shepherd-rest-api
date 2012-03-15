@@ -1,11 +1,11 @@
 Mirrorball.User = Ember.Object.extend({
-	username: null,
+	email: null,
+	last_name: null,
+	first_name: null,
 	hasAdminRights: false,
 	
 	init: function() {
 		this._super();
-		if (!this.get('username')) {
-			alert('user not set');
-		}
+
 	}	
 })

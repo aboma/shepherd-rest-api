@@ -17,6 +17,7 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
   gem 'win32-open3-19'
   gem 'jammit', '0.6.5'
+  gem 'annotate', :git => 'git://github.com/ctran/annotate_models.git'
 end
 
 gem 'jquery-rails'
@@ -38,6 +39,7 @@ gem 'sorcery', '0.7.7'
 group :development, :test do
   # To use debugger
   gem 'ruby-debug19', :require => 'ruby-debug'
+  gem 'rspec-rails', '~> 2.6.1'
 end
 
 group :test do

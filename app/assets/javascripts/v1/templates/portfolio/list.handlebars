@@ -6,8 +6,8 @@
 		 		disabledBinding="controller.shownewform" class="btn"}} 
 		 	Create {{/view}}
 		</li>
-	  	{{#each Mirrorball.portfoliosController}}
-	  		{{#view Mirrorball.PortfolioView contentBinding="this"}}
+	  	{{#each Luxin.portfoliosController}}
+	  		{{#view Luxin.PortfolioView contentBinding="this"}}
 	    		<li {{bindAttr class="isSelected:active"}} ><a href='#'>{{content.name}}</a></li>
 	    	{{/view}}
 	 	{{/each}}

@@ -11,17 +11,17 @@ $.ajaxSetup({
     }
 });
 
-window.Mirrorball = Ember.Application.create();
+window.Luxin = Ember.Application.create();
 
-Mirrorball.init = function() {
-	//Mirrorball.authorizedUser = Mirrorball.User.create();
+Luxin.init = function() {
+	//Luxin.authorizedUser = Luxin.User.create();
 };
 
-Mirrorball.log = function(object) {
+Luxin.log = function(object) {
 	debug.log(object);
 }
 
-Mirrorball.displayError = function(e) {
+Luxin.displayError = function(e) {
   if (typeof e === 'string') {
     // display error strings
     debug.log(e);
@@ -35,14 +35,14 @@ Mirrorball.displayError = function(e) {
   }
 };
 
-Mirrorball.Button = JQUI.Button.extend({
+Luxin.Button = JQUI.Button.extend({
 	//propagateEvents: true,
 	//click: function() {
     //	this.set('disabled', true);
     //}
 })
 
-Mirrorball.Message = Ember.View.extend({
+Luxin.Message = Ember.View.extend({
 	tag: 'div',
 	templateName: 'v1/templates/message/message',
 	type: 'alert',

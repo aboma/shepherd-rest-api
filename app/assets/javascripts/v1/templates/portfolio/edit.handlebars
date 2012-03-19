@@ -6,35 +6,35 @@
 	    	{{else}}
 	    		<legend>Create Portfolio</legend>
 	    	{{/if }}
-	    	{{ view Mirrorball.Message viewName="portfolioFormMessage" classBinding="type messageType" }}
-	    	{{#if controller.editableContent.uri }}
-	    		<label class="control-label">Portfolio URI</label>
-	    		<div class="controls">
-	    			{{ editableContent.uri }}
-	    		</div>
+	    	{{ view Luxin.Message viewName="portfolioFormMessage" classBinding="type messageType" }}
+	    	{{#if controller.editableContent.url }}
+	    		<div class="control-group">
+		    		<label class="control-label">Portfolio URI</label>
+	    			<label class="data-label">{{ editableContent.url }}</label>
+		    	</div>
 	    	{{/if}}
 	    	<div class="control-group">
 	    		<label class="control-label">Portfolio Name</label>
 	    		<div class="controls">
 	   				{{ view Ember.TextField viewName="pNameTextField" 
-	   				   valueBinding="editableContent.name" disabledBinding="Mirrorball.PortfolioEditView.isDisabled" }}
+	   				   valueBinding="editableContent.name" disabledBinding="Luxin.PortfolioEditView.isDisabled" }}
 	    		</div>
 	    	</div>
 	    	<div class="control-group">
 	    		<label class="control-label">Description</label>
 	    		<div class="controls">
 	   				{{ view Ember.TextArea viewName="pDescriptionTextArea" 
-	   				   valueBinding="editableContent.description" disabledBinding="Mirrorball.PortfolioEditView.isDisabled" }}
+	   				   valueBinding="editableContent.description" disabledBinding="Luxin.PortfolioEditView.isDisabled" }}
 	    		</div>
 	    	</div>
 	    	<div class="control-group button-group">
 	    		{{#view Ember.Button action="save" target="parentView" 
-					disabledBinding="Mirrorball.PortfolioEditView.isDisabled" class="btn btn-success" }} Save {{/view}}
+					disabledBinding="Luxin.PortfolioEditView.isDisabled" class="btn btn-success" }} Save {{/view}}
 				{{#view Ember.Button action="cancel" target="parentView" 
-					disabledBinding="Mirrorball.PortfolioEditView.isDisabled" class="btn btn-warning" }} Cancel {{/view}}
+					disabledBinding="Luxin.PortfolioEditView.isDisabled" class="btn btn-warning" }} Cancel {{/view}}
 				{{#if controller.isEditing }}
 					{{#view Ember.Button action="remove" target="parentView" 
-						disabledBinding="Mirrorball.PortfolioEditView.isDisabled" class="btn btn-danger" }} Delete {{/view}}
+						disabledBinding="Luxin.PortfolioEditView.isDisabled" class="btn btn-danger" }} Delete {{/view}}
 				{{/if}}
 	    	</div>
 	    </fieldset>

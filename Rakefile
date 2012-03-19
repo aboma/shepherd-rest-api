@@ -4,4 +4,4 @@
 
 require File.expand_path('../config/application', __FILE__)
 
-MirrorballDAM::Application.load_tasks
+LuxinDAM::Application.load_tasks

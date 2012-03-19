@@ -1,3 +1,3 @@
-Mirrorball.topNavController = Ember.ArrayController.create({
+Luxin.topNavController = Ember.ArrayController.create({
 	
 })

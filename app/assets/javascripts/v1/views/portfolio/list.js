@@ -1,7 +1,7 @@
-Mirrorball.PortfoliosListView = Ember.View.extend({
+Luxin.PortfoliosListView = Ember.View.extend({
   	templateName: 'v1/templates/portfolio/list',
-  	//contentBinding: 'Mirrorball.portfoliosController',
-  	controllerBinding: 'Mirrorball.portfoliosController',
+  	//contentBinding: 'Luxin.portfoliosController',
+  	controllerBinding: 'Luxin.portfoliosController',
     isDisabled: false,
     isVisible: true,
     
@@ -10,16 +10,16 @@ Mirrorball.PortfoliosListView = Ember.View.extend({
   	}
 });
 
-Mirrorball.PortfolioView = Ember.View.extend({
+Luxin.PortfolioView = Ember.View.extend({
 	currentSelectedView: null,
 	isSelected: false,
 	
 	clear: function() {
-		var selectedContent = Mirrorball.selectedPortfolioController.get('content');
+		var selectedContent = Luxin.selectedPortfolioController.get('content');
 		if (this.get('content') !== selectedContent) {
 			this.set('isSelected', false);
 		}
-	}.observes('Mirrorball.selectedPortfolioController.content'),
+	}.observes('Luxin.selectedPortfolioController.content'),
 	click: function() {
 		var csv = this.get('currentSelectedView');
 		if (csv)
@@ -27,7 +27,7 @@ Mirrorball.PortfolioView = Ember.View.extend({
 		var port = this.get('content');
 		this.set('isSelected', true);
 		this.set('currentSelectedView', this);
-		Mirrorball.log('portfolio ' + port.name + ' selected');
-		Mirrorball.selectedPortfolioController.set('content', port);
+		Luxin.log('portfolio ' + port.name + ' selected');
+		Luxin.selectedPortfolioController.set('content', port);
 	}
 })

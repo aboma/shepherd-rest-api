@@ -1,37 +1,37 @@
-Mirrorball.portfoliosController = Ember.ArrayController.create({
-	content: Mirrorball.store.findAll(Mirrorball.Portfolio),
+Luxin.portfoliosController = Ember.ArrayController.create({
+	content: Luxin.store.findAll(Luxin.Portfolio),
 	submitting: false,
 	shownewform: false,
 	
 	newPortfolio: function(data) {
 		var port;
 		this.submitting = true;
-		Mirrorball.log('creating portfolio ' + data.name);
-		//port = Mirrorball.Portfolio.create(data)
-	    var port = Mirrorball.store.createRecord(Mirrorball.Portfolio, { name: data.name, description: data.description });
-	    Mirrorball.store.commit();
+		Luxin.log('creating portfolio ' + data.name);
+		//port = Luxin.Portfolio.create(data)
+	    var port = Luxin.store.createRecord(Luxin.Portfolio, { name: data.name, description: data.description });
+	    Luxin.store.commit();
 	    if (port && port.isLoaded) {
 	    	this.pushObject(port);
 	    	this.submitting = false;
 	    	return true;
 	    } else {
-	    	Mirrorball.displayError('portfolio not saved');
+	    	Luxin.displayError('portfolio not saved');
 	    }
 	},	
 	addPortfolio: function(portfolio) {
 		this.pushObject(portfolio);
 	},
 	loadAll: function(data) {
-		Mirrorball.log('data >> loading portfolios');
-		this.set('content', Mirrorball.store.loadAll(Mirrorball.Portfolio, data));
+		Luxin.log('data >> loading portfolios');
+		this.set('content', Luxin.store.loadAll(Luxin.Portfolio, data));
 	},
 	findAll: function() {
-		Mirrorball.log('data >> finding portfolios')
-		this.set('content', Mirrorball.store.findAll(Mirrorball.Portfolio));
+		Luxin.log('data >> finding portfolios')
+		this.set('content', Luxin.store.findAll(Luxin.Portfolio));
 	},
 	shownew: function() {
-    	var port = Mirrorball.Portfolio.create({});
-    	Mirrorball.selectedPortfolioController.set('content', port);
+    	var port = Luxin.Portfolio.create({});
+    	Luxin.selectedPortfolioController.set('content', port);
 	},
 	remove: function(portfolio) {
 		if ((portfolio) && (portfolio.remove()));
@@ -43,7 +43,7 @@ Mirrorball.portfoliosController = Ember.ArrayController.create({
 	}
 });
 
-Mirrorball.selectedPortfolioController = Ember.Object.create({
+Luxin.selectedPortfolioController = Ember.Object.create({
 	content: null,
 	hasErrors: false,
 	editableContent: null,
@@ -59,7 +59,7 @@ Mirrorball.selectedPortfolioController = Ember.Object.create({
 		// copy content so that it can be edited without immediately updating
 		// selected content
 		if (this.get('content')) {
-			Mirrorball.log('>>> content changed');
+			Luxin.log('>>> content changed');
 			var port = this.get('content').copy();
 			this.set('editableContent', port);
 		} else {
@@ -68,14 +68,14 @@ Mirrorball.selectedPortfolioController = Ember.Object.create({
 	}.observes('content'),	
 	save: function() {
 		// 
-		Mirrorball.log('saving edited portfolio');
+		Luxin.log('saving edited portfolio');
 		try {
 			var portfolio = this.get('content');
 			if (portfolio.isNew()) {
 				//portfolio.merge(this.get('editableContent'));
 				//this.set('content', portfolio);
 				var newPortfolio = this.get('editableContent');
-				Mirrorball.portfoliosController.newPortfolio(newPortfolio);
+				Luxin.portfoliosController.newPortfolio(newPortfolio);
 			} else {
 				portfolio.merge(this.get('editableContent'));
 				this.set('content', portfolio);		
@@ -83,12 +83,12 @@ Mirrorball.selectedPortfolioController = Ember.Object.create({
 			}
 			this.set('content', null);
 		} catch (e) {
-			Mirrorball.log('error: ' + e);
+			Luxin.log('error: ' + e);
 		}
 	},
 	remove: function() {
 		var port = this.get('content');	
-		if (Mirrorball.portfoliosController.remove(port)) {
+		if (Luxin.portfoliosController.remove(port)) {
 			this.set('content', null);	
 		}		
 	}

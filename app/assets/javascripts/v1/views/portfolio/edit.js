@@ -1,8 +1,8 @@
-Mirrorball.PortfolioEditView = Ember.View.extend({
+Luxin.PortfolioEditView = Ember.View.extend({
 	templateName: 'v1/templates/portfolio/edit',
-  	controllerBinding: 'Mirrorball.selectedPortfolioController',
+  	controllerBinding: 'Luxin.selectedPortfolioController',
     isDisabled: false,
-	editableContentBinding: 'Mirrorball.selectedPortfolioController.editableContent',
+	editableContentBinding: 'Luxin.selectedPortfolioController.editableContent',
 	
 	didInsertElement: function() {
 	  	//alert('calling didInsertElement');
@@ -10,19 +10,19 @@ Mirrorball.PortfolioEditView = Ember.View.extend({
 	   	this.$('input:first').focus();  	
 	},
 	save: function() {
-		Mirrorball.log('editport.save');
+		Luxin.log('editport.save');
 	 	if (!this.validated())
 	  		return;
 	  	this.set('isDisabled', true);
 	  	try {
 	  		this.get('controller').save();
 	 	} catch (e) {
-			Mirrorball.log('error: ' + e);
+			Luxin.log('error: ' + e);
 		}
 		this.set('isDisabled', false);
 	},
 	remove: function() {
-		Mirrorball.log('deleting portfolio');
+		Luxin.log('deleting portfolio');
 		this.get('controller').remove();
 	},
 	validated: function() {

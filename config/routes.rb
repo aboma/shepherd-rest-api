@@ -1,4 +1,4 @@
-MirrorballDAM::Application.routes.draw do
+LuxinDAM::Application.routes.draw do
   
   match "/", :to => redirect("/v1")
 

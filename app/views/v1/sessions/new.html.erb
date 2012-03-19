@@ -1,5 +1,6 @@
 <div id="floater"></div>
 <div id="signin-container">
+		<h3>Luxin DAM</h3>
 		<% flash.each do |key, value| %>
 		    <div class="flash <%= key %>"><%= value %></div>
 		<% end %>
@@ -18,5 +19,6 @@
 		    <%= label_tag :remember_me %>
 		  </div>
 		  <div class="actions"><%= submit_tag "Log in" %></div>
+		  <div class='clear'></div>
 		<% end %>
 </div>

@@ -12,8 +12,8 @@
 //= require ember-data-latest.js
 //= require bootstrap-modal
 //= require bootstrap-dropdown
-//= require v1/mirrorballUI
-//= require ./v1/mirrorballApp.js
+//= require v1/luxinUI
+//= require ./v1/luxinApp.js
 //= require_tree ./v1/store
 //= require_tree ./v1/models
 //= require_tree ./v1/controllers

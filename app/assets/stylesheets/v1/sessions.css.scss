@@ -38,7 +38,7 @@ div.flash {
 
 #signin-container {
     clear:both; 
-    height:240px; 
+
     position:relative;
     -moz-transform: scale(0.5, 0.5);
     -moz-transition: all 0.4s cubic-bezier(0, 0.35, .5, 1.3) 0s;
@@ -59,6 +59,15 @@ div.flash {
     width: 300px;
     z-index: 1000;
 
+    h3 {
+      font-size: 18px;
+      color: $grey;
+      margin-top: 0px;
+      margin-bottom: 20px;
+      border-color: -moz-use-text-color -moz-use-text-color $grey;
+      border-style: none none solid;
+      border-width: 0 0 1px 0;
+    }
 
     input[type="text"], input[type="password"] {
         display: block;
@@ -120,6 +129,9 @@ div.flash {
     #sign-in-button {
         float: left;
         width: 50px;
+    }
+    div.clear {
+      clear: both;
     }
 }
 

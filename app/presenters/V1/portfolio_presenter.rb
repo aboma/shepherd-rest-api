@@ -10,7 +10,8 @@ class V1::PortfolioPresenter
     port_hash = {
       :id => @portfolio.id,
       :name => @portfolio.name,
-      :description => @portfolio.description
+      :description => @portfolio.description,
+      :url => "/portfolio/#{@portfolio.id}"
     }
     port_hash = { :portfolios => port_hash } if include_root
     port_hash

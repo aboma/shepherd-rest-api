@@ -2,7 +2,7 @@ class V1::ApplicationController < ApplicationController
   protect_from_forgery
   before_filter :require_login
   
-  respond_to :html
+  respond_to :html, :json
   
   def index
   end

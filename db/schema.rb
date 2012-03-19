@@ -13,6 +13,13 @@
 
 ActiveRecord::Schema.define(:version => 20120308013959) do
 
+  create_table "portfolios", :force => true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "users", :force => true do |t|
     t.string   "email"
     t.string   "crypted_password"

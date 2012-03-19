@@ -8,12 +8,13 @@
 //= require debug-console-log-v0.4
 //= require underscore-min
 //= require handlebars.runtime
-//= require ember-0.9.4.js
-//= require ember-rest
+//= require ember-0.9.4.min.js
+//= require ember-data-latest.js
 //= require bootstrap-modal
 //= require bootstrap-dropdown
 //= require v1/mirrorballUI
 //= require ./v1/mirrorballApp.js
+//= require_tree ./v1/store
 //= require_tree ./v1/models
 //= require_tree ./v1/controllers
 //= require_tree ./v1/views

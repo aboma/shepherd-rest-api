@@ -1,4 +1,5 @@
 class V1::PortfolioPresenter
+  
   attr_reader :portfolio
   
   def initialize ( resource )
@@ -6,6 +7,12 @@ class V1::PortfolioPresenter
   end
   
   def as_json(include_root = false)
-    #TODO
+    port_hash = {
+      :id => @portfolio.id,
+      :name => @portfolio.name,
+      :description => @portfolio.description
+    }
+    port_hash = { :portfolios => port_hash } if include_root
+    port_hash
   end
 end

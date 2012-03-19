@@ -1,5 +1,5 @@
 Mirrorball.portfoliosController = Ember.ArrayController.create({
-	content: [],
+	content: Mirrorball.store.findAll(Mirrorball.Portfolio),
 	submitting: false,
 	shownewform: false,
 	
@@ -7,24 +7,27 @@ Mirrorball.portfoliosController = Ember.ArrayController.create({
 		var port;
 		this.submitting = true;
 		Mirrorball.log('creating portfolio ' + data.name);
-		//event.preventDefault();
-		port = Mirrorball.Portfolio.create(data)
-	    port.saveResource();
-	    //  .fail( function(e) {
-	   //     //Mirrorball.displayError(e);
-	   //   })
-	   //   .done(function() {
-	   //     this.pushObject(port);
-	  //    });
-	    this.pushObject(port);
-	    this.submitting = false;
-	    return true;
+		//port = Mirrorball.Portfolio.create(data)
+	    var port = Mirrorball.store.createRecord(Mirrorball.Portfolio, { name: data.name, description: data.description });
+	    Mirrorball.store.commit();
+	    if (port && port.isLoaded) {
+	    	this.pushObject(port);
+	    	this.submitting = false;
+	    	return true;
+	    } else {
+	    	Mirrorball.displayError('portfolio not saved');
+	    }
 	},	
 	addPortfolio: function(portfolio) {
 		this.pushObject(portfolio);
 	},
-	loadPortfolios: function() {
-		//TODO
+	loadAll: function(data) {
+		Mirrorball.log('data >> loading portfolios');
+		this.set('content', Mirrorball.store.loadAll(Mirrorball.Portfolio, data));
+	},
+	findAll: function() {
+		Mirrorball.log('data >> finding portfolios')
+		this.set('content', Mirrorball.store.findAll(Mirrorball.Portfolio));
 	},
 	shownew: function() {
     	var port = Mirrorball.Portfolio.create({});
@@ -45,14 +48,13 @@ Mirrorball.selectedPortfolioController = Ember.Object.create({
 	hasErrors: false,
 	editableContent: null,
 	
-	isNew: function() {
+	isEditing: function() {
 		var port = this.get('content');
-		if (port) {
-			if (port.get('uri'))
+		if (port && !port.get('isLoaded')) {
 				return false;
 		}
 		return true;
-	}.observes('content'),
+	}.observes('content').property('isNew'),
 	setEditContent: function() {
 		// copy content so that it can be edited without immediately updating
 		// selected content
@@ -65,14 +67,19 @@ Mirrorball.selectedPortfolioController = Ember.Object.create({
 		}
 	}.observes('content'),	
 	save: function() {
+		// 
 		Mirrorball.log('saving edited portfolio');
 		try {
 			var portfolio = this.get('content');
-			portfolio.merge(this.get('editableContent'));
-			this.set('content', portfolio);
-			this.get('content').saveResource();
-			if (this.isNew) {
-				Mirrorball.portfoliosController.addPortfolio(portfolio);
+			if (portfolio.isNew()) {
+				//portfolio.merge(this.get('editableContent'));
+				//this.set('content', portfolio);
+				var newPortfolio = this.get('editableContent');
+				Mirrorball.portfoliosController.newPortfolio(newPortfolio);
+			} else {
+				portfolio.merge(this.get('editableContent'));
+				this.set('content', portfolio);		
+				//TODO update RESTful resource	
 			}
 			this.set('content', null);
 		} catch (e) {

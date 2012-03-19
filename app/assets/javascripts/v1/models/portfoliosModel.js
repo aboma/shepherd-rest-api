@@ -1,11 +1,13 @@
-Mirrorball.Portfolio = Ember.Object.extend(Ember.Copyable, {
-	name: null,
-	description: null,
-	id: null,
-	uri: null,
-	createdBy: null,
-	createdOn: null,
+Mirrorball.Portfolio = DS.Model.extend(Ember.Copyable, {
+	name: DS.attr('string'),
+	description: DS.attr('string'),
+	uri: DS.attr('string'),
+	createdBy: DS.attr('date'),
+	createdOn: DS.attr('date'),
 	
+	isNew: function() {
+		return !this.id;
+	},
 	saveResource: function() {
 		Mirrorball.log('saving portfolio resource ' + this.name);
 	},
@@ -19,8 +21,16 @@ Mirrorball.Portfolio = Ember.Object.extend(Ember.Copyable, {
 		})
 	},
 	merge: function(source) {
-		this.set('name', source.get('name'));
+		var nnnname =  source.get('name');
+		this.set('name', nnnname);
 		this.set('description', source.get('description'));
 	}
 	
 });
+
+Mirrorball.Portfolio.reopenClass({
+	collectionUrl: 'portfolios',
+	resourceUrl: 'portfolios',
+	url: 'portfolio',
+	resourceName: 'portfolio'
+})

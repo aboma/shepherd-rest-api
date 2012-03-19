@@ -1,9 +1,13 @@
-{{#if Mirrorball.selectedPortfolioController.editableContent}}
+{{#if controller.editableContent}}
 	<div class="form-horizontal">
 		<fieldset>
-	    	<legend>Create New Portfolio</legend>
+			{{#if controller.isEditing }}
+	    		<legend>Edit "{{ editableContent.name }}" Portfolio</legend>
+	    	{{else}}
+	    		<legend>Create Portfolio</legend>
+	    	{{/if }}
 	    	{{ view Mirrorball.Message viewName="portfolioFormMessage" classBinding="type messageType" }}
-	    	{{#if Mirrorball.selectedPortfolioController.editableContent.uri }}
+	    	{{#if controller.editableContent.uri }}
 	    		<label class="control-label">Portfolio URI</label>
 	    		<div class="controls">
 	    			{{ editableContent.uri }}
@@ -28,10 +32,10 @@
 					disabledBinding="Mirrorball.PortfolioEditView.isDisabled" class="btn btn-success" }} Save {{/view}}
 				{{#view Ember.Button action="cancel" target="parentView" 
 					disabledBinding="Mirrorball.PortfolioEditView.isDisabled" class="btn btn-warning" }} Cancel {{/view}}
-				{{#unless controller.isNew }}
+				{{#if controller.isEditing }}
 					{{#view Ember.Button action="remove" target="parentView" 
 						disabledBinding="Mirrorball.PortfolioEditView.isDisabled" class="btn btn-danger" }} Delete {{/view}}
-				{{/unless}}
+				{{/if}}
 	    	</div>
 	    </fieldset>
 	</div>

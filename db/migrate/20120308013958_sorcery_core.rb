@@ -10,9 +10,17 @@ class SorceryCore < ActiveRecord::Migration
       
       t.timestamps
     end
+    
+    create_table :portfolios do |t|
+      t.string :name,             :default => nil
+      t.string :description,      :default => nil
+      
+      t.timestamps
+    end
   end
 
   def self.down
     drop_table :users
+    drop_table :portfolios
   end
 end

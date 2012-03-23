@@ -16,12 +16,10 @@ Luxin.Portfolio = DS.Model.extend(Ember.Copyable, {
 		})
 	},
 	merge: function(source) {
-		var nnnname =  source.get('name');
-		this.set('name', nnnname);
+		this.set('name', source.get('name'));
 		this.set('description', source.get('description'));
 		this.set('url', source.get('url'));
 	}
-	
 });
 
 Luxin.Portfolio.reopenClass({

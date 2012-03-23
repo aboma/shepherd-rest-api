@@ -90,7 +90,7 @@ DS.RESTAdapter = DS.Adapter.extend({
     var data = {};
     data[root] = get(model, 'data');
 
-    this.ajax("/v1/" + this.pluralize(root), "POST", {
+    this.ajax("/" + this.pluralize(root), "POST", {
       data: data,
       success: function(json) {
         store.didCreateRecord(model, json[root]);
@@ -111,7 +111,7 @@ DS.RESTAdapter = DS.Adapter.extend({
       return get(model, 'data');
     });
 
-    this.ajax("/v1/" + this.pluralize(root), "POST", {
+    this.ajax("/" + this.pluralize(root), "POST", {
       data: data,
       success: function(json) {
         store.didCreateRecords(type, models, json[plural]);
@@ -150,7 +150,7 @@ DS.RESTAdapter = DS.Adapter.extend({
       return get(model, 'data');
     });
 
-    this.ajax("/v1/" + this.pluralize(root), "POST", {
+    this.ajax("/" + this.pluralize(root), "POST", {
       data: data,
       success: function(json) {
         store.didUpdateRecords(models, json[plural]);
@@ -209,7 +209,7 @@ DS.RESTAdapter = DS.Adapter.extend({
   findMany: function(store, type, ids) {
     var root = this.rootForType(type), plural = this.pluralize(root);
 
-    this.ajax("/v1/" + plural, "GET", {
+    this.ajax("/" + plural, "GET", {
       data: { ids: ids },
       success: function(json) {
         store.loadMany(type, ids, json[plural]);
@@ -221,7 +221,7 @@ DS.RESTAdapter = DS.Adapter.extend({
   findAll: function(store, type) {
     var root = this.rootForType(type), plural = this.pluralize(root);
 
-    this.ajax("/v1/" + plural, "GET", {
+    this.ajax("/" + plural, "GET", {
       success: function(json) {
         store.loadMany(type, json[plural]);
       }
@@ -261,6 +261,7 @@ DS.RESTAdapter = DS.Adapter.extend({
   ajax: function(url, type, hash) {
     hash.url = url;
     hash.type = type;
+    hash.dataType = "json";
 
     jQuery.ajax(hash);
   }

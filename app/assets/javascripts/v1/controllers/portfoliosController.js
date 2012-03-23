@@ -4,15 +4,13 @@ Luxin.portfoliosController = Ember.ArrayController.create({
 	shownewform: false,
 	
 	newPortfolio: function(data) {
-		var port;
-		this.submitting = true;
 		Luxin.log('creating portfolio ' + data.name);
 		//port = Luxin.Portfolio.create(data)
-	    var port = Luxin.store.createRecord(Luxin.Portfolio, { name: data.name, description: data.description });
+	    var port = Luxin.store.createRecord(Luxin.Portfolio, { name: data.get('name'), 
+	    													   description: data.get('description') });
 	    Luxin.store.commit();
 	    if (port && port.isLoaded) {
 	    	this.pushObject(port);
-	    	this.submitting = false;
 	    	return true;
 	    } else {
 	    	Luxin.displayError('portfolio not saved');
@@ -67,7 +65,6 @@ Luxin.selectedPortfolioController = Ember.Object.create({
 		}
 	}.observes('content'),	
 	save: function() {
-		// 
 		Luxin.log('saving edited portfolio');
 		try {
 			var portfolio = this.get('content');
@@ -78,13 +75,16 @@ Luxin.selectedPortfolioController = Ember.Object.create({
 				Luxin.portfoliosController.newPortfolio(newPortfolio);
 			} else {
 				portfolio.merge(this.get('editableContent'));
-				this.set('content', portfolio);		
+				Luxin.store.commit();
 				//TODO update RESTful resource	
 			}
 			this.set('content', null);
 		} catch (e) {
 			Luxin.log('error: ' + e);
 		}
+	},
+	validate: function() {
+		//TODO
 	},
 	remove: function() {
 		var port = this.get('content');	

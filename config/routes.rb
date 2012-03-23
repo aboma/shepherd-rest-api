@@ -1,16 +1,15 @@
 LuxinDAM::Application.routes.draw do
   
-  match "/", :to => redirect("/v1")
-
-  namespace :v1 do
-    root :to => "application#index"
+  scope '(:v1)', :module => :v1 do
     get "logout" => "sessions#destroy", :as => "logout"
     get "login" => "sessions#new", :as => "login"
+    resources :portfolios        
     resources :users
-    resources :sessions
-    resources :portfolios
+    resources :sessions   
+    root :to => "application#index"
   end
-   
+
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
@@ -27,7 +26,7 @@ LuxinDAM::Application.routes.draw do
 
   # Sample resource route with options:
   #   resources :products do
-  #     member do
+  #     member dorail
   #       get 'short'
   #       post 'toggle'
   #     end

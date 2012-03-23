@@ -15,4 +15,14 @@ class V1::PortfoliosController < V1::ApplicationController
     end
   end
 
+  def update
+    @portfolio = Portfolio.find(params[:id])
+    @portfolio.update_attributes(params)
+    @p_pres = V1::PortfolioPresenter.new(@portfolio)
+    render :json => { :portfolio => @p_pres.as_json }, :content_type => 'application/json'
+  end
+
+  def destroy
+    Portfolio.find(params[:id]).destroy
+  end
 end

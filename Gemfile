@@ -19,7 +19,6 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
   gem 'win32-open3-19'
   gem 'jammit', '0.6.5'
-  gem 'annotate', :git => 'git://github.com/ctran/annotate_models.git'
 end
 
 # To use ActiveModel has_secure_password
@@ -38,6 +37,8 @@ group :development, :test do
   # To use debugger
   gem 'ruby-debug19', :require => 'ruby-debug'
   gem 'rspec-rails', '~> 2.6.1'
+  gem 'factory_girl_rails'
+  gem 'annotate', :git => 'git://github.com/ctran/annotate_models.git'
 end
 
 group :test do

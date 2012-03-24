@@ -11,6 +11,8 @@ class SorceryCore < ActiveRecord::Migration
       t.timestamps
     end
     
+    add_index :users, :email, unique: true
+    
     create_table :portfolios do |t|
       t.string :name,             :default => nil
       t.string :description,      :default => nil

@@ -9,7 +9,7 @@ Luxin.portfoliosController = Ember.ArrayController.create({
 	    var port = Luxin.store.createRecord(Luxin.Portfolio, { name: data.get('name'), 
 	    													   description: data.get('description') });
 	    Luxin.store.commit();
-	    if (port && port.isLoaded) {
+	    if (port && port.get('isLoaded')) {
 	    	this.pushObject(port);
 	    	return true;
 	    } else {
@@ -68,15 +68,14 @@ Luxin.selectedPortfolioController = Ember.Object.create({
 		Luxin.log('saving edited portfolio');
 		try {
 			var portfolio = this.get('content');
-			if (portfolio.isNew()) {
+			if (!portfolio.get('isLoaded')) {
 				//portfolio.merge(this.get('editableContent'));
 				//this.set('content', portfolio);
 				var newPortfolio = this.get('editableContent');
 				Luxin.portfoliosController.newPortfolio(newPortfolio);
 			} else {
 				portfolio.merge(this.get('editableContent'));
-				Luxin.store.commit();
-				//TODO update RESTful resource	
+				portfolio.store.commit();
 			}
 			this.set('content', null);
 		} catch (e) {

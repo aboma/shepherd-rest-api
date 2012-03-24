@@ -5,7 +5,7 @@
 		    <div class="flash <%= key %>"><%= value %></div>
 		<% end %>
 	
-		<%= form_tag v1_sessions_path do %>
+		<%= form_tag sessions_path do %>
 		  <div class="field">
 		    <%= label_tag :email %>
 		    <%= text_field_tag :email, params[:email] %>

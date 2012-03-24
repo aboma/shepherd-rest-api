@@ -16,8 +16,8 @@ ActiveRecord::Schema.define(:version => 20120308013959) do
   create_table "portfolios", :force => true do |t|
     t.string   "name"
     t.string   "description"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "users", :force => true do |t|
@@ -26,12 +26,13 @@ ActiveRecord::Schema.define(:version => 20120308013959) do
     t.string   "salt"
     t.string   "last_name"
     t.string   "first_name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
     t.string   "remember_me_token"
     t.datetime "remember_me_token_expires_at"
   end
 
+  add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["remember_me_token"], :name => "index_users_on_remember_me_token"
 
 end

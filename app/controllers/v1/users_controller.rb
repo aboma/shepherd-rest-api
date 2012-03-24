@@ -8,6 +8,7 @@ class V1::UsersController < V1::ApplicationController
   end
   
   def show
+    #TODO require admin rights
     @user = User.find_by_id( params[:id] )
     render :status => 404 unless @user
     @user_presenter = V1::UserPresenter.new(@user)

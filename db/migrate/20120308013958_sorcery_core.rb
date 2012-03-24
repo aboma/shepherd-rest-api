@@ -14,8 +14,9 @@ class SorceryCore < ActiveRecord::Migration
     add_index :users, :email, unique: true
     
     create_table :portfolios do |t|
-      t.string :name,             :default => nil
-      t.string :description,      :default => nil
+      t.string    :name,             :default => nil
+      t.string    :description,      :default => nil
+      t.datetime  :deleted_at,       :default => nil
       
       t.timestamps
     end

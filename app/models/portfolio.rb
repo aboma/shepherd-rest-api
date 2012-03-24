@@ -11,9 +11,26 @@
 
 class Portfolio < ActiveRecord::Base
   authenticates_with_sorcery!
-   
+  
   attr_accessible :name, :description
 
   validates_presence_of :name
   validates_uniqueness_of :name
+  
+  class << self
+    def not_deleted
+      where(:deleted_at => nil)
+    end
+  end
+  
+  
+  protected
+  def mark_deleted
+    self.deleted_at = Time.now
+  end
+  
+  def mark_deleted!
+    mark_deleted
+    self.save
+  end
 end

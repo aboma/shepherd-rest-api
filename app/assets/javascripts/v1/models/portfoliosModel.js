@@ -3,7 +3,9 @@ Luxin.Portfolio = DS.Model.extend(Ember.Copyable, {
 	description: DS.attr('string'),
 	url: DS.attr('string'),
 	createdBy: DS.attr('date'),
-	createdOn: DS.attr('date'),
+	createdAt: DS.attr('date'),
+	updatedAt: DS.attr('date'),
+	deletedAt: DS.attr('date'),
 	
 	isNew: function() {
 		return !this.url;
@@ -12,7 +14,9 @@ Luxin.Portfolio = DS.Model.extend(Ember.Copyable, {
 		return Luxin.Portfolio.create({
 			name: this.get('name'),
 			description: this.get('description'),
-			url: this.get('url')
+			url: this.get('url'),
+			createdAt: this.get('createdAt'),
+			updatedAt: this.get('updatedAt')
 		})
 	},
 	merge: function(source) {

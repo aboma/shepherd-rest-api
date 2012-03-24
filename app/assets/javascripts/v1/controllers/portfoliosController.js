@@ -30,14 +30,6 @@ Luxin.portfoliosController = Ember.ArrayController.create({
 	shownew: function() {
     	var port = Luxin.Portfolio.create({});
     	Luxin.selectedPortfolioController.set('content', port);
-	},
-	remove: function(portfolio) {
-		if ((portfolio) && (portfolio.remove()));
-		{
-			this.removeObject(portfolio);
-			return true;
-		}
-		return false;
 	}
 });
 
@@ -85,8 +77,9 @@ Luxin.selectedPortfolioController = Ember.Object.create({
 	validate: function() {
 		//TODO
 	},
-	remove: function() {
+	destroy: function() {
 		var port = this.get('content');	
+		//TODO fix
 		if (Luxin.portfoliosController.remove(port)) {
 			this.set('content', null);	
 		}		

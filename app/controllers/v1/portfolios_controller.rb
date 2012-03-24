@@ -30,6 +30,7 @@ class V1::PortfoliosController < V1::ApplicationController
   end
 
   def destroy
-    Portfolio.find(params[:id]).destroy
+    Portfolio.find(params[:id]).mark_deleted!
   end
+  
 end

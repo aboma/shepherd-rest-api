@@ -12,7 +12,7 @@
 class Portfolio < ActiveRecord::Base
   authenticates_with_sorcery!
   
-  attr_accessible :name, :description
+  attr_accessible :name, :description, :created_by_id, :updated_by_id, :deleted_by_id, :deleted_at
 
   validates_presence_of :name
   validates_uniqueness_of :name
@@ -23,14 +23,13 @@ class Portfolio < ActiveRecord::Base
     end
   end
   
-  
-  protected
-  def mark_deleted
+  def mark_deleted(user_id)
     self.deleted_at = Time.now
+    self.deleted_by_id = user_id
   end
   
-  def mark_deleted!
-    mark_deleted
+  def mark_deleted!(user_id)
+    mark_deleted(user_id)
     self.save
   end
 end

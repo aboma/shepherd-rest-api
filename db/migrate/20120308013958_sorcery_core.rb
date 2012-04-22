@@ -17,6 +17,9 @@ class SorceryCore < ActiveRecord::Migration
       t.string    :name,             :default => nil
       t.string    :description,      :default => nil
       t.datetime  :deleted_at,       :default => nil
+      t.integer   :created_by_id,    :default => nil
+      t.integer   :updated_by_id,    :default => nil
+      t.integer   :deleted_by_id,    :default => nil
       
       t.timestamps
     end

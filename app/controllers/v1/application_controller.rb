@@ -11,4 +11,10 @@ class V1::ApplicationController < ApplicationController
     redirect_to :action => 'new', :alert => "Please login.", :controller => 'sessions'
   end
 
+  def compose_json_error(hash)
+    error_json = {
+      :status => 'error',
+      :message => 'error occurred'
+    }.merge(hash)
+  end
 end

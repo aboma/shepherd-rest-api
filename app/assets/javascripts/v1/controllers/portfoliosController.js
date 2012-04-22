@@ -77,10 +77,12 @@ Luxin.selectedPortfolioController = Ember.Object.create({
 	validate: function() {
 		//TODO
 	},
-	destroy: function() {
+	remove: function() {
 		var port = this.get('content');	
-		//TODO fix
-		if (Luxin.portfoliosController.remove(port)) {
+		port.deleteRecord();
+		Luxin.store.commit();
+		if (port.get('isDeleted')) {
+//			Luxin.portfoliosController.remove(port);
 			this.set('content', null);	
 		}		
 	}

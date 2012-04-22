@@ -21,7 +21,7 @@ Luxin.PortfolioEditView = Ember.View.extend({
 		}
 		this.set('isDisabled', false);
 	},
-	remove: function() {
+	destroy: function() {
 		Luxin.log('deleting portfolio');
 		this.get('controller').remove();
 	},

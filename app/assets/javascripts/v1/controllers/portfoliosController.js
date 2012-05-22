@@ -4,15 +4,20 @@ Luxin.portfoliosController = Ember.ArrayController.create({
 	shownewform: false,
 	
 	newPortfolio: function(data) {
-		Luxin.log('creating portfolio ' + data.name);
+		Luxin.log('creating portfolio ' + data.get('name'));
 		//port = Luxin.Portfolio.create(data)
-	    var port = Luxin.store.createRecord(Luxin.Portfolio, { name: data.get('name'), 
-	    													   description: data.get('description') });
-	    Luxin.store.commit();
+		newdata = new Object();
+		newdata.name = data.get('name');
+		if (data.get('description') != null)
+			newdata.description = data.get('description');
+		var transaction = Luxin.store.transaction();		
+	    var port = transaction.createRecord(Luxin.Portfolio, newdata);
+	    transaction.commit();
 	    if (port && port.get('isLoaded')) {
 	    	this.pushObject(port);
 	    	return true;
 	    } else {
+	    	alert('error');
 	    	Luxin.displayError('portfolio not saved');
 	    }
 	},	
@@ -82,7 +87,6 @@ Luxin.selectedPortfolioController = Ember.Object.create({
 		port.deleteRecord();
 		Luxin.store.commit();
 		if (port.get('isDeleted')) {
-//			Luxin.portfoliosController.remove(port);
 			this.set('content', null);	
 		}		
 	}

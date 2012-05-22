@@ -37,11 +37,11 @@ describe User do
   end
   
   describe "should require a first name" do
-    
+    #TODO <<<
   end
   
   describe "should require a first name" do
-    
+    #TODO <<<
   end
   
   describe "should require email to be unique" do
@@ -55,7 +55,7 @@ describe User do
   end
   
   describe "should accept valid email addresses" do
-    
+    #TODO <<<
   end
   
   describe "should reject invalid email addresses" do
@@ -72,6 +72,6 @@ describe User do
   end
   
   describe "should require that password match password_confirmation" do
-    
+    #TODO <<<
   end
 end

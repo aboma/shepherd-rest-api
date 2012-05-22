@@ -7,4 +7,9 @@ FactoryGirl.define do
     password "password"
     password_confirmation {|u| u.password }
   end
+  
+  factory :portfolio do
+    name "Freshdirect"
+    description "miscellaneous creative files"
+  end
 end

@@ -8,9 +8,7 @@
 		</li>
 	  	{{#each Luxin.portfoliosController}}
 	  		{{#view Luxin.PortfolioView contentBinding="this"}}
-	  			{{#unless content.deletedAt  }}
-	    			<li {{bindAttr class="isSelected:active"}} ><a href='#'>{{content.name}}</a></li>
-	    		{{/unless}}
+    			<li {{bindAttr class="isSelected:active isDeleted:deleted"}} ><a href='#'>{{content.name}}</a></li>
 	    	{{/view}}
 	 	{{/each}}
 	</ul>

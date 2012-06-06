@@ -3,9 +3,10 @@ LuxinDAM::Application.routes.draw do
   scope '(:v1)', :module => :v1 do
     get "logout" => "sessions#destroy", :as => "logout"
     get "login" => "sessions#new", :as => "login"
+    get "admin" => "admin#index", :as => "index"
     resources :portfolios        
     resources :users
-    resources :sessions   
+    resources :sessions
     root :to => "application#index"
   end
 

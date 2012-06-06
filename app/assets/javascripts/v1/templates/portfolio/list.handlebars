@@ -6,7 +6,7 @@
 		 		disabledBinding="controller.shownewform" class="btn"}} 
 		 	Create {{/view}}
 		</li>
-	  	{{#each Luxin.portfoliosController}}
+	  	{{#each Luxin.portfoliosAdminController}}
 	  		{{#view Luxin.PortfolioView contentBinding="this"}}
     			<li {{bindAttr class="isSelected:active isDeleted:deleted"}} ><a href='#'>{{content.name}}</a></li>
 	    	{{/view}}

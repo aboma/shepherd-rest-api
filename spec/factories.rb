@@ -1,7 +1,7 @@
 FactoryGirl.define do
 
   factory :user do
-    sequence(:email) {|n| "email#{n}@factory.com" }
+    sequence(:email) { |n| "email#{n}@factory.com" }
     first_name "Factory"
     last_name "User"
     password "password"
@@ -9,7 +9,7 @@ FactoryGirl.define do
   end
   
   factory :portfolio do
-    name "Freshdirect"
-    description "miscellaneous creative files"
+    sequence(:name ){ |n| "Portfolio#{n}" }
+    description "factorygirl portfolio"
   end
 end

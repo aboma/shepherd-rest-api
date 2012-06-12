@@ -17,31 +17,45 @@
 require 'spec_helper'
 
 describe User do
-  before do
-    @user = FactoryGirl.create(:user)
+  before :each do
+    @user = FactoryGirl.build(:user)
   end
   
   subject { @user } 
   
-  describe "should create a new instance given valid attributes" do  
+  describe "should create a new instance given valid email, first name, last name and pw" do  
     it { should respond_to(:email) }
     it { should respond_to(:first_name) }
     it { should respond_to(:last_name) }
     it { should respond_to(:password) }
+    it "should add a user to the user table upon save" do
+      lambda { @user.save }.should change(User, :count).by(1)
+    end
     it { should be_valid }
   end
   
   describe "should require an email" do
     before { @user.email = ' ' }
     it { should_not be_valid }
+    specify { @user.save.should == false }
   end
   
   describe "should require a first name" do
-    #TODO <<<
+    before { @user.first_name = ' ' }
+    it { should_not be_valid }
+    specify { @user.save.should == false }
   end
   
-  describe "should require a first name" do
-    #TODO <<<
+  describe "should require a last name" do
+    before { @user.last_name = ' ' }
+    it {should_not be_valid }
+    specify { @user.save.should == false }
+  end
+  
+  describe "should require a password" do
+    before { @user.password = @user.password_confirmation = ' ' }
+    it { should_not be_valid }
+    specify { @user.save.should == false }
   end
   
   describe "should require email to be unique" do
@@ -52,26 +66,35 @@ describe User do
     end
 
     it { should_not be_valid }
+    specify { @user.save.should == false }
   end
   
   describe "should accept valid email addresses" do
-    #TODO <<<
+    valid_emails = %w[user@gmail.com user.us@bbc.co.uk user-us@co.com]
+    valid_emails.each do |valid_email|
+      before { @user.email = valid_email }
+      it { should be_valid }
+    end
   end
   
   describe "should reject invalid email addresses" do
-    invalid_emails =  %w[user@boom,com user_at_boo.org example.user@boo. user@boo user.boo@boo ]
+    invalid_emails =  %w[john@box@host.net .user_at_me.org user@boom. john@-host.ne user@boom user.boom@boom ]
     invalid_emails.each do |invalid_email|
       before { @user.email = invalid_email }
       it { should_not be_valid }
+      specify { @user.save.should == false }
     end
   end
   
   describe "should require password to be at least 8 characters" do
     before { @user.password = "a" * 7 }
     it { should_not be_valid }
+    specify { @user.save.should == false }
   end
   
   describe "should require that password match password_confirmation" do
-    #TODO <<<
+    before { @user.password_confirmation = "doesnotmatch" }
+    it { should_not be_valid }
+    specify { @user.save.should == false }
   end
 end

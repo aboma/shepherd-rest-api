@@ -17,12 +17,14 @@
 class User < ActiveRecord::Base
   authenticates_with_sorcery!
    
-  #attr_accessible :email, :password, :password_confirmation, :last_name, :first_name
+  attr_accessible :email, :last_name, :first_name, :password, :password_confirmation
 
-  validates :password, presence: true, confirmation: true, length: { minimum: 8 }, :on => :create
-  validates :last_name, presence: true
-  validates :first_name, presence: true
+  before_save { |user| user.email = email.downcase }
+ 
+  validates :password, :presence => true, :confirmation => true, :length => { :minimum => 8 }, :on => :create
+  validates :last_name, :presence => true
+  validates :first_name, :presence => true
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
-  validates :email, presence: true, format: { with: VALID_EMAIL_REGEX }, uniqueness: { case_sensitive: false }
+  validates :email, :presence => true, :format => { :with => VALID_EMAIL_REGEX }, :uniqueness => { :case_sensitive => false }
   
 end

@@ -14,8 +14,7 @@ class Portfolio < ActiveRecord::Base
   
   attr_accessible :name, :description, :created_by_id, :updated_by_id, :deleted_by_id, :deleted_at
 
-  validates_presence_of :name
-  validates_uniqueness_of :name
+  validates :name, :presence => true, :uniqueness => { :case_sensitive => false }
   
   class << self
     def not_deleted

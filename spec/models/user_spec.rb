@@ -34,6 +34,13 @@ describe User do
     it { should be_valid }
   end
   
+  describe "should prevent against mass assignment for protected fields" do
+    protected_fields = %w[crypted_password remember_me_token salt]
+    protected_fields.each do |field_name|
+      it { should_not be_accessible field_name }
+    end
+  end
+  
   describe "should require an email" do
     before { @user.email = ' ' }
     it { should_not be_valid }

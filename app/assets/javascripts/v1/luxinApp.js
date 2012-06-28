@@ -13,10 +13,6 @@ $.ajaxSetup({
 
 window.Luxin = Ember.Application.create();
 
-Luxin.init = function() {
-	//Luxin.authorizedUser = Luxin.User.create();
-};
-
 Luxin.log = function(object) {
 	debug.log(object);
 }

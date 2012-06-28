@@ -1,8 +1,12 @@
-Luxin.portfoliosController = Ember.ArrayController.create({
-	content: Luxin.store.findAll(Luxin.Portfolio),
+Luxin.PortfoliosController = Ember.ArrayController.extend({
+	//content: Luxin.store.findAll(Luxin.Portfolio),
 	submitting: false,
 	shownewform: false,
 	
+	init: function() {
+		Luxin.log('initializing portfolio controller');
+    	this._super();
+	},
 	newPortfolio: function(data) {
 		Luxin.log('creating portfolio ' + data.get('name'));
 		//port = Luxin.Portfolio.create(data)
@@ -33,12 +37,15 @@ Luxin.portfoliosController = Ember.ArrayController.create({
 		this.set('content', Luxin.store.findAll(Luxin.Portfolio));
 	},
 	shownew: function() {
-    	var port = Luxin.Portfolio.create({});
+    	var port = Luxin.Portfolio.createRecord({});
     	Luxin.selectedPortfolioController.set('content', port);
+	},
+	select: function() {
+		Luxin.log("selected portfolio");
 	}
 });
 
-Luxin.selectedPortfolioController = Ember.Object.create({
+Luxin.selectedPortfolioController = Ember.Controller.create({
 	content: null,
 	hasErrors: false,
 	editableContent: null,
@@ -69,7 +76,7 @@ Luxin.selectedPortfolioController = Ember.Object.create({
 				//portfolio.merge(this.get('editableContent'));
 				//this.set('content', portfolio);
 				var newPortfolio = this.get('editableContent');
-				Luxin.portfoliosController.newPortfolio(newPortfolio);
+				Luxin.portfoliosAdminController.newPortfolio(newPortfolio);
 			} else {
 				portfolio.merge(this.get('editableContent'));
 				portfolio.store.commit();

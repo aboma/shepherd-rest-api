@@ -38,8 +38,8 @@
 		    	</div>
 	    	{{/if}}
 	    	<div class="control-group button-group">
-	    		{{#view Ember.Button action="save" target="parentView" 
-					disabledBinding="Luxin.PortfolioEditView.isDisabled" class="btn btn-success" }} Save {{/view}}
+	    		<button {{ action "save" target="parentView" 
+					disabledBinding="Luxin.PortfolioEditView.isDisabled" class="btn btn-success" }}> Save </button
 				{{#view Ember.Button action="cancel" target="parentView" 
 					disabledBinding="Luxin.PortfolioEditView.isDisabled" class="btn btn-warning" }} Cancel {{/view}}
 				{{#if controller.isEditing }}

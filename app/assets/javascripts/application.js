@@ -8,7 +8,7 @@
 //= require debug-console-log-v0.4
 //= require underscore-min
 //= require handlebars.runtime
-//= require ember-0.9.4.min.js
+//= require ember-latest.js
 //= require ember-data-latest.js
 //= require bootstrap-modal
 //= require bootstrap-dropdown
@@ -20,3 +20,4 @@
 //= require_tree ./v1/views
 //= require_tree ./v1/helpers
 //= require_tree ./v1/templates
+//= require_tree ./v1/routes

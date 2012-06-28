@@ -15,7 +15,7 @@ Luxin.Portfolio = DS.Model.extend(Ember.Copyable, {
 		return true;
 	},
 	copy: function(deep) {
-		return Luxin.Portfolio.create({
+		return Luxin.Portfolio.createRecord({
 			name: this.get('name'),
 			description: this.get('description'),
 			url: this.get('url'),

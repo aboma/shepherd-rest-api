@@ -2,13 +2,13 @@
 	<ul class="nav nav-list">
 		<li class="nav-header">
 			Portfolios
-			{{#view Ember.Button action="shownew" targetBinding="controller" 
-		 		disabledBinding="controller.shownewform" class="btn"}} 
-		 	Create {{/view}}
+			<button {{ action "shownew" target="controller" disabledBinding="controller.shownewform" class="btn"}}> Create </button>
 		</li>
-	  	{{#each Luxin.portfoliosAdminController}}
-	  		{{#view Luxin.PortfolioView contentBinding="this"}}
-    			<li {{bindAttr class="isSelected:active isDeleted:deleted"}} ><a href='#'>{{content.name}}</a></li>
+	  	{{#each portfolio in controller }}
+	  		{{#view Luxin.PortfolioView }}
+    			<li {{bindAttr class="isSelected:active isDeleted:deleted"}} >
+    				<a {{action showPortfolio context="portfolio" href=true}}>{{portfolio.name}}</a>
+    			</li>
 	    	{{/view}}
 	 	{{/each}}
 	</ul>

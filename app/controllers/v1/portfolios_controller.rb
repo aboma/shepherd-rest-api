@@ -6,7 +6,7 @@ class V1::PortfoliosController < V1::ApplicationController
     @portfolios = Portfolio.all
     respond_to do |format|
       format.json do
-         @port_representation = @portfolios.map {|p| V1::PortfolioPresenter.new(p).as_json } 
+         @port_representation = @portfolios.map { |p| V1::PortfolioPresenter.new(p).as_json } 
          render :json => { :portfolios => @port_representation }, :content_type => 'application/json' 
        end
     end

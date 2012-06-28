@@ -1,11 +1,13 @@
-Luxin.PortfoliosListView = Ember.View.extend({
+Luxin.PortfoliosView = Ember.View.extend({
   	templateName: 'v1/templates/portfolio/list',
+  	portfolios: null,
   	//contentBinding: 'Luxin.portfoliosController',
-  	controllerBinding: 'Luxin.portfoliosController',
+  	//controllerBinding: 'Luxin.portfoliosAdminController',
     isDisabled: false,
     isVisible: true,
     
   	init: function() {
+  		Luxin.log('initializing portfolios list view');
     	this._super();
   	}
 });

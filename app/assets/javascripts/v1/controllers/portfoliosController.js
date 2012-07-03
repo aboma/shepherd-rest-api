@@ -3,10 +3,6 @@ Luxin.PortfoliosController = Ember.ArrayController.extend({
 	submitting: false,
 	shownewform: false,
 	
-	init: function() {
-		Luxin.log('initializing portfolio controller');
-    	this._super();
-	},
 	newPortfolio: function(data) {
 		Luxin.log('creating portfolio ' + data.get('name'));
 		//port = Luxin.Portfolio.create(data)
@@ -24,32 +20,13 @@ Luxin.PortfoliosController = Ember.ArrayController.extend({
 	    	alert('error');
 	    	Luxin.displayError('portfolio not saved');
 	    }
-	},	
-	addPortfolio: function(portfolio) {
-		this.pushObject(portfolio);
-	},
-	loadAll: function(data) {
-		Luxin.log('data >> loading portfolios');
-		this.set('content', Luxin.store.loadAll(Luxin.Portfolio, data));
-	},
-	findAll: function() {
-		Luxin.log('data >> finding portfolios')
-		this.set('content', Luxin.store.findAll(Luxin.Portfolio));
-	},
-	shownew: function() {
-    	var port = Luxin.Portfolio.createRecord({});
-    	Luxin.selectedPortfolioController.set('content', port);
-	},
-	select: function() {
-		Luxin.log("selected portfolio");
 	}
 });
 
-Luxin.selectedPortfolioController = Ember.Controller.create({
+Luxin.PortfolioController = Ember.ObjectController.extend({
 	content: null,
 	hasErrors: false,
-	editableContent: null,
-	
+
 	isEditing: function() {
 		var port = this.get('content');
 		if (port && !port.get('isLoaded')) {
@@ -57,7 +34,7 @@ Luxin.selectedPortfolioController = Ember.Controller.create({
 		}
 		return true;
 	}.observes('content').property('isNew'),
-	setEditContent: function() {
+/*	setEditContent: function() {
 		// copy content so that it can be edited without immediately updating
 		// selected content
 		if (this.get('content')) {
@@ -67,7 +44,7 @@ Luxin.selectedPortfolioController = Ember.Controller.create({
 		} else {
 			this.set('editableContent', null);
 		}
-	}.observes('content'),	
+	}.observes('content'),	*/
 	save: function() {
 		Luxin.log('saving edited portfolio');
 		try {
@@ -85,9 +62,6 @@ Luxin.selectedPortfolioController = Ember.Controller.create({
 		} catch (e) {
 			Luxin.log('error: ' + e);
 		}
-	},
-	validate: function() {
-		//TODO
 	},
 	remove: function() {
 		var port = this.get('content');	

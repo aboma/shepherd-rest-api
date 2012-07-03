@@ -5,11 +5,9 @@
 			<button {{ action "shownew" target="controller" disabledBinding="controller.shownewform" class="btn"}}> Create </button>
 		</li>
 	  	{{#each portfolio in controller }}
-	  		{{#view Luxin.PortfolioView }}
-    			<li {{bindAttr class="isSelected:active isDeleted:deleted"}} >
-    				<a {{action showPortfolio context="portfolio" href=true}}>{{portfolio.name}}</a>
-    			</li>
-	    	{{/view}}
+   			<li {{bindAttr class="isSelected:active isDeleted:deleted"}} >
+   				<a {{action showPortfolio context="portfolio" href=true}}>{{portfolio.name}}</a>
+   			</li>
 	 	{{/each}}
 	</ul>
 </div>

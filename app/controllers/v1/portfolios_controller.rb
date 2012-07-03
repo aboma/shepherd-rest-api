@@ -14,8 +14,7 @@ class V1::PortfoliosController < V1::ApplicationController
   
   # create portfolio and save created_by and updated_by user ids for audit purposes
   def create
-    @portfolio = Portfolio.create(params[:portfolio].merge(:created_by_id => current_user.id, :updated_by_id => current_user.id))
-    
+    @portfolio = Portfolio.create(params[:portfolio].merge(:created_by_id => current_user.id, :updated_by_id => current_user.id))  
     respond_to do |format|
       format.json do
         @p_pres = V1::PortfolioPresenter.new(@portfolio)
@@ -28,11 +27,17 @@ class V1::PortfoliosController < V1::ApplicationController
     end
   end
 
+  # show individual portfolio details
   def show
-    #TODO implement
+    @portfolio = Portfolio.find(params[:id])
     respond_to do |format|
       format.json do
-        render :json => compose_json_error(:message => 'not implemented'), :status => :not_implemented
+        @p_pres = V1::PortfolioPresenter.new(@portfolio)
+        if @portfolio.valid?
+          render :json => { :portfolio => @p_pres.as_json }, :content_type => 'application/json'
+        else 
+          render :json => { :error => @portfolio.errors }, :status => :unprocessable_entity
+        end
       end
     end
   end

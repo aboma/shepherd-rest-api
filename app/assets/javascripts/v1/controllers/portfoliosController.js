@@ -2,25 +2,20 @@ Luxin.PortfoliosController = Ember.ArrayController.extend({
 	//content: Luxin.store.findAll(Luxin.Portfolio),
 	submitting: false,
 	shownewform: false,
+	portfolioNameFilter: '',
 	
-	newPortfolio: function(data) {
-		Luxin.log('creating portfolio ' + data.get('name'));
-		//port = Luxin.Portfolio.create(data)
-		newdata = new Object();
-		newdata.name = data.get('name');
-		if (data.get('description') != null)
-			newdata.description = data.get('description');
-		var transaction = Luxin.store.transaction();		
-	    var port = transaction.createRecord(Luxin.Portfolio, newdata);
-	    transaction.commit();
-	    if (port && port.get('isLoaded')) {
-	    	this.pushObject(port);
-	    	return true;
-	    } else {
-	    	alert('error');
-	    	Luxin.displayError('portfolio not saved');
-	    }
-	}
+  	filteredPortfolios: function() {
+  		var content = this.get('content'),
+  			x = content,
+  			value = this.get('portfolioNameFilter');		
+  		if (value && value.length > 3)
+  			x =  this.get('content').filter(function(item, index, enumerable) {
+  				if (item.get('name').startsWith(value))
+  					return true;
+  				return false;
+  			});
+  		return x;
+  	}.property('content.@each.name', 'portfolioNameFilter').cacheable()
 });
 
 Luxin.PortfolioController = Ember.ObjectController.extend({
@@ -29,40 +24,11 @@ Luxin.PortfolioController = Ember.ObjectController.extend({
 
 	isEditing: function() {
 		var port = this.get('content');
-		if (port && !port.get('isLoaded')) {
+		if (port && port.get('isNew')) {
 				return false;
 		}
 		return true;
 	}.observes('content').property('isNew'),
-/*	setEditContent: function() {
-		// copy content so that it can be edited without immediately updating
-		// selected content
-		if (this.get('content')) {
-			Luxin.log('>>> content changed');
-			var port = this.get('content').copy();
-			this.set('editableContent', port);
-		} else {
-			this.set('editableContent', null);
-		}
-	}.observes('content'),	*/
-	save: function() {
-		Luxin.log('saving edited portfolio');
-		try {
-			var portfolio = this.get('content');
-			if (!portfolio.get('isLoaded')) {
-				//portfolio.merge(this.get('editableContent'));
-				//this.set('content', portfolio);
-				var newPortfolio = this.get('editableContent');
-				Luxin.portfoliosAdminController.newPortfolio(newPortfolio);
-			} else {
-				portfolio.merge(this.get('editableContent'));
-				portfolio.store.commit();
-			}
-			this.set('content', null);
-		} catch (e) {
-			Luxin.log('error: ' + e);
-		}
-	},
 	remove: function() {
 		var port = this.get('content');	
 		port.deleteRecord();
@@ -72,4 +38,34 @@ Luxin.PortfolioController = Ember.ObjectController.extend({
 		}		
 	}
 	
+});
+
+Luxin.NewPortfolioController = Ember.ObjectController.extend({
+	transaction: null,
+	
+	init: function() {
+		this._super();
+		this.setup();
+	}, 
+	// create new transaction and blank portfolio record for input from user
+	setup: function () {
+		this.transaction = Luxin.store.transaction();	
+		var newPortfolio = this.transaction.createRecord(Luxin.Portfolio, {} );
+		this.set('content', newPortfolio);		
+	},
+	save: function() {
+		Luxin.log('saving new portfolio');
+		this.transaction.commit();
+		this.setup();
+	},
+	cancel: function() {
+		this.transaction.rollback();
+		this.transaction.destroy();
+		this.setup();
+	},
+	destroy: function() {
+		this._super();
+		if (this.transaction)
+			this.transaction.destroy();
+	}
 });

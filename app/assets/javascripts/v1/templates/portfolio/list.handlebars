@@ -2,9 +2,10 @@
 	<ul class="nav nav-list">
 		<li class="nav-header">
 			Portfolios
-			<button {{ action "shownew" target="controller" disabledBinding="controller.shownewform" class="btn"}}> Create </button>
+			<button {{ action create }} class="btn"> Create </button>
 		</li>
-	  	{{#each portfolio in controller }}
+		{{view Ember.TextField viewName="portfolioFilter" placeholder="filter portfolios" size="10" }}
+	  	{{#each portfolio in filteredPortfolios }}
    			<li {{bindAttr class="isSelected:active isDeleted:deleted"}} >
    				<a {{action showPortfolio context="portfolio" href=true}}>{{portfolio.name}}</a>
    			</li>

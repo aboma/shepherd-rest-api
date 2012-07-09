@@ -14,6 +14,8 @@ $red: #9C2C04;
 
 // change bootstrap variables before import
 $baseFontSize: 14px;
+$textColor: $lightgrey;
+
 @import "bootstrap";
 
   #app-header {
@@ -41,13 +43,12 @@ $baseFontSize: 14px;
   }
   
   #MbLeftNav {
-    width: 220px;
+    width: 270px;
     float: left;  
-    padding: 5px;
   }
   
   #MbMain {
-    margin-left: 240px;
+    margin-left: 300px;
   }
   
   .inline-heading {

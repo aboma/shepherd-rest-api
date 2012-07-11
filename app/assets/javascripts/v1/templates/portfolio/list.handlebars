@@ -4,7 +4,7 @@
 			Portfolios
 			<button {{ action create }} class="btn"> Create </button>
 		</li>
-		{{view Ember.TextField viewName="portfolioFilter" placeholder="filter portfolios" size="10" }}
+		{{view Ember.TextField viewName="portfolioFilter" placeholder="filter portfolios" }}
 	  	{{#each portfolio in filteredPortfolios }}
    			<li {{bindAttr class="isSelected:active isDeleted:deleted"}} >
    				<a {{action showPortfolio context="portfolio" href=true}}>{{portfolio.name}}</a>

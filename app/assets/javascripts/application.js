@@ -7,7 +7,7 @@
 //= require jquery-1.7.1.min
 //= require debug-console-log-v0.4
 //= require underscore-min
-//= require handlebars.runtime
+//= require handlebars
 //= require ember-latest.js
 //= require ember-data-latest.js
 //= require bootstrap-modal

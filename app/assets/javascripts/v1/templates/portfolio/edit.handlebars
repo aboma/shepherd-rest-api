@@ -1,11 +1,11 @@
 <div class="form-horizontal">
 		<fieldset>
-			{{#if controller.isEditing }}
+			{{#if controller.isNew }}
 	    		<legend>Edit "{{ name }}" Portfolio</legend>
 	    	{{else}}
 	    		<legend>Create Portfolio</legend>
 	    	{{/if }}
-	    	{{#if editableContent.url }}
+	    	{{#if controller.isNew }}
 	    		<div class="control-group">
 		    		<label class="control-label">Portfolio URI</label>
 	    			<label class="data-label">{{ url }}</label>
@@ -25,7 +25,7 @@
 	   				   valueBinding="description" disabledBinding="view.isDisabled" }}
 	    		</div>
 	    	</div>
-	    	{{#if controller.isEditing }}
+	    	{{#if controller.isNew }}
 		    	<div class="control-group">
 		    		<label class="control-label">Created On</label>
 		    		<label class="data-label">{{ createdAt }}</label>

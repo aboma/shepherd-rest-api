@@ -20,22 +20,25 @@ Luxin.Router = Ember.Router.extend({
 
 		    show_portfolio: Ember.Route.extend({
 		    	route: '/:portfolio_id',
-		    	modelType: 'Luxin.Portfolio',
+		    	//modelType: 'Luxin.Portfolio',
+		    	edit: function(router, event) {
+		    		router.transitionTo('edit_portfolio', event.context);
+		    	},
 		    	connectOutlets: function(router, portfolio) {
 		    		Luxin.log('portfolio selected');
 		    		var ac = router.get("applicationController"); 
 		    		ac.connectOutlet( { name: 'portfolio', outletName: 'detail', 
 		    							context: portfolio } );	    		
-		    	},
-		    	
-			    edit_portfolio: Ember.Route.extend({
-			    	route: '/edit',
-			    	connectOutlets: function(router, portfolio) {
-			    		Luxin.log('showing edit portfolio form');
-			    		var ac = router.get("applicationController");	
-			    		ac.connectOutlet( { name: 'newPortfolio', outletName: 'detail', context: portfolio } );
-			    	}
-			    })
+		    	}
+		    }),
+			    
+	    	edit_portfolio: Ember.Route.extend({
+			   	route: '/:portfolio_id/edit',
+			   	connectOutlets: function(router, context) {
+			   		Luxin.log('showing edit portfolio form');
+			   		var ac = router.get("applicationController");	
+			   		ac.connectOutlet( { name: 'newPortfolio', outletName: 'detail', context: context } );
+			   	}
 		    }),
 		    
 		    new_portfolio: Ember.Route.extend({

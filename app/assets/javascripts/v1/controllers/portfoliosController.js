@@ -1,34 +1,26 @@
 Luxin.PortfoliosController = Ember.ArrayController.extend({
-	//content: Luxin.store.findAll(Luxin.Portfolio),
-	submitting: false,
-	shownewform: false,
+	sortProperties: ['name'],
+	sortAscending: true,
 	portfolioNameFilter: '',
 	
   	filteredPortfolios: function() {
-  		var content = this.get('content'),
+  		var content = this.get('arrangedContent'),
   			x = content,
   			value = this.get('portfolioNameFilter');		
   		if (value && value.length > 3)
-  			x =  this.get('content').filter(function(item, index, enumerable) {
-  				if (item.get('name').startsWith(value))
+  			x =  x.filter(function(item, index, enumerable) {
+  				if (item.get('name').toLowerCase().startsWith(value.toLowerCase()))
   					return true;
   				return false;
   			});
   		return x;
-  	}.property('content.@each.name', 'portfolioNameFilter').cacheable()
+  	}.property('arrangedContent.@each.name', 'portfolioNameFilter').cacheable()
 });
 
 Luxin.PortfolioController = Ember.ObjectController.extend({
 	content: null,
 	hasErrors: false,
 
-	isEditing: function() {
-		var port = this.get('content');
-		if (port && port.get('isNew')) {
-				return false;
-		}
-		return true;
-	}.observes('content').property('isNew'),
 	remove: function() {
 		var port = this.get('content');	
 		port.deleteRecord();

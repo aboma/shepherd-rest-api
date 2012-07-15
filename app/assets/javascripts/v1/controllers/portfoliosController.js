@@ -14,7 +14,11 @@ Luxin.PortfoliosController = Ember.ArrayController.extend({
   				return false;
   			});
   		return x;
-  	}.property('arrangedContent.@each.name', 'portfolioNameFilter').cacheable()
+  	}.property('arrangedContent.@each.name', 'portfolioNameFilter').cacheable(),
+  	
+  	replaceContent: function() {
+  		Luxin.log('controller content is loaded');
+  	}.observes('content.isLoaded')
 });
 
 Luxin.PortfolioController = Ember.ObjectController.extend({

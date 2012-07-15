@@ -37,13 +37,6 @@ Luxin.displayError = function(e) {
 	}
 };
 
-Luxin.Button = JQUI.Button.extend({
-// propagateEvents: true,
-// click: function() {
-// this.set('disabled', true);
-// }
-})
-
 Luxin.Message = Ember.View.extend({
 	tag : 'div',
 	templateName : 'v1/templates/message/message',

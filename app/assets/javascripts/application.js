@@ -6,14 +6,14 @@
 //
 //= require jquery-1.7.1.min
 //= require debug-console-log-v0.4
-//= require underscore-min
 //= require handlebars
-//= require ember-latest.js
+//= require ember-0.9.8.1.js
 //= require ember-data-latest.js
 //= require bootstrap-modal
 //= require bootstrap-dropdown
-//= require v1/luxinUI
+//= require chosen
 //= require ./v1/luxinApp.js
+//= require v1/luxinUI
 //= require_tree ./v1/store
 //= require_tree ./v1/models
 //= require_tree ./v1/controllers

@@ -15,7 +15,7 @@ Luxin.Router = Ember.Router.extend({
 	    		Luxin.log('setting up portfolios route');
 	    		var ac = router.get("applicationController"); 
 	    		ac.connectOutlet( { name: 'portfolios', outletName: 'master', 
-	    							context: Luxin.store.findAll(Luxin.Portfolio) } );
+	    							context: Luxin.store.findQuery(Luxin.Portfolio, '') } );
 	    	},
 
 		    show_portfolio: Ember.Route.extend({

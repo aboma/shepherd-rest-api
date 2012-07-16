@@ -7,6 +7,7 @@ Luxin.UnboundSelectOption = Ember.SelectOption.extend({
 
 Luxin.ChosenSelect = Ember.Select.extend({
 	chosenOptions : {},
+	multiple: false,
 	templateName : 'v1/templates/menus/chosen-select',
 
 	didInsertElement : function() {
@@ -43,6 +44,21 @@ Luxin.ChosenSelect = Ember.Select.extend({
 
 	rerenderChosen : function() {
 		this.$().trigger('liszt:updated');
+	},
+	  
+	change : function() {
+		Luxin.log('chosen select value changed');
+		this._super();
+		var value = this.get('multiple') ? this.get('selection') : this.get('value');
+		if (!value)
+			Luxin.log('VALUE IS UNDEFINED');
+		var controller = this.get('controller');
+		if (controller)
+			controller.set('selected', value);
+		// call action if specified on view
+		if (this.get('action')) {
+			//TODO router.transitionTo
+		}
 	}
 });
 

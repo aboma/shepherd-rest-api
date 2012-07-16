@@ -1,7 +1,7 @@
 Luxin.PortfoliosController = Ember.ArrayController.extend({
 	sortProperties: ['name'],
-	sortAscending: true,
-	portfolioNameFilter: '',
+	sortAscending: true, 
+/*	portfolioNameFilter: '',
 	
   	filteredPortfolios: function() {
   		var content = this.get('arrangedContent'),
@@ -15,7 +15,7 @@ Luxin.PortfoliosController = Ember.ArrayController.extend({
   			});
   		return x;
   	}.property('arrangedContent.@each.name', 'portfolioNameFilter').cacheable(),
-  	
+ */
   	replaceContent: function() {
   		Luxin.log('controller content is loaded');
   	}.observes('content.isLoaded')

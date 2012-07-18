@@ -10,7 +10,7 @@ Luxin.Router = Ember.Router.extend({
 	    portfolios: Ember.Route.extend({
 	    	route: '/portfolios',
 	    	showPortfolio: Ember.Route.transitionTo('show_portfolio'),
-	    	create: Ember.Route.transitionTo('new_portfolio'),
+	    	createPortfolio: Ember.Route.transitionTo('new_portfolio'),
 	    	connectOutlets: function(router) {
 	    		Luxin.log('setting up portfolios route');
 	    		var ac = router.get("applicationController"); 
@@ -40,7 +40,6 @@ Luxin.Router = Ember.Router.extend({
 			   		ac.connectOutlet( { name: 'newPortfolio', outletName: 'detail', context: context } );
 			   	}
 		    }),
-		    
 		    new_portfolio: Ember.Route.extend({
 		    	route: '/new',		    	
 		    	save: function(router, event) {
@@ -49,6 +48,7 @@ Luxin.Router = Ember.Router.extend({
 		    	},
 		    	cancel: function(router, event) {
 		    		router.get('newPortfolioController').cancel();
+		    		router.transitionTo('root.portfolios');
 		    	},
 		    	connectOutlets: function(router) {
 		    		Luxin.log('showing new portfolio form');

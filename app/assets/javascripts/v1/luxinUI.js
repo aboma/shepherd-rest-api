@@ -1,13 +1,6 @@
-// fix chosen picks up ember script tags -> weird output when search for t or i
-// this breaks the bindings within the options tags
-// works around https://github.com/harvesthq/chosen/issues/581
-Luxin.UnboundSelectOption = Ember.SelectOption.extend({
-	template : Ember.Handlebars.compile('{{unbound name}}')
-});
-
-Luxin.ChosenSelect = Ember.Select.extend({
+Luxin.ChosenSelect = Ember.Select.extend(Luxin.CustomActionAttacher, {
 	chosenOptions : {},
-	multiple: false,
+	multiple : false,
 	templateName : 'v1/templates/menus/chosen-select',
 
 	didInsertElement : function() {
@@ -45,8 +38,8 @@ Luxin.ChosenSelect = Ember.Select.extend({
 	rerenderChosen : function() {
 		this.$().trigger('liszt:updated');
 	},
-	  
-	change : function() {
+
+	change : function(event) {
 		Luxin.log('chosen select value changed');
 		this._super();
 		var value = this.get('multiple') ? this.get('selection') : this.get('value');
@@ -56,8 +49,12 @@ Luxin.ChosenSelect = Ember.Select.extend({
 		if (controller)
 			controller.set('selected', value);
 		// call action if specified on view
-		if (this.get('action')) {
-			//TODO router.transitionTo
+		action = this.get('action');
+		actionHandler = this.get(action);
+		if (actionHandler) {
+			event.context = value;
+			event.view = this;
+			actionHandler.call(action, event);
 		}
 	}
 });

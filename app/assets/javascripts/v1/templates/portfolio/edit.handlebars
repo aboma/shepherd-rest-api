@@ -1,16 +1,16 @@
 <div class="form-horizontal">
 		<fieldset>
-			{{#if controller.isNew }}
-	    		<legend>Edit "{{ name }}" Portfolio</legend>
-	    	{{else}}
-	    		<legend>Create Portfolio</legend>
+			{{#if content.isNew }}
+				<legend>Create Portfolio</legend>
+			{{else}}
+	    		<legend>Edit "{{ name }}" Portfolio</legend>    		
 	    	{{/if }}
-	    	{{#if controller.isNew }}
+	    	{{#unless content.isNew }}
 	    		<div class="control-group">
 		    		<label class="control-label">Portfolio URI</label>
 	    			<label class="data-label">{{ url }}</label>
 		    	</div>
-	    	{{/if}}
+	    	{{/unless}}
 	    	<div class="control-group">
 	    		<label class="control-label">Portfolio Name</label>
 	    		<div class="controls">
@@ -25,7 +25,7 @@
 	   				   valueBinding="description" disabledBinding="view.isDisabled" }}
 	    		</div>
 	    	</div>
-	    	{{#if controller.isNew }}
+	    	{{#unless content.isNew }}
 		    	<div class="control-group">
 		    		<label class="control-label">Created On</label>
 		    		<label class="data-label">{{ createdAt }}</label>
@@ -34,9 +34,9 @@
 		    		<label class="control-label">Updated On</label>
 		    		<label class="data-label">{{ updatedAt }}</label>
 		    	</div>
-	    	{{/if}}
+	    	{{/unless}}
 	    	<div class="control-group button-group">
-	    		<button {{ action save context="content" disabledBinding="view.isDisabled" }} 
+	    		<button {{ action save context="content" disabledBinding="content.isDirty" }} 
 	    			class="btn btn-success"> Save </button>
 				<button {{ action cancel disabledBinding="view.isDisabled" }} 
 					class="btn btn-warning"> Cancel </button>

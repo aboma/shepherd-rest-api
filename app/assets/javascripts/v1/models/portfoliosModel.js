@@ -7,9 +7,6 @@ Luxin.Portfolio = DS.Model.extend(Ember.Copyable, {
 	updatedAt: DS.attr('date'),
 	deletedAt: DS.attr('date'),
 	
-	isNew: function() {
-		return !this.get('url');
-	},
 	copy: function(deep) {
 		return Luxin.Portfolio.createRecord({
 			name: this.get('name'),

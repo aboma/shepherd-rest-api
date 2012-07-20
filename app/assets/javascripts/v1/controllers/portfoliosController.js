@@ -36,32 +36,4 @@ Luxin.PortfolioController = Ember.ObjectController.extend({
 	
 });
 
-Luxin.NewPortfolioController = Ember.ObjectController.extend({
-	transaction: null,
-	
-	init: function() {
-		this._super();
-		this.setup();
-	}, 
-	// create new transaction and blank portfolio record for input from user
-	setup: function () {
-		this.transaction = Luxin.store.transaction();	
-		var newPortfolio = this.transaction.createRecord(Luxin.Portfolio, {} );
-		this.set('content', newPortfolio);		
-	},
-	save: function() {
-		Luxin.log('saving new portfolio');
-		this.transaction.commit();
-		this.setup();
-	},
-	cancel: function() {
-		this.transaction.rollback();
-		this.transaction.destroy();
-		this.setup();
-	},
-	destroy: function() {
-		this._super();
-		if (this.transaction)
-			this.transaction.destroy();
-	}
-});
+Luxin.NewPortfolioController = Ember.ObjectController.extend({});

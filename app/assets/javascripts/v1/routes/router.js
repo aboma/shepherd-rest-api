@@ -34,26 +34,48 @@ Luxin.Router = Ember.Router.extend({
 			    
 	    	edit_portfolio: Ember.Route.extend({
 			   	route: '/:portfolio_id/edit',
+			   	transaction: null,
+			   	cancel: function(router, event) {
+		   			transaction.rollback();
+		   			transaction.destroy();
+			   		router.transitionTo('root.portfolios');
+			   	},
+			   	save: function(router, event) {
+			   		portfolio = event.context;
+			   		if (portfolio.get('isDirty')){
+			   			transaction.commit();
+			   		} else {
+			   			transaction.rollback();
+			   			transaction.destroy();
+			   		}
+		    		router.transitionTo('show_portfolio', portfolio);
+			   	},
 			   	connectOutlets: function(router, context) {
 			   		Luxin.log('showing edit portfolio form');
+			   		transaction = Luxin.store.transaction();
+		   			transaction.add(context);
 			   		var ac = router.get("applicationController");	
 			   		ac.connectOutlet( { name: 'newPortfolio', outletName: 'detail', context: context } );
 			   	}
 		    }),
 		    new_portfolio: Ember.Route.extend({
-		    	route: '/new',		    	
+		    	route: '/new',		
+		    	transaction: null,
+		    	connectOutlets: function(router) {
+		    		Luxin.log('showing new portfolio form');
+		    		this.transaction = Luxin.store.transaction();	
+		    		var newPortfolio = this.transaction.createRecord(Luxin.Portfolio, {} );
+		    		var ac = router.get("applicationController"); 
+		    		ac.connectOutlet({ name: 'newPortfolio', outletName: 'detail', context: newPortfolio });
+		    	},
 		    	save: function(router, event) {
-		    		router.get('newPortfolioController').save();
+		    		this.transaction.commit();
 		    		router.transitionTo('show_portfolio', event.context);
 		    	},
 		    	cancel: function(router, event) {
-		    		router.get('newPortfolioController').cancel();
+		    		this.transaction.rollback();
+		    		this.transaction.destroy();
 		    		router.transitionTo('root.portfolios');
-		    	},
-		    	connectOutlets: function(router) {
-		    		Luxin.log('showing new portfolio form');
-		    		var ac = router.get("applicationController"); 
-		    		ac.connectOutlet( { name: 'newPortfolio', outletName: 'detail' } )
 		    	}
 		    })
 	    })

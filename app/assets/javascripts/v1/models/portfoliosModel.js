@@ -1,26 +1,10 @@
-Luxin.Portfolio = DS.Model.extend(Ember.Copyable, {
+Luxin.Portfolio = DS.Model.extend({
 	name: DS.attr('string'),
 	description: DS.attr('string'),
 	url: DS.attr('string'),
-	createdBy: DS.attr('date'),
-	createdAt: DS.attr('date'),
-	updatedAt: DS.attr('date'),
-	deletedAt: DS.attr('date'),
-	
-	copy: function(deep) {
-		return Luxin.Portfolio.createRecord({
-			name: this.get('name'),
-			description: this.get('description'),
-			url: this.get('url'),
-			createdAt: this.get('createdAt'),
-			updatedAt: this.get('updatedAt')
-		})
-	},
-	merge: function(source) {
-		this.set('name', source.get('name'));
-		this.set('description', source.get('description'));
-		this.set('url', source.get('url'));
-	}
+	createdAt: DS.attr('string'),
+	updatedAt: DS.attr('string'),
+	deletedAt: DS.attr('string')
 });
 
 Luxin.Portfolio.reopenClass({

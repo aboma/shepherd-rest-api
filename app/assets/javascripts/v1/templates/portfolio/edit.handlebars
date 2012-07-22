@@ -15,14 +15,14 @@
 	    		<label class="control-label">Portfolio Name</label>
 	    		<div class="controls">
 	   				{{ view Ember.TextField viewName="pNameTextField" 
-	   				   valueBinding="name" disabledBinding="view.isDisabled" }}
+	   				   valueBinding="name" disabledBinding="content.isSaving" }}
 	    		</div>
 	    	</div>
 	    	<div class="control-group">
 	    		<label class="control-label">Description</label>
 	    		<div class="controls">
 	   				{{ view Ember.TextArea viewName="pDescriptionTextArea" 
-	   				   valueBinding="description" disabledBinding="view.isDisabled" }}
+	   				   valueBinding="description" disabledBinding="content.isSaving" }}
 	    		</div>
 	    	</div>
 	    	{{#unless content.isNew }}
@@ -38,8 +38,12 @@
 	    	<div class="control-group button-group">
 	    		<button {{ action save context="content" disabledBinding="content.isDirty" }} 
 	    			class="btn btn-success"> Save </button>
-				<button {{ action cancel disabledBinding="view.isDisabled" }} 
+				<button {{ action cancel disabledBinding="content.isSaving" }} 
 					class="btn btn-warning"> Cancel </button>
+					{{#unless content.isNew}}
+						<button {{ action cancel disabledBinding="content.isSaving" }} 
+							class="btn btn-delete"> Delete </button>					
+					{{/unless}}
 	    	</div>
 	    </fieldset>
 	</div>

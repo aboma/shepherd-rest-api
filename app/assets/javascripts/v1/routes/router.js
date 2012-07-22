@@ -36,24 +36,24 @@ Luxin.Router = Ember.Router.extend({
 			   	route: '/:portfolio_id/edit',
 			   	transaction: null,
 			   	cancel: function(router, event) {
-		   			transaction.rollback();
-		   			transaction.destroy();
+		   			this.transaction.rollback();
+		   			this.transaction.destroy();
 			   		router.transitionTo('root.portfolios');
 			   	},
 			   	save: function(router, event) {
 			   		portfolio = event.context;
 			   		if (portfolio.get('isDirty')){
-			   			transaction.commit();
+			   			this.transaction.commit();
 			   		} else {
-			   			transaction.rollback();
-			   			transaction.destroy();
+			   			this.transaction.rollback();
+			   			this.transaction.destroy();
 			   		}
 		    		router.transitionTo('show_portfolio', portfolio);
 			   	},
 			   	connectOutlets: function(router, context) {
 			   		Luxin.log('showing edit portfolio form');
-			   		transaction = Luxin.store.transaction();
-		   			transaction.add(context);
+			   		this.transaction = Luxin.store.transaction();
+		   			this.transaction.add(context);
 			   		var ac = router.get("applicationController");	
 			   		ac.connectOutlet( { name: 'newPortfolio', outletName: 'detail', context: context } );
 			   	}

@@ -5,3 +5,15 @@
 .isDeleted a {
   color:red;
 }
+
+div#portfoliosMaster {
+  display: table-row;
+  vertical-align: middle;
+  width: 100%;
+}
+
+div#portfolioList,
+div#portfolioHeader {
+  display: table-cell; 
+  padding-left: 20px;
+}

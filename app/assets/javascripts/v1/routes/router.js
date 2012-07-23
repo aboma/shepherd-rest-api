@@ -26,6 +26,8 @@ Luxin.Router = Ember.Router.extend({
 		    	},
 		    	connectOutlets: function(router, portfolio) {
 		    		Luxin.log('portfolio selected');
+		    		var psc = router.get('portfoliosController');
+		    		psc.set('selectedPortfolio', portfolio);
 		    		var ac = router.get("applicationController"); 
 		    		ac.connectOutlet( { name: 'portfolio', outletName: 'detail', 
 		    							context: portfolio } );	    		

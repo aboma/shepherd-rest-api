@@ -1,6 +1,7 @@
 Luxin.PortfoliosController = Ember.ArrayController.extend({
 	sortProperties: ['name'],
 	sortAscending: true, 
+	selectedPortfolio: null,
 /*	portfolioNameFilter: '',
 	
   	filteredPortfolios: function() {
@@ -21,19 +22,6 @@ Luxin.PortfoliosController = Ember.ArrayController.extend({
   	}.observes('content.isLoaded')
 });
 
-Luxin.PortfolioController = Ember.ObjectController.extend({
-	content: null,
-	hasErrors: false,
-
-	remove: function() {
-		var port = this.get('content');	
-		port.deleteRecord();
-		Luxin.store.commit();
-		if (port.get('isDeleted')) {
-			this.set('content', null);	
-		}		
-	}
-	
-});
+Luxin.PortfolioController = Ember.ObjectController.extend({});
 
 Luxin.NewPortfolioController = Ember.ObjectController.extend({});

@@ -1,3 +1,12 @@
-{{view Luxin.ChosenSelect viewName="portfolioSelect" contentBinding="arrangedContent" 
-  action="showPortfolio" target="Luxin.router" }}
-<a {{ action createPortfolio href=true }}>Create</a>
+<div id='portfoliosMaster'>
+	<div id='portfolioList'>
+		{{view Luxin.ChosenSelect viewName="portfolioSelect" contentBinding="arrangedContent" 
+		  action="showPortfolio" target="Luxin.router" }}
+		<a {{ action createPortfolio href=true }}>Create</a>
+	</div>
+	<div id='portfolioHeader'>
+		{{#if selectedPortfolio}}
+			<h2>{{selectedPortfolio.name}} Portfolio</h2>
+		{{/if}}
+	</div>
+</div>

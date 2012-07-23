@@ -14,10 +14,10 @@ gem 'sorcery', '0.7.7'
 # in production environments by default.
 group :assets do
   gem 'handlebars_assets', '~> 0.4.0'
-  gem 'sass-rails'
-  gem 'bootstrap-sass', '~> 2.0.1'
+  gem 'sass-rails', '~> 3.1'
+  gem 'bootstrap-sass', '~> 2.0.4.0'
+  gem 'bootswatch-rails'
   gem 'uglifier', '>= 1.0.3'
-  gem 'win32-open3-19'
   gem 'jammit', '0.6.5'
 end
 

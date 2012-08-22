@@ -13,62 +13,81 @@
   text-shadow: none;
 }
 
-  #app-header {
-    width: 100%;
-    height: 30px;
-    
-    #login-info {
-      float: right;
-      vertical-align: center;
-    }
+#app-header {
+  width: 100%;
+  height: 30px;
+  
+  #login-info {
+    float: right;
+    vertical-align: center;
+  }
+}
+  
+//label, legend {
+//  color: $lightgrey;
+//}
+
+#MbAppContainer {
+  margin: 40px;
+}
+
+div.well {
+    min-height: 300px;  
+    border-radius: 6px;
+}
+
+#MbLeftNav {
+  width: 270px;
+  float: left;  
+}
+
+#MbMain {
+  margin-left: 300px;
+}
+
+.inline-heading {
+  margin-bottom: 10px;
+  h1, h2, h3, h4, h5, h6 {
+    display: inline;
+    vertical-align: middle;
+  }
+}
+  
+.control-label {
+  font-weight: bold;  
+}  
+  
+div.form-horizontal {
+  width: 700px;
+  
+  button {
+    text-align: right;
+    margin-left: 10px;
   }
   
-  //label, legend {
-  //  color: $lightgrey;
-  //}
-  
-  #MbAppContainer {
-    margin: 40px;
+  .button-group {
+    text-align: right;
+    margin-right: 320px;
   }
   
-  div.well {
-      min-height: 300px;  
-      border-radius: 6px;
+  .data-label {
+    padding-top: 5px;
+    margin-left: 160px;
+    text-align: left;
   }
+}
+
+h2.portfolioHeader {
+  float: left;
+  display: inline;
+}
+
+div#portfolioOptions {
+  float: left;
+  height:  100%;
+  padding: 12px 0 0 12px;
   
-  #MbLeftNav {
-    width: 270px;
-    float: left;  
+  a.portfolioHeader {
+    padding-right: 10px;
   }
-  
-  #MbMain {
-    margin-left: 300px;
-  }
-  
-  .inline-heading {
-    margin-bottom: 10px;
-    h1, h2, h3, h4, h5, h6 {
-      display: inline;
-      vertical-align: middle;
-    }
-  }
-  
-  div.form-horizontal {
-    width: 700px;
-    
-    button {
-      text-align: right;
-      margin-left: 10px;
-    }
-    
-    .button-group {
-      text-align: right;
-      margin-right: 320px;
-    }
-    
-    .data-label {
-      padding-top: 5px;
-      margin-left: 160px;
-      text-align: left;
-    }
-  }
+}

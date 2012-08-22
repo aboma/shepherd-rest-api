@@ -12,9 +12,9 @@ class V1::PortfolioPresenter
       :name => @portfolio.name,
       :description => @portfolio.description,
       :url => "/portfolios/#{@portfolio.id}",
-      :createdAt => @portfolio.created_at,
-      :updatedAt => @portfolio.updated_at,
-      :deletedAt => @portfolio.deleted_at
+      :created_at => @portfolio.created_at,
+      :updated_at => @portfolio.updated_at,
+      :deleted_at => @portfolio.deleted_at
     }.merge(options)
     port_hash = { :portfolios => port_hash } if include_root
     port_hash

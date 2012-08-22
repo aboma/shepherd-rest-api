@@ -21,9 +21,8 @@ Luxin.Router = Ember.Router.extend({
 		    show_portfolio: Ember.Route.extend({
 		    	route: '/:portfolio_id',
 		    	//modelType: 'Luxin.Portfolio',
-		    	edit: function(router, event) {
-		    		router.transitionTo('edit_portfolio', event.context);
-		    	},
+		    	edit: Ember.Route.transitionTo('edit_portfolio'),
+		    	add:  Ember.Route.transitionTo('add_asset'),
 		    	connectOutlets: function(router, portfolio) {
 		    		Luxin.log('portfolio selected');
 		    		var psc = router.get('portfoliosController');
@@ -54,6 +53,10 @@ Luxin.Router = Ember.Router.extend({
 			   	},
 			   	connectOutlets: function(router, context) {
 			   		Luxin.log('showing edit portfolio form');
+			   		if (this.transaction) {
+			   			this.transaction.rollback();
+			   			this.transaction.destroy();
+			   		}
 			   		this.transaction = Luxin.store.transaction();
 		   			this.transaction.add(context);
 			   		var ac = router.get("applicationController");	
@@ -77,7 +80,14 @@ Luxin.Router = Ember.Router.extend({
 		    	cancel: function(router, event) {
 		    		this.transaction.rollback();
 		    		this.transaction.destroy();
-		    		router.transitionTo('root.portfolios');
+		    		router.transitionTo('root');
+		    	}
+		    }),
+		    add_asset: Ember.Route.extend({
+		    	route: '/:portfolio_id/add',
+		    	transaction: null,
+		    	connectOutlets: function(router) {
+		    		Luxin.log('showing add asset form');
 		    	}
 		    })
 	    })

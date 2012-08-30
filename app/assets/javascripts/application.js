@@ -5,9 +5,9 @@
 // the compiled file.
 //
 //= require jquery-1.7.1.min
-//= require debug-console-log-v0.4
 //= require handlebars
-//= require ember-0.9.8.1.js
+//= require debug-console-log-v0.4
+//= require ember-latest.js
 //= require ember-data-latest.js
 //= require bootstrap-modal
 //= require bootstrap-dropdown

@@ -39,7 +39,9 @@ Luxin.Router = Ember.Router.extend({
 			   	cancel: function(router, event) {
 		   			this.transaction.rollback();
 		   			this.transaction.destroy();
-			   		router.transitionTo('root.portfolios');
+		   			var ac = router.get("applicationController");	
+			   		ac.disconnectOutlet("detail");
+			   		router.transitionTo('root.portfolios.show_portfolio', event.context);
 			   	},
 			   	save: function(router, event) {
 			   		portfolio = event.context;
@@ -51,16 +53,16 @@ Luxin.Router = Ember.Router.extend({
 			   		}
 		    		router.transitionTo('show_portfolio', portfolio);
 			   	},
-			   	connectOutlets: function(router, context) {
+			   	connectOutlets: function(router, portfolio) {
 			   		Luxin.log('showing edit portfolio form');
 			   		if (this.transaction) {
 			   			this.transaction.rollback();
 			   			this.transaction.destroy();
 			   		}
 			   		this.transaction = Luxin.store.transaction();
-		   			this.transaction.add(context);
+		   			this.transaction.add(portfolio);
 			   		var ac = router.get("applicationController");	
-			   		ac.connectOutlet( { name: 'newPortfolio', outletName: 'detail', context: context } );
+			   		ac.connectOutlet( { name: 'editPortfolio', outletName: 'detail', context: portfolio } );
 			   	}
 		    }),
 		    new_portfolio: Ember.Route.extend({
@@ -70,8 +72,11 @@ Luxin.Router = Ember.Router.extend({
 		    		Luxin.log('showing new portfolio form');
 		    		this.transaction = Luxin.store.transaction();	
 		    		var newPortfolio = this.transaction.createRecord(Luxin.Portfolio, {} );
+		    		// remove any header details, if they exist
+		    		var pc = router.get("editPortfolioController");
+		    		pc.set('content', null);
 		    		var ac = router.get("applicationController"); 
-		    		ac.connectOutlet({ name: 'newPortfolio', outletName: 'detail', context: newPortfolio });
+		    		ac.connectOutlet({ name: 'editPortfolio', outletName: 'detail', context: newPortfolio });
 		    	},
 		    	save: function(router, event) {
 		    		this.transaction.commit();
@@ -80,7 +85,9 @@ Luxin.Router = Ember.Router.extend({
 		    	cancel: function(router, event) {
 		    		this.transaction.rollback();
 		    		this.transaction.destroy();
-		    		router.transitionTo('root');
+		    		var ac = router.get("applicationController"); 
+			   		ac.disconnectOutlet("detail");
+		    		router.transitionTo('root.portfolios');
 		    	}
 		    }),
 		    add_asset: Ember.Route.extend({

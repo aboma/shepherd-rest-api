@@ -5,12 +5,12 @@
 		<a {{ action createPortfolio href=true }}>Create</a>
 	</div>
 	<div id='portfolioHeader'>
-		{{#if selectedPortfolio}}
-			<h2 class="portfolioHeader">{{selectedPortfolio.name}} Portfolio</h2>
+		{{#if selected}}
+			<h2 class="portfolioHeader">{{selected.name}} Portfolio</h2>
 			<div id="portfolioOptions" class="portfolioHeader">
-				<a class="portfolioHeader" {{ action edit context="selectedPortfolio" href=true }}>edit</a>
+				<a class="portfolioHeader" {{ action edit selected href=true }}>edit</a>
 				/
-				<a class="portfolioHeader" {{ action add context="selectedPortfolio" href=true }}>add</a>
+				<a class="portfolioHeader" {{ action add selected href=true }}>add</a>
 			<div>
 		{{/if}}
 	</div>

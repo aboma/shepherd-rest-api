@@ -20,13 +20,12 @@ Luxin.Router = Ember.Router.extend({
 
 		    show_portfolio: Ember.Route.extend({
 		    	route: '/:portfolio_id',
-		    	//modelType: 'Luxin.Portfolio',
 		    	edit: Ember.Route.transitionTo('edit_portfolio'),
 		    	add:  Ember.Route.transitionTo('add_asset'),
 		    	connectOutlets: function(router, portfolio) {
 		    		Luxin.log('portfolio selected');
 		    		var psc = router.get('portfoliosController');
-		    		psc.set('selectedPortfolio', portfolio);
+		    		psc.set('selected', portfolio);
 		    		var ac = router.get("applicationController"); 
 		    		ac.connectOutlet( { name: 'portfolio', outletName: 'detail', 
 		    							context: portfolio } );	    		
@@ -37,32 +36,35 @@ Luxin.Router = Ember.Router.extend({
 			   	route: '/:portfolio_id/edit',
 			   	transaction: null,
 			   	cancel: function(router, event) {
-		   			this.transaction.rollback();
-		   			this.transaction.destroy();
-		   			var ac = router.get("applicationController");	
-			   		ac.disconnectOutlet("detail");
-			   		router.transitionTo('root.portfolios.show_portfolio', event.context);
-			   	},
-			   	save: function(router, event) {
-			   		portfolio = event.context;
-			   		if (portfolio.get('isDirty')){
-			   			this.transaction.commit();
-			   		} else {
-			   			this.transaction.rollback();
-			   			this.transaction.destroy();
-			   		}
-		    		router.transitionTo('show_portfolio', portfolio);
-			   	},
-			   	connectOutlets: function(router, portfolio) {
-			   		Luxin.log('showing edit portfolio form');
+			   		// clean up unused transaction
 			   		if (this.transaction) {
 			   			this.transaction.rollback();
 			   			this.transaction.destroy();
 			   		}
+			   		router.transitionTo('root.portfolios.show_portfolio', event.context);
+			   	},
+			   	save: function(router, event) {
+			   		portfolio = event.context;
+			   		// commit record if it has changed; exit function will 
+			   		// clean up unused transaction
+			   		if (portfolio.get('isDirty')){
+			   			this.transaction.commit();
+			   		}
+		    		router.transitionTo('show_portfolio', portfolio);
+			   	},
+			   	connectOutlets: function(router, portfolio) {
+			   		Luxin.log('showing edit portfolio form for ' + portfolio.get('name'));
 			   		this.transaction = Luxin.store.transaction();
 		   			this.transaction.add(portfolio);
 			   		var ac = router.get("applicationController");	
 			   		ac.connectOutlet( { name: 'editPortfolio', outletName: 'detail', context: portfolio } );
+			   	},
+			   	exit : function(router) {
+			   		Luxin.log('exiting portfolio edit');
+		    		var pc = router.get("editPortfolioController");
+		    		pc.set('content', null);
+		   			var ac = router.get("applicationController");	
+			   		ac.disconnectOutlet("detail");
 			   	}
 		    }),
 		    new_portfolio: Ember.Route.extend({
@@ -72,9 +74,6 @@ Luxin.Router = Ember.Router.extend({
 		    		Luxin.log('showing new portfolio form');
 		    		this.transaction = Luxin.store.transaction();	
 		    		var newPortfolio = this.transaction.createRecord(Luxin.Portfolio, {} );
-		    		// remove any header details, if they exist
-		    		var pc = router.get("editPortfolioController");
-		    		pc.set('content', null);
 		    		var ac = router.get("applicationController"); 
 		    		ac.connectOutlet({ name: 'editPortfolio', outletName: 'detail', context: newPortfolio });
 		    	},
@@ -83,11 +82,15 @@ Luxin.Router = Ember.Router.extend({
 		    		router.transitionTo('show_portfolio', event.context);
 		    	},
 		    	cancel: function(router, event) {
-		    		this.transaction.rollback();
-		    		this.transaction.destroy();
+		    		router.transitionTo('root.portfolios');
+		    		if (this.transaction) {
+			    		this.transaction.rollback();
+			    		this.transaction.destroy();
+		    		}
+		    	},
+		    	exit : function(router) {
 		    		var ac = router.get("applicationController"); 
 			   		ac.disconnectOutlet("detail");
-		    		router.transitionTo('root.portfolios');
 		    	}
 		    }),
 		    add_asset: Ember.Route.extend({

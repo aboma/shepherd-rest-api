@@ -1,7 +1,7 @@
 Luxin.CustomActionAttacher = Ember.Mixin.create({
 	init : function() {
 		var actionName = this.get('action');
-		target = this.get('target'), targetObj = Ember.getPath(target);
+		target = this.get('target'), targetObj = Ember.get(target);
 
 		if (actionName && targetObj) {
 			view = this;

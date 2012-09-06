@@ -41,8 +41,8 @@
 				<button {{ action cancel content disabledBinding="content.isSaving" }} 
 					class="btn btn-warning"> Cancel </button>
 					{{#unless content.isNew}}
-						<button {{ action cancel disabledBinding="content.isSaving" }} 
-							class="btn btn-delete"> Delete </button>					
+						<button {{ action remove content disabledBinding="content.isSaving" }} 
+							class="btn btn-danger"> Delete </button>					
 					{{/unless}}
 	    	</div>
 	    </fieldset>

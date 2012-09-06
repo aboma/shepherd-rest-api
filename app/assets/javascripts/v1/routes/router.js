@@ -43,6 +43,11 @@ Luxin.Router = Ember.Router.extend({
 			   		}
 			   		router.transitionTo('root.portfolios.show_portfolio', event.context);
 			   	},
+			   	remove : function(router, event) {
+			   		event.context.deleteRecord();
+			   		this.transaction.commit();
+		    		router.transitionTo('root.portfolios');
+			   	},
 			   	save: function(router, event) {
 			   		portfolio = event.context;
 			   		// commit record if it has changed; exit function will 

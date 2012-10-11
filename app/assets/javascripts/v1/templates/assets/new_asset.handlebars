@@ -1,0 +1,20 @@
+<div id="asset_upload">
+	<form id="asset_upload">
+	    <div class="control-group">
+    		<label class="control-label">Asset Name</label>
+    		<div class="controls">
+				<input id="name" type="text" name="name" />
+			</div>
+		</div>
+		<div class="control-group">
+    		<label class="control-label">Description</label>
+    		<div class="controls">
+				<input id="description" type="text" name="description" />
+			</div>
+		</div>
+		<input id="filename" type="file" name="filename" />
+		<div>
+			<button id="upload" {{ action upload }} class="btn btn-success">Upload</button>
+		</div>
+	</form>
+</div>

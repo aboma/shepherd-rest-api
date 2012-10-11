@@ -5,6 +5,9 @@ gem 'sqlite3'
 gem 'jquery-rails'
 gem 'ember-rails', '>= 0.2.2'
 gem 'sorcery', '0.7.7'
+gem "rmagick"
+gem "carrierwave"
+gem "active_model_serializers", :git => "git://github.com/josevalim/active_model_serializers.git"
 
 # Bundle edge Rails instead:
 # gem 'rails',     :git => 'git://github.com/rails/rails.git'

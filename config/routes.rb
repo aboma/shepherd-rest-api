@@ -6,6 +6,7 @@ LuxinDAM::Application.routes.draw do
     resources :portfolios        
     resources :users
     resources :sessions
+    resources :assets
     root :to => "application#index"
   end
 

@@ -12,6 +12,9 @@
 #  updated_at                   :datetime        not null
 #  remember_me_token            :string(255)
 #  remember_me_token_expires_at :datetime
+#  last_login_at                :datetime
+#  last_logout_at               :datetime
+#  last_activity_at             :datetime
 #
 
 class User < ActiveRecord::Base

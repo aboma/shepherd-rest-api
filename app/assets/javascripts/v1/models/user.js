@@ -1,11 +1,7 @@
-Luxin.User = Ember.Object.extend({
-	email: null,
-	last_name: null,
-	first_name: null,
-	hasAdminRights: false,
-	
-	init: function() {
-		this._super();
-
-	}	
+Luxin.User = DS.Model.extend({
+	email: DS.attr('string'),
+	last_name: DS.attr('string'),
+	first_name: DS.attr('string'),
+	hasAdminRights: DS.attr('string'),
+		
 })

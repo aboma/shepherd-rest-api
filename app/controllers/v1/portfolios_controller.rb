@@ -6,8 +6,7 @@ class V1::PortfoliosController < V1::ApplicationController
     @portfolios = Portfolio.all
     respond_to do |format|
       format.json do
-         @port_representation = @portfolios.map { |p| V1::PortfolioPresenter.new(p).as_json } 
-         render :json => { :portfolios => @port_representation }, :content_type => 'application/json' 
+          render :json => @portfolios, :each_serializer => V1::PortfolioSerializer
        end
     end
   end
@@ -17,9 +16,8 @@ class V1::PortfoliosController < V1::ApplicationController
     @portfolio = Portfolio.create(params[:portfolio].merge(:created_by_id => current_user.id, :updated_by_id => current_user.id))  
     respond_to do |format|
       format.json do
-        @p_pres = V1::PortfolioPresenter.new(@portfolio)
         if @portfolio.valid?
-          render :json => { :portfolio => @p_pres.as_json }, :content_type => 'application/json'
+          render :json => @portfolio, :serializer => V1::PortfolioSerializer
         else 
           render :json => { :error => @portfolio.errors }, :status => :unprocessable_entity
         end
@@ -32,9 +30,8 @@ class V1::PortfoliosController < V1::ApplicationController
     @portfolio = Portfolio.find(params[:id])
     respond_to do |format|
       format.json do
-        @p_pres = V1::PortfolioPresenter.new(@portfolio)
         if @portfolio.valid?
-          render :json => { :portfolio => @p_pres.as_json }, :content_type => 'application/json'
+          render :json => @portfolio, :serializer => V1::PortfolioSerializer
         else 
           render :json => { :error => @portfolio.errors }, :status => :unprocessable_entity
         end
@@ -49,8 +46,7 @@ class V1::PortfoliosController < V1::ApplicationController
     respond_to do |format|
       format.json do
         if @result
-          @p_pres = V1::PortfolioPresenter.new(@portfolio)
-          render :json => { :portfolio => @p_pres.as_json }, :content_type => 'application/json'
+          render :json => @portfolio, :serializer => V1::PortfolioSerializer
         else 
           @error_pres = V1::ErrorPresenter.new(@portfolio.errors)
           render :json => { :error => @error_pres.as_json }, :status => :unprocessable_entity
@@ -59,7 +55,6 @@ class V1::PortfoliosController < V1::ApplicationController
     end
   end
 
-  # mark portfolio as deleted, but do not actually delete
   def destroy  
     @portfolio = Portfolio.find(params[:id])
     @portfolio.destroy

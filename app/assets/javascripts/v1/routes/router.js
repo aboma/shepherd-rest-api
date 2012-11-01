@@ -101,15 +101,17 @@ Luxin.Router = Ember.Router.extend({
 		    add_asset: Ember.Route.extend({
 		    	route: '/:portfolio_id/new',
 		    	transaction: null,
-		    	connectOutlets: function(router) {
+		    	connectOutlets: function(router, portfolio) {
 		    		Luxin.log('showing new asset form');
 		    		var ac = router.get("applicationController");
-		    		ac.connectOutlet({ name: 'newAsset', outletName: 'detail', context: null});
+		    		ac.connectOutlet({ name: 'newAsset', outletName: 'detail', context: portfolio});
 		    	},
 		    	upload: function(router, event) {
 		    		var form = event.target.form;
 		    		var view = event.view;
 		    		var form_data = new FormData(form);
+		    		// append portfolio_id
+		    		form_data.append('portfolio_id', event.context.get('id'));
 		    		var uploadModel = new Luxin.Asset();
 		    		var success_callback = function(){
 		    			Luxin.log('uploaded!');

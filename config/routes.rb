@@ -1,15 +1,18 @@
 LuxinDAM::Application.routes.draw do
   
-  scope '(:v1)', :module => :v1 do
+  current_api_routes = lambda do
     get "logout" => "sessions#destroy", :as => "logout"
     get "login" => "sessions#new", :as => "login"
     resources :portfolios        
     resources :users
     resources :sessions
     resources :assets
-    root :to => "application#index"
+    root :to => "application#index"    
   end
-
+  
+  constraints ApiVersion.new(1) do
+    scope :module => :v1, &current_api_routes
+  end
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

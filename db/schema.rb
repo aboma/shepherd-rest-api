@@ -11,11 +11,11 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120911033426) do
+ActiveRecord::Schema.define(:version => 20121020004200) do
 
   create_table "assets", :force => true do |t|
     t.string   "name",          :null => false
-    t.string   "filename",      :null => false
+    t.string   "file",          :null => false
     t.string   "description"
     t.datetime "deleted_at"
     t.integer  "created_by_id", :null => false
@@ -34,6 +34,14 @@ ActiveRecord::Schema.define(:version => 20120911033426) do
     t.integer  "deleted_by_id"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
+  end
+
+  create_table "relationships", :force => true do |t|
+    t.string   "relationship_type"
+    t.integer  "asset_id"
+    t.integer  "portfolio_id"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
   end
 
   create_table "users", :force => true do |t|

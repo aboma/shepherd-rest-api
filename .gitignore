@@ -14,3 +14,6 @@ doc/
 *~
 .project
 .DS_Store
+
+# ignore upload tmp files
+/public/uploads

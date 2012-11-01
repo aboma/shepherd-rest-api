@@ -41,7 +41,7 @@ group :development, :test do
   gem 'ruby-debug19', :require => 'ruby-debug'
   gem 'rspec-rails', '~> 2.6.1'
   gem 'factory_girl_rails'
-  gem 'annotate', :git => 'git://github.com/ctran/annotate_models.git'
+  gem 'annotate', ">=2.5.0"
 end
 
 group :test do

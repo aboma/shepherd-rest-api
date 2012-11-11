@@ -10,6 +10,8 @@ FactoryGirl.define do
   
   factory :portfolio do
     sequence(:name ){ |n| "Portfolio#{n}" }
+    created_by_id 1
+    updated_by_id 1
     description "factorygirl portfolio"
   end
 end

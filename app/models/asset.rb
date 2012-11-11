@@ -34,5 +34,6 @@ class Asset < ActiveRecord::Base
     relationships.find_by_asset_id(self.id)
   end
   
+  # mount Carrierwave uploader for file uploads
   mount_uploader :file, V1::ImageUploader
 end

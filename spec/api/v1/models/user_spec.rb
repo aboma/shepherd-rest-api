@@ -1,19 +1,3 @@
-# == Schema Information
-#
-# Table name: users
-#
-#  id                           :integer         not null, primary key
-#  email                        :string(255)
-#  crypted_password             :string(255)
-#  salt                         :string(255)
-#  last_name                    :string(255)
-#  first_name                   :string(255)
-#  created_at                   :datetime        not null
-#  updated_at                   :datetime        not null
-#  remember_me_token            :string(255)
-#  remember_me_token_expires_at :datetime
-#
-
 require 'spec_helper'
 
 describe User do
@@ -44,25 +28,25 @@ describe User do
   describe "should require an email" do
     before { @user.email = ' ' }
     it { should_not be_valid }
-    specify { @user.save.should == false }
+    specify { @user.save.should be false }
   end
   
   describe "should require a first name" do
     before { @user.first_name = ' ' }
     it { should_not be_valid }
-    specify { @user.save.should == false }
+    specify { @user.save.should be false }
   end
   
   describe "should require a last name" do
     before { @user.last_name = ' ' }
     it {should_not be_valid }
-    specify { @user.save.should == false }
+    specify { @user.save.should be false }
   end
   
   describe "should require a password" do
     before { @user.password = @user.password_confirmation = ' ' }
     it { should_not be_valid }
-    specify { @user.save.should == false }
+    specify { @user.save.should be false }
   end
   
   describe "should require email to be unique" do
@@ -73,7 +57,7 @@ describe User do
     end
 
     it { should_not be_valid }
-    specify { @user.save.should == false }
+    specify { @user.save.should be false }
   end
   
   describe "should accept valid email addresses" do
@@ -89,19 +73,50 @@ describe User do
     invalid_emails.each do |invalid_email|
       before { @user.email = invalid_email }
       it { should_not be_valid }
-      specify { @user.save.should == false }
+      specify { @user.save.should be false }
     end
   end
   
   describe "should require password to be at least 8 characters" do
     before { @user.password = "a" * 7 }
     it { should_not be_valid }
-    specify { @user.save.should == false }
+    specify { @user.save.should be false }
   end
   
   describe "should require that password match password_confirmation" do
     before { @user.password_confirmation = "doesnotmatch" }
     it { should_not be_valid }
-    specify { @user.save.should == false }
+    specify { @user.save.should be false }
+  end
+  
+  describe "should require a created by user id" do
+    before { @user.created_by_id = nil }
+    it { should_not be_valid }
+    specify { @user.save.should_not be_valid }
+  end
+  
+  describe "should require an updated by user id" do
+    before { @user.updated_by_id = nil }
+    it { should_not be_valid }
+    specify { @user.save.should_not be_valid }
+  end
+  
+  describe "should save a created_at date" do
+    before { @user.save }  
+    specify { @user.created_at.should be_present } 
+  end
+  
+  describe "should save an updated by date" do
+    before do 
+      @user.save 
+      @user.email = 'up_time@test.com'
+      @original_up_time = @user.updated_at
+      @user.save
+    end
+    specify do
+      @user.should be_valid 
+      @user.updated_at.should be_present 
+      @user.updated_at.should_not be @original_up_time 
+    end 
   end
 end

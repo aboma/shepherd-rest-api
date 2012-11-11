@@ -83,8 +83,13 @@ Luxin.Router = Ember.Router.extend({
 		    		ac.connectOutlet({ name: 'editPortfolio', outletName: 'detail', context: newPortfolio });
 		    	},
 		    	save: function(router, event) {
+		    		var portfolio = event.context;
+		    		// show portfolio, but only after it has been created
+		    		// and has an id (for routing)
+		    		portfolio.didCreate = function() {
+		    			router.transitionTo('show_portfolio', portfolio);	
+		    		};
 		    		this.transaction.commit();
-		    		router.transitionTo('show_portfolio', event.context);
 		    	},
 		    	cancel: function(router, event) {
 		    		router.transitionTo('root.portfolios');

@@ -5,6 +5,6 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
-User.create(:email => 'aboma@grey.com', :password => 'letme1nb', :first_name => 'Adrian', :last_name => 'Boma')
-User.create(:email => 'dvark@grey.com', :password => 'letme1nb', :first_name => 'Diana', :last_name => 'Vark')
-puts "Created seed users"
+@user = User.create(:email => 'aboma@grey.com', :password => 'letme1nb', :first_name => 'Adrian', :last_name => 'Boma')
+puts "Created seed users" if @user.valid?
+puts @user.errors.full_messages.to_sentence unless @user.valid?

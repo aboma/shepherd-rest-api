@@ -1,11 +1,16 @@
 LuxinDAM::Application.routes.draw do
   
   current_api_routes = lambda do
-    get "logout" => "sessions#destroy", :as => "logout"
-    get "login" => "sessions#new", :as => "login"
+    devise_for :users, :controllers => { :sessions => "sessions" }
+ 
+    devise_scope :user do
+      resources :sessions, :only => [:create, :destroy]
+    end
+    #get "logout" => "sessions#destroy", :as => "logout"
+    #get "login" => "sessions#new", :as => "login"
     resources :portfolios        
-    resources :users
-    resources :sessions
+    #resources :users
+    #resources :sessions
     resources :assets
     root :to => "application#index"    
   end

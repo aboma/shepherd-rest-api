@@ -1,20 +1,15 @@
 class V1::ApplicationController < ApplicationController
-  protect_from_forgery
-  before_filter :require_login
-  
-  respond_to :html, :json
-  
-  def index
-  end
-  
-  def not_authenticated
-    redirect_to :action => 'new', :alert => "Please login.", :controller => 'sessions'
+  skip_before_filter :verify_authenticity_token
+  prepend_before_filter :get_auth_token
+  before_filter :authenticate_user!
+
+  respond_to :json
+
+  # get authorization token from http header if it is not in the URL parameters
+  def get_auth_token
+    if auth_token = params[:auth_token].blank? && request.headers["X-AUTH-TOKEN"]
+      params[:auth_token] = auth_token
+    end
   end
 
-  def compose_json_error(hash)
-    error_json = {
-      :status => 'error',
-      :message => 'error occurred'
-    }.merge(hash)
-  end
 end

@@ -6,6 +6,8 @@ require 'rails/all'
 #require "active_resource/railtie"
 #require "rails/test_unit/railtie"
 
+require 'yajl/json_gem'
+
 if defined?(Bundler)
   # If you precompile assets before deploying to production, use this line
   Bundler.require(*Rails.groups(:assets => %w(development test)))

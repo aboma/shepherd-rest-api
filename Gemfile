@@ -4,6 +4,8 @@ gem 'rails', '3.2'
 gem 'sqlite3'
 gem 'jquery-rails'
 gem 'ember-rails', '>= 0.2.2'
+gem 'yajl-ruby'
+gem 'devise', '2.1.2'
 gem 'sorcery', '0.7.7'
 gem "rmagick"
 gem "carrierwave"
@@ -39,7 +41,7 @@ end
 group :development, :test do
   # To use debugger
   gem 'ruby-debug19', :require => 'ruby-debug'
-  gem 'rspec-rails', '~> 2.6.1'
+  gem 'rspec-rails', '~> 2.10.1'
   gem 'factory_girl_rails'
   gem 'annotate', ">=2.5.0"
 end

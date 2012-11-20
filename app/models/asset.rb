@@ -15,7 +15,6 @@
 #
 
 class Asset < ActiveRecord::Base
-  authenticates_with_sorcery!
   
   has_many :relationships, :dependent => :destroy
   has_many :portfolios, :through => :relationships

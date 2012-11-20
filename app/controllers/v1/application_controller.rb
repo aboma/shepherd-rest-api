@@ -1,7 +1,7 @@
 class V1::ApplicationController < ApplicationController
   skip_before_filter :verify_authenticity_token
   prepend_before_filter :get_auth_token
-  before_filter :authenticate_user!
+  before_filter :authenticate_user
 
   respond_to :json
 
@@ -11,5 +11,14 @@ class V1::ApplicationController < ApplicationController
       params[:auth_token] = auth_token
     end
   end
+  
+  protected
 
+  def authenticate_user
+    @current_user = User.find_by_authentication_token(params[:auth_token])
+  end
+
+  def current_user
+    @current_user
+  end
 end

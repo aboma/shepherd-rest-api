@@ -14,7 +14,6 @@
 #
 
 class Portfolio < ActiveRecord::Base
-  authenticates_with_sorcery!
   
   has_many :relationships, :dependent => :destroy
   has_many :asset_relationships, :through => :relationships, :source => :asset,

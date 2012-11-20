@@ -6,7 +6,7 @@ gem 'jquery-rails'
 gem 'ember-rails', '>= 0.2.2'
 gem 'yajl-ruby'
 gem 'devise', '2.1.2'
-gem 'sorcery', '0.7.7'
+#gem 'sorcery', '0.7.7'
 gem "rmagick"
 gem "carrierwave"
 gem "active_model_serializers", :git => "git://github.com/josevalim/active_model_serializers.git"

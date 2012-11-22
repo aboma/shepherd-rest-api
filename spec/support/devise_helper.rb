@@ -1,9 +1,14 @@
 module DeviseControllerHelpers
-  def login_user
-    @request.env["devise.mapping"] = Devise.mappings[:user]
-    @resource = FactoryGirl.create(:user)
-    #user.confirm! # or set a confirmed_at inside the factory. Only necessary if you are using the confirmable module
-    user = sign_in(:user, @resource)
-    debugger
+  def get_auth_token
+    before :all do
+      #create user and get authentication token for user
+      user = FactoryGirl.create(:user)
+      user.reset_authentication_token!
+      @auth_token = user.authentication_token
+    end
+    
+    after :all do
+      user.destroy!
+    end
   end
 end

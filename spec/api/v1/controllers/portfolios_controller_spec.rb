@@ -2,49 +2,67 @@ require 'spec_helper'
 
 describe V1::PortfoliosController, :type => :controller do
   
-  before :each do
-    @portfolio_attrs = { :name => 'rspec test port' }
-    @request.env["devise.mapping"] = Devise.mappings[:user]
-    user = FactoryGirl.create(:user)
-    sign_in user
-    user.reset_authentication_token!
-    @auth_token = user.authentication_token
-  end
+  get_auth_token
   
-  describe "unauthorized user" do
-    let(:url) { "/portfolios" }
-  
-    it "should return 406 unacceptable for HTML request without token" do
-      get :index
-      response.status.should == 406
-    end    
-       
-    it "should return 401 unauthorized code for JSON request without token" do
-      get :index, nil, { 'CONTENT-TYPE' => 'application/json' }
-      response.status.should == 401
-    end    
+  describe "GET index" do
+    context "without authorization token" do   
+      it "should return 401 unauthorized code" do
+        get :index, :format => :html
+        response.status.should == 401
+      end    
+         
+      it "should return 401 unauthorized code" do
+        get :index, :format => :json
+        response.status.should == 401
+      end    
+    end
     
-    it "should return 401 unauthorized code for JSON request with invalid token" do
-      get :index, nil, { 'CONTENT-TYPE' => 'application/json', 'X-AUTH-TOKEN' => '111111' }
-      response.status.should == 401     
+    context "with invalid authorization token" do
+      it "should return 401 unauthorized code" do
+        request.env['X-AUTH-TOKEN'] = '1111'
+        get :index, :format => :json
+        response.status.should == 401     
+      end
     end
   end
    
-  describe "authorized user" do
+  describe "POST create" do
     
-    describe "POST to create portfolio" do
-      it "should change number of portfolios by 1" do   
-        expect{ 
-          post :create, :portfolio => @portfolio_attrs, 
-            :headers => { 'CONTENT-TYPE' => 'application/json', 'X-AUTH-TOKEN' => @auth_token }
-           }.to change(Portfolio, :count).by(1)
-        #post_portfolios.should change(Portfolio, :count).by(1)
+    context "without authorization token" do     
+      it "should return 401 unauthorized HTTP code" do
+        post :create, :portfolio => FactoryGirl.attributes_for(:portfolio), :format => :json
+        response.status.should == 401   
       end
-       
-      def post_portfolios
+      it "should return content of JSON type" do
+        post :create, :portfolio => FactoryGirl.attributes_for(:portfolio), :format => :json
         #debugger
-
-      end    
+        response.headers['Content-Type'].should include 'application/json'
+      end
+    end
+    
+    context "with authorization token" do
+      def post_portfolio attrs, format
+        request.env['X-AUTH-TOKEN'] = @auth_token
+        post :create, :portfolio => attrs, :format => format 
+      end   
+            
+      context "with invalid attributes" do
+        pending
+      end
+        
+      context "with valid attributes" do
+        it "should change number of portfolios by 1" do   
+          expect{ 
+            post_portfolio(FactoryGirl.attributes_for(:portfolio), :json)
+          }.to change(Portfolio, :count).by(1)
+        end    
+          
+        it "responds with success" do
+          post_portfolio(FactoryGirl.attributes_for(:portfolio), :json)
+          response.header['Content-Type'].should include 'application/json'
+          response.status.should == 200       
+        end
+      end
     end
   end
       

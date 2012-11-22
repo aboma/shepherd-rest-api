@@ -25,11 +25,17 @@ class V1::SessionsController < Devise::SessionsController
       format.json do
         current_user = warden.authenticate!(:scope => resource_name, :recall => "#{controller_path}#new")
         current_user.reset_authentication_token!
-        render :status => :ok, :json => {}
+        render :status => 200, :json => {}
       end
     end
     #logout
     #redirect_to login_url, :alert => "You have been logged out"
+  end
+  
+  # authentication failure
+  def failure
+    warden.custom_failure!
+    render :status => 401, :json => { :session => { :success => false, :message => "Email of password invalid"}} 
   end
 
 end

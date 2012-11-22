@@ -1,7 +1,7 @@
 LuxinDAM::Application.routes.draw do
   
   current_api_routes = lambda do
-    devise_for :users, :controllers => { :sessions => "sessions" }
+    devise_for :users
  
     devise_scope :user do
       resources :sessions, :only => [:create, :destroy]

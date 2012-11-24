@@ -4,10 +4,9 @@ describe V1::PortfoliosController, :type => :controller do
   
   get_auth_token
   
-  describe "GET index" do
-      
+  describe "GET index" do   
     context "with invalid authorization token" do
-      [:json, :xml, :format].each do |format| 
+      [:json, :xml, :html].each do |format| 
         it "should return 401 unauthorized code for #{format}" do
           request.env['X-AUTH-TOKEN'] = '1111'
           get :index, :format => format
@@ -17,7 +16,7 @@ describe V1::PortfoliosController, :type => :controller do
     end
     
     context "without authorization token" do   
-      [:json, :xml, :format].each do |format| 
+      [:json, :xml, :html].each do |format| 
         it "should return 401 unauthorized code for #{format}" do
           get :index, :format => format
           response.status.should == 401
@@ -25,16 +24,24 @@ describe V1::PortfoliosController, :type => :controller do
       end
     end
   end
-
    
   describe "POST create" do
     def post_portfolio attrs, format
       request.env['X-AUTH-TOKEN'] = @auth_token
       post :create, :portfolio => attrs, :format => format 
     end 
+      
+    context "without authorization token" do    
+      [:json, :xml, :html].each do |format| 
+        it "should return 401 unauthorized code for #{format}" do
+          post :create, :portfolio => FactoryGirl.attributes_for(:portfolio), :format => format
+          response.status.should == 401   
+        end
+      end
+    end
     
     context "with invalid authorization token" do
-      [:json, :xml, :format].each do |format| 
+      [:json, :xml, :html].each do |format| 
         it "should return 401 unauthorized code for #{format}" do
           request.env['X-AUTH-TOKEN'] = '1111'
           post :create, :portfolio => FactoryGirl.attributes_for(:portfolio), :format => format
@@ -42,15 +49,6 @@ describe V1::PortfoliosController, :type => :controller do
         end
       end
     end  
-    
-    context "without authorization token" do    
-      [:json, :xml, :html].each do |format| 
-        it "should return 401 unauthorized HTTP code" do
-          post :create, :portfolio => FactoryGirl.attributes_for(:portfolio), :format => format
-          response.status.should == 401   
-        end
-      end
-    end
     
     context "with authorization token" do           
       context "with invalid attributes" do
@@ -74,7 +72,7 @@ describe V1::PortfoliosController, :type => :controller do
            post_portfolio(@port_attrs, :json)
         end
           
-        it "responds with success" do
+        it "responds with success 200 status code" do
           response.status.should == 200       
         end
         

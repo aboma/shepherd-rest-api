@@ -11,4 +11,15 @@ module DeviseControllerHelpers
       user.destroy!
     end
   end
+  
+  def create_user
+    before :all do
+      @user = FactoryGirl.create(:user)
+    end
+    
+    after :all do
+      @user.destroy!
+    end
+  end
+    
 end

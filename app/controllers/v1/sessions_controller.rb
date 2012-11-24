@@ -5,10 +5,12 @@ class V1::SessionsController < Devise::SessionsController
     respond_to do |format|
       format.json do
         user = warden.authenticate!(:scope => resource_name, :recall => "#{controller_path}#new")
-        sign_in(resource_name, user)
-        super
-        user.reset_authentication_token!
-        render :status => 200, :json => { :session => { :success => true, :auth_token => current_user.authentication_token } }
+        render :status => 401, :json => { :message => "email or password incorrect" } unless user
+        if user 
+          sign_in(resource_name, user) 
+          user.reset_authentication_token!
+          render :status => 200, :json => { :session => { :success => true, :auth_token => current_user.authentication_token } }
+        end
       end
     end
 #    user = login(params[:email], params[:password], params[:remember_me])

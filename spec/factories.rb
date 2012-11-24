@@ -14,4 +14,5 @@ FactoryGirl.define do
     updated_by_id 1
     description "factorygirl portfolio"
   end
+
 end

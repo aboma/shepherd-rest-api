@@ -5,62 +5,81 @@ describe V1::PortfoliosController, :type => :controller do
   get_auth_token
   
   describe "GET index" do
-    context "without authorization token" do   
-      it "should return 401 unauthorized code" do
-        get :index, :format => :html
-        response.status.should == 401
-      end    
-         
-      it "should return 401 unauthorized code" do
-        get :index, :format => :json
-        response.status.should == 401
-      end    
+      
+    context "with invalid authorization token" do
+      [:json, :xml, :format].each do |format| 
+        it "should return 401 unauthorized code for #{format}" do
+          request.env['X-AUTH-TOKEN'] = '1111'
+          get :index, :format => format
+          response.status.should == 401     
+        end
+      end
     end
     
-    context "with invalid authorization token" do
-      it "should return 401 unauthorized code" do
-        request.env['X-AUTH-TOKEN'] = '1111'
-        get :index, :format => :json
-        response.status.should == 401     
+    context "without authorization token" do   
+      [:json, :xml, :format].each do |format| 
+        it "should return 401 unauthorized code for #{format}" do
+          get :index, :format => format
+          response.status.should == 401
+        end     
       end
     end
   end
+
    
   describe "POST create" do
+    def post_portfolio attrs, format
+      request.env['X-AUTH-TOKEN'] = @auth_token
+      post :create, :portfolio => attrs, :format => format 
+    end 
     
-    context "without authorization token" do     
-      it "should return 401 unauthorized HTTP code" do
-        post :create, :portfolio => FactoryGirl.attributes_for(:portfolio), :format => :json
-        response.status.should == 401   
+    context "with invalid authorization token" do
+      [:json, :xml, :format].each do |format| 
+        it "should return 401 unauthorized code for #{format}" do
+          request.env['X-AUTH-TOKEN'] = '1111'
+          post :create, :portfolio => FactoryGirl.attributes_for(:portfolio), :format => format
+          response.status.should == 401     
+        end
       end
-      it "should return content of JSON type" do
-        post :create, :portfolio => FactoryGirl.attributes_for(:portfolio), :format => :json
-        #debugger
-        response.headers['Content-Type'].should include 'application/json'
+    end  
+    
+    context "without authorization token" do    
+      [:json, :xml, :html].each do |format| 
+        it "should return 401 unauthorized HTTP code" do
+          post :create, :portfolio => FactoryGirl.attributes_for(:portfolio), :format => format
+          response.status.should == 401   
+        end
       end
     end
     
-    context "with authorization token" do
-      def post_portfolio attrs, format
-        request.env['X-AUTH-TOKEN'] = @auth_token
-        post :create, :portfolio => attrs, :format => format 
-      end   
-            
+    context "with authorization token" do           
       context "with invalid attributes" do
-        pending
+        before :each do
+          post_portfolio({ :inv_attr => "invalid port" }, :json)
+        end
+        it "response with 422 unprocessable entity" do
+          response.status.should == 422
+        end
       end
         
       context "with valid attributes" do
-        it "should change number of portfolios by 1" do   
+        it "increases number of portfolios by 1" do   
           expect{ 
             post_portfolio(FactoryGirl.attributes_for(:portfolio), :json)
           }.to change(Portfolio, :count).by(1)
         end    
+        
+        before :each do
+           @port_attrs = FactoryGirl.attributes_for(:portfolio)
+           post_portfolio(@port_attrs, :json)
+        end
           
         it "responds with success" do
-          post_portfolio(FactoryGirl.attributes_for(:portfolio), :json)
-          response.header['Content-Type'].should include 'application/json'
           response.status.should == 200       
+        end
+        
+        it "responds with JSON format" do
+          response.header['Content-Type'].should include 'application/json'
         end
       end
     end

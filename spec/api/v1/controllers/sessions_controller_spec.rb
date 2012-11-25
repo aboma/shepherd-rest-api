@@ -2,25 +2,32 @@ require 'spec_helper'
 
 describe V1::SessionsController, :type => :controller do
 
-  create_user
+  get_auth_token
   
-  describe "create session" do   
+  describe "CREATE session" do   
+    def post_create_session(args)
+      @request.env["devise.mapping"] = Devise.mappings[:user]
+      post :create, :user => { :email => args[:email], :password => args[:pw] }, :format => args[:format]    
+    end
     context "unauthorized user" do
-      context "with invalid password" do
-        [:json, :xml, :html].each do |format| 
+      context "with invalid password for JSON" do
+        it "returns 401 unauthorized code" do
+          post_create_session :email => @user.email, :pw => "#{@pw}sssss", :format => :json
+          response.status.should == 401
+        end
+        
+        [:xml, :html].each do |format| 
           before :each do
-            @request.env["devise.mapping"] = Devise.mappings[:user]
-            post :create, :user => { :email => @user.email, :password => "#{@pw}sss" }, :format => :json 
+            post_create_session :email => @user.email, :pw => "#{@pw}sssss", :format => format 
           end
-          it "returns unauthorized 401 code for #{format}" do
-            response.status.should == 401
+          it "returns unauthorized 406 code for #{format}" do
+            response.status.should == 406
           end
         end
       end    
       context "with valid password" do
         before :each do
-          @request.env["devise.mapping"] = Devise.mappings[:user]
-          post :create, :user => { :email => @user.email, :password => @pw } , :format => :json
+          post_create_session :email => @user.email, :pw => @pw, :format => :json
           @body = JSON.parse(response.body) 
         end
         it "returns success code" do
@@ -39,9 +46,23 @@ describe V1::SessionsController, :type => :controller do
     end
   end
   
-  describe "destroy" do
+  describe "DESTROY session" do
+    def destroy_session
+      request.env["devise.mapping"] = Devise.mappings[:user]
+      request.env['X-AUTH-TOKEN'] = @auth_token
+      delete :destroy, :id => @auth_token, :format => :json
+    end
     context "unauthorized user" do
       pending
     end    
+    context "authorized user" do
+      it "returns success code" do
+        destroy_session
+        response.status.should == 200
+      end
+      it "changes users auth code" do
+        
+      end
+    end
   end  
 end

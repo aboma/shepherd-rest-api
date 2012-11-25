@@ -2,13 +2,12 @@ source 'http://rubygems.org'
 
 gem 'rails', '3.2'
 gem 'sqlite3'
-gem 'jquery-rails'
-gem 'ember-rails', '>= 0.2.2'
-gem 'yajl-ruby'
+gem 'jquery-rails', '~> 2.0.1'
+gem 'ember-rails', '~> 0.2.2'
+gem 'yajl-ruby', '~> 1.1.0'
 gem 'devise', '2.1.2'
-#gem 'sorcery', '0.7.7'
-gem "rmagick"
-gem "carrierwave"
+gem "rmagick", '~> 2.13.1'
+gem "carrierwave", '~> 0.6.2'
 gem "active_model_serializers", :git => "git://github.com/josevalim/active_model_serializers.git"
 
 # Bundle edge Rails instead:
@@ -42,8 +41,8 @@ group :development, :test do
   # To use debugger
   gem 'ruby-debug19', :require => 'ruby-debug'
   gem 'rspec-rails', '~> 2.10.1'
-  gem 'factory_girl_rails'
-  gem 'annotate', ">=2.5.0"
+  gem 'factory_girl_rails', '~> 3.0.0'
+  gem 'annotate', "~> 2.5.0"
 end
 
 group :test do

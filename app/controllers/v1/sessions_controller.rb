@@ -1,4 +1,5 @@
 class V1::SessionsController < Devise::SessionsController
+  prepend_before_filter :get_auth_token
   prepend_before_filter :require_no_authentication, :only => [:create ]
   
   def create
@@ -13,13 +14,6 @@ class V1::SessionsController < Devise::SessionsController
         end
       end
     end
-#    user = login(params[:email], params[:password], params[:remember_me])
-#    if user
-#      redirect_back_or_to root_url, :notice => "Logged in!"
-#    else
-#      flash.now.alert = "Email or password was invalid"
-#      render :new
-#    end
   end
   
   def destroy
@@ -30,8 +24,6 @@ class V1::SessionsController < Devise::SessionsController
         render :status => 200, :json => {}
       end
     end
-    #logout
-    #redirect_to login_url, :alert => "You have been logged out"
   end
   
   # authentication failure
@@ -39,5 +31,8 @@ class V1::SessionsController < Devise::SessionsController
     warden.custom_failure!
     render :status => 401, :json => { :session => { :success => false, :message => "Email of password invalid"}} 
   end
-
+  
+  def get_auth_token
+    params[:auth_token] = request.headers["X-AUTH-TOKEN"]
+  end
 end

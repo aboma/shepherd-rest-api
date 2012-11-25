@@ -8,9 +8,7 @@ class V1::ApplicationController < ApplicationController
   # get authorization token from HTTP header if it is not in the URL parameters
   def get_auth_token
     logger.info "setting authorization token"
-    if auth_token = params[:auth_token].blank? && request.headers["X-AUTH-TOKEN"]
-      params[:auth_token] = auth_token
-    end
+    params[:auth_token] = request.headers["X-AUTH-TOKEN"]
   end
   
 end

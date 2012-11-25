@@ -179,22 +179,22 @@ PLATFORMS
 
 DEPENDENCIES
   active_model_serializers!
-  annotate (>= 2.5.0)
+  annotate (~> 2.5.0)
   bootstrap-sass (~> 2.0.4.0)
   bootswatch-rails
-  carrierwave
+  carrierwave (~> 0.6.2)
   devise (= 2.1.2)
-  ember-rails (>= 0.2.2)
-  factory_girl_rails
+  ember-rails (~> 0.2.2)
+  factory_girl_rails (~> 3.0.0)
   handlebars_assets (~> 0.4.0)
   jammit (= 0.6.5)
-  jquery-rails
+  jquery-rails (~> 2.0.1)
   rails (= 3.2)
-  rmagick
+  rmagick (~> 2.13.1)
   rspec-rails (~> 2.10.1)
   ruby-debug19
   sass-rails (~> 3.1)
   sqlite3
   turn
   uglifier (>= 1.0.3)
-  yajl-ruby
+  yajl-ruby (~> 1.1.0)

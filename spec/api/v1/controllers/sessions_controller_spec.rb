@@ -47,21 +47,24 @@ describe V1::SessionsController, :type => :controller do
   end
   
   describe "DESTROY session" do
-    def destroy_session
-      request.env["devise.mapping"] = Devise.mappings[:user]
-      request.env['X-AUTH-TOKEN'] = @auth_token
-      delete :destroy, :id => @auth_token, :format => :json
-    end
     context "unauthorized user" do
       pending
     end    
     context "authorized user" do
+      def destroy_session
+        request.env["devise.mapping"] = Devise.mappings[:user]
+        request.env['X-AUTH-TOKEN'] = @auth_token
+        delete :destroy, :id => @auth_token, :format => :json
+        @parsed = JSON.parse(response.body)
+      end
       it "returns success code" do
         destroy_session
         response.status.should == 200
       end
-      it "changes users auth code" do
-        
+      it "changes user's authorization code" do
+        destroy_session
+        @changed_user = User.find_by_id(@user.id)
+        @changed_user.authentication_token.should_not == @user.authentication_token
       end
     end
   end  

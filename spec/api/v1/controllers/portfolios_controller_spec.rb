@@ -4,6 +4,7 @@ describe V1::PortfoliosController, :type => :controller do
   
   get_auth_token
   
+  ### GET INDEX ==================================================
   describe "GET index" do   
     context "with invalid authorization token" do
       [:json, :xml, :html].each do |format| 
@@ -23,8 +24,58 @@ describe V1::PortfoliosController, :type => :controller do
         end     
       end
     end
+    
+    context "with valid authorization token" do
+      pending
+    end 
   end
-   
+  
+  ### GET SHOW ==========================================================
+  describe "GET show" do   
+    context "with invalid authorization token" do
+      [:json, :xml, :html].each do |format| 
+        it "should return 401 unauthorized code for #{format}" do
+          @port = Factory.create(:portfolio)
+          request.env['X-AUTH-TOKEN'] = '1111'
+          get :show, :id => @port.id, :format => format
+          response.status.should == 401     
+        end
+      end
+    end
+    
+    context "without authorization token" do 
+      [:json, :xml, :html].each do |format| 
+        it "should return 401 unauthorized code for #{format}" do
+          @port = Factory.create(:portfolio)
+          get :show, :id => @port.id, :format => format
+          response.status.should == 401
+        end     
+      end
+    end
+    
+    context "with valid authorization token" do
+      before :each do
+        request.env['X-AUTH-TOKEN'] = @auth_token
+        @port = Factory.create(:portfolio)
+        get :show, :id => @port.id, :format => :json
+        @parsed = JSON.parse(response.body)
+      end
+      it "responds with success 200 status code" do
+        response.status.should == 200       
+      end    
+      it "responds with JSON format" do
+        response.header['Content-Type'].should include 'application/json'
+      end
+      it "responds with the asked for portfolio" do
+        @parsed['portfolio']['id'].should == @port.id
+      end
+      it "responds with the portfolio name" do
+        @parsed['portfolio']['name'].should == @port.name
+      end
+    end 
+  end
+  
+  ### POST CREATE ========================================================
   describe "POST create" do
     def post_portfolio attrs, format
       request.env['X-AUTH-TOKEN'] = @auth_token
@@ -70,17 +121,23 @@ describe V1::PortfoliosController, :type => :controller do
         before :each do
            @port_attrs = FactoryGirl.attributes_for(:portfolio)
            post_portfolio(@port_attrs, :json)
-        end
-          
+        end         
         it "responds with success 200 status code" do
           response.status.should == 200       
-        end
-        
+        end       
         it "responds with JSON format" do
           response.header['Content-Type'].should include 'application/json'
         end
       end
     end
+  end
+  
+  describe "PUT update" do
+    pending
+  end
+  
+  describe "DELETE" do
+    pending
   end
       
 #  describe "portfolios listed for user" do

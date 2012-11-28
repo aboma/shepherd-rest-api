@@ -4,23 +4,28 @@ class V1::UsersController < V1::ApplicationController
   def index
     @users = User.all
     @user_presenter = @users.map {|u| V1::UserPresenter.new(u).as_json } 
-    respond_with @user_presenter
+    render :json => @user_presenter.as_json
   end
   
   def show
-    #TODO require admin rights
     @user = User.find_by_id( params[:id] )
-    render :status => 404 unless @user
-    @user_presenter = V1::UserPresenter.new(@user)
-    respond_with @user_presenter.as_json
+    respond_to do |format|
+      format.json do
+        render :json => {}, :status => 404 unless @user
+        @user_presenter = V1::UserPresenter.new(@user)
+        render :json => @user_presenter.as_json
+      end
+    end
   end
   
   def create
-    @user = User.new(params[:email])
-    if @user.save
-      redirect_to root_url, :notice => "Signed up!"
+    @user = User.new(params[:email].merge(:created_by_id => current_user.id, :updated_by_id => current_user.id))
+    @user.save
+    if @user.valid? 
+      @user_presenter = V1::UserPresenter.new(@user)
+      render :json => @user_presenter.as_json 
     else
-      render :new
+      head no_content, :status => 422
     end
   end
 

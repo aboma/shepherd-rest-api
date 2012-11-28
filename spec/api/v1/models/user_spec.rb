@@ -25,31 +25,31 @@ describe User do
     end
   end
   
-  describe "should require an email" do
+  describe "requires an email" do
     before { @user.email = ' ' }
     it { should_not be_valid }
     specify { @user.save.should be false }
   end
   
-  describe "should require a first name" do
+  describe "requires a first name" do
     before { @user.first_name = ' ' }
     it { should_not be_valid }
     specify { @user.save.should be false }
   end
   
-  describe "should require a last name" do
+  describe "requires a last name" do
     before { @user.last_name = ' ' }
     it {should_not be_valid }
     specify { @user.save.should be false }
   end
   
-  describe "should require a password" do
+  describe "requires a password" do
     before { @user.password = @user.password_confirmation = ' ' }
     it { should_not be_valid }
     specify { @user.save.should be false }
   end
   
-  describe "should require email to be unique" do
+  describe "requires email to be unique" do
     before do
       user_with_same_email = @user.dup
       user_with_same_email.email = @user.email.upcase
@@ -77,28 +77,28 @@ describe User do
     end
   end
   
-  describe "should require password to be at least 8 characters" do
+  describe "requires password to be at least 8 characters" do
     before { @user.password = "a" * 7 }
     it { should_not be_valid }
     specify { @user.save.should be false }
   end
   
-  describe "should require that password match password_confirmation" do
+  describe "requires that password match password_confirmation" do
     before { @user.password_confirmation = "doesnotmatch" }
     it { should_not be_valid }
     specify { @user.save.should be false }
   end
   
-  describe "should require a created by user id" do
+  describe "requires a created by user id" do
     before { @user.created_by_id = nil }
     it { should_not be_valid }
-    specify { @user.save.should_not be_valid }
+    specify { @user.save.should be false}
   end
   
-  describe "should require an updated by user id" do
+  describe "requires an updated by user id" do
     before { @user.updated_by_id = nil }
     it { should_not be_valid }
-    specify { @user.save.should_not be_valid }
+    specify { @user.save.should be false }
   end
   
   describe "should save a created_at date" do
@@ -116,7 +116,7 @@ describe User do
     specify do
       @user.should be_valid 
       @user.updated_at.should be_present 
-      @user.updated_at.should_not be @original_up_time 
+      @user.updated_at.should_not == @original_up_time 
     end 
   end
 end

@@ -35,7 +35,7 @@ describe V1::PortfoliosController, :type => :controller do
     context "with invalid authorization token" do
       [:json, :xml, :html].each do |format| 
         it "should return 401 unauthorized code for #{format}" do
-          @port = Factory.create(:portfolio)
+          @port = FactoryGirl.create(:portfolio)
           request.env['X-AUTH-TOKEN'] = '1111'
           get :show, :id => @port.id, :format => format
           response.status.should == 401     
@@ -46,7 +46,7 @@ describe V1::PortfoliosController, :type => :controller do
     context "without authorization token" do 
       [:json, :xml, :html].each do |format| 
         it "should return 401 unauthorized code for #{format}" do
-          @port = Factory.create(:portfolio)
+          @port = FactoryGirl.create(:portfolio)
           get :show, :id => @port.id, :format => format
           response.status.should == 401
         end     
@@ -56,7 +56,7 @@ describe V1::PortfoliosController, :type => :controller do
     context "with valid authorization token" do
       before :each do
         request.env['X-AUTH-TOKEN'] = @auth_token
-        @port = Factory.create(:portfolio)
+        @port = FactoryGirl.create(:portfolio)
         get :show, :id => @port.id, :format => :json
         @parsed = JSON.parse(response.body)
       end

@@ -28,7 +28,6 @@ ActiveRecord::Schema.define(:version => 20121116033801) do
   create_table "portfolios", :force => true do |t|
     t.string   "name",          :null => false
     t.string   "description"
-    t.datetime "deleted_at"
     t.integer  "created_by_id", :null => false
     t.integer  "updated_by_id"
     t.integer  "deleted_by_id"
@@ -58,6 +57,9 @@ ActiveRecord::Schema.define(:version => 20121116033801) do
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
     t.string   "authentication_token"
+    t.integer  "created_by_id",                          :null => false
+    t.integer  "updated_by_id"
+    t.integer  "deleted_by_id"
     t.datetime "created_at",                             :null => false
     t.datetime "updated_at",                             :null => false
   end

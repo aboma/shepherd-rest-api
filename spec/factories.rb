@@ -6,6 +6,8 @@ FactoryGirl.define do
     last_name "User"
     password "goodpass"
     password_confirmation {|u| u.password }
+    created_by_id 1
+    updated_by_id 1
   end
   
   factory :portfolio do

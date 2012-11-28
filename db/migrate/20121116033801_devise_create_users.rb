@@ -37,6 +37,10 @@ class DeviseCreateUsers < ActiveRecord::Migration
       ## Token authenticatable
       t.string :authentication_token
 
+      ## Luxin auditing
+      t.integer   :created_by_id,    :null => false
+      t.integer   :updated_by_id,    :default => nil
+      t.integer   :deleted_by_id,    :default => nil
 
       t.timestamps
     end

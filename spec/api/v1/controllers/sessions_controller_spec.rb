@@ -46,6 +46,32 @@ describe V1::SessionsController, :type => :controller do
     end
   end
   
+  describe "SHOW session" do
+    context "authorized user" do
+      def show_session
+        request.env["devise.mapping"] = Devise.mappings[:user]
+        request.env['X-AUTH-TOKEN'] = @auth_token
+        get :show, :id => @auth_token, :format => :json
+      end      
+      it "returns 200 success code" do
+        show_session
+        response.status.should == 200
+      end
+    end
+    
+    context "unauthorized user" do
+      def show_session_invalid
+        request.env["devise.mapping"] = Devise.mappings[:user]
+        get :show, :id => 1111111, :format => :json
+      end    
+      it "returns 401 unauthorized" do
+        show_session_invalid
+        response.status.should == 401
+      end
+    end
+  end
+  
+  #TODO - make this valid for all formats
   describe "DESTROY session" do
     context "unauthorized user" do
       def invalid_destroy_session

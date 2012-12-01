@@ -4,7 +4,7 @@ LuxinDAM::Application.routes.draw do
     devise_for :users
  
     devise_scope :user do
-      resources :sessions, :only => [:create, :destroy]
+      resources :sessions, :only => [:create, :destroy, :show]
     end
     #get "logout" => "sessions#destroy", :as => "logout"
     #get "login" => "sessions#new", :as => "login"

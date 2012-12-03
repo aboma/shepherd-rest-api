@@ -20,13 +20,8 @@ class V1::SessionsController < Devise::SessionsController
   def show
     respond_to do |format|
       format.json do
-        if params[:auth_token] != params[:id]
-          failure 
-        else
-          current_user = warden.authenticate!(:scope => resource_name)
-          failure unless current_user
-          render :status => 200, :json => {} if current_user
-        end
+        # if it gets here, token is valid
+        render :status => 200, :json => {}
       end      
     end
   end

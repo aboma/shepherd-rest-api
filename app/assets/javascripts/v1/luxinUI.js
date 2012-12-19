@@ -1,62 +1,28 @@
-Luxin.ChosenSelect = Ember.Select.extend(Luxin.CustomActionAttacher, {
-	chosenOptions : {},
-	multiple : false,
-	templateName : 'v1/templates/menus/chosen-select',
-
+// select box utilizing Select2 functionality
+Luxin.Select2 = Ember.Select.extend({
 	didInsertElement : function() {
 		this._super();
-		this.$().chosen();
-	},
-
-	_closeChosen : function() {
-		// trigger escape to close chosen
-		this.$().next('.chzn-container-active').find('input').trigger({
-			type : 'keyup',
-			which : 27
+		this.$().select2({
+			containerCssClass: 'select2-portfolio'
+		});
+		this.$().on('change', function(e) {
+			if (e.val) {
+				Luxin.log('user selected item ' + e.val);
+			}
 		});
 	},
-
+	
+	// trigger change event on selectbox once data
+	// has been loaded to update options values
 	itemsChanged : function() {
-		console.log('chosen itemsChanged');
-		this.$().trigger('liszt:updated');
+		console.log('select2 itemsChanged');
 		Ember.run.sync();
 		Ember.run.next(this, function() {
 			Luxin.log('running list update');
-			this.$().trigger('liszt:updated');
+			// trigger change event on select2
+			this.$().change();
 		});
 	}.observes('controller.content.isLoaded'),
-
-	rerender : function() {
-		console.log('rerendering');
-		if (this.get('state') == 'inDOM') {
-			// remove now disconnected html
-			this.$().next('.chzn-container').remove();
-		}
-		this._super();
-	},
-
-	rerenderChosen : function() {
-		this.$().trigger('liszt:updated');
-	},
-
-	change : function(event) {
-		Luxin.log('chosen select value changed');
-		this._super();
-		var value = this.get('multiple') ? this.get('selection') : this.get('value');
-		if (!value)
-			Luxin.log('VALUE IS UNDEFINED');
-		var controller = this.get('controller');
-		if (controller)
-			controller.set('selected', value);
-		// call action if specified on view
-		action = this.get('action');
-		actionHandler = this.get(action);
-		if (actionHandler) {
-			event.context = value;
-			event.view = this;
-			actionHandler.call(action, event);
-		}
-	}
 });
 
 // Put JQuery UI inside its own namespace

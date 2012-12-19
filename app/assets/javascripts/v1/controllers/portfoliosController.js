@@ -19,7 +19,11 @@ Luxin.PortfoliosController = Ember.ArrayController.extend({
  */
   	replaceContent: function() {
   		Luxin.log('controller content is loaded');
-  	}.observes('content.isLoaded')
+  	}.observes('content.isLoaded'),
+  	
+  	selectedPortfolioChanged: function() {
+  		Luxin.log('selected portfolio changed to ' + this.get('selectedPortfolio.name'));
+  	}.observes('selectedPortfolio')
 });
 
 Luxin.PortfolioController = Ember.ObjectController.extend({});

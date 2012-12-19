@@ -9,6 +9,7 @@ gem 'devise', '2.1.2'
 gem "rmagick", '~> 2.13.1'
 gem "carrierwave", '~> 0.6.2'
 gem "active_model_serializers", :git => "git://github.com/rails-api/active_model_serializers.git"
+gem "select2-rails", '~> 3.2.0'
 
 # Bundle edge Rails instead:
 # gem 'rails',     :git => 'git://github.com/rails/rails.git'

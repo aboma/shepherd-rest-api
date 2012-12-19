@@ -1,9 +1,16 @@
 class V1::SessionsController < Devise::SessionsController
-  prepend_before_filter :get_auth_token
   prepend_before_filter :require_no_authentication, :only => [:create ]
-  
+  before_filter :get_auth_token, :only => [:show, :destroy]
+     
   def create
     respond_to do |format|
+      format.html do
+        user = warden.authenticate!(:scope => resource_name)
+        sign_in(resource_name, user) 
+        user.reset_authentication_token!
+        session[:auth_token] = user.authentication_token
+        redirect_to root_path  
+      end
       format.json do
         user = warden.authenticate!(:scope => resource_name)
         render :status => 401, :json => { :message => "email or password incorrect" } unless user
@@ -41,8 +48,10 @@ class V1::SessionsController < Devise::SessionsController
     warden.custom_failure!
     render :status => 401, :json => { :session => { :success => false, :message => "Email or password invalid"}} 
   end
-  
+   
   def get_auth_token
     params[:auth_token] = request.headers["X-AUTH-TOKEN"]
+    logger.info ">>> AUTH_TOKEN MISSING IN SESSION CONTROLLER" unless request.headers["X-AUTH-TOKEN"]
+    logger.info "AUTH TOKEN is #{params[:auth_token]}"
   end
 end

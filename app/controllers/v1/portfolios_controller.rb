@@ -1,6 +1,4 @@
 class V1::PortfoliosController < V1::ApplicationController
-  prepend_before_filter :get_auth_token
-  before_filter :authenticate_user!
   
   respond_to :json
   

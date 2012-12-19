@@ -84,12 +84,12 @@ Luxin.Router = Ember.Router.extend({
 		    	},
 		    	save: function(router, event) {
 		    		var portfolio = event.context;
-		    		// show portfolio, but only after it has been created
-		    		// and has an id (for routing)
+		    		// create callback so that portfolio is shown once it is created
+		    		// and has an id (for URL serialization)
 		    		portfolio.didCreate = function() {
-		    			router.transitionTo('show_portfolio', portfolio);	
+		    			router.transitionTo('root.portfolios.show_portfolio', portfolio);		
 		    		};
-		    		this.transaction.commit();
+		    		this.transaction.commit();		    		
 		    	},
 		    	cancel: function(router, event) {
 		    		router.transitionTo('root.portfolios');
@@ -104,39 +104,12 @@ Luxin.Router = Ember.Router.extend({
 		    	}
 		    }),
 		    add_asset: Ember.Route.extend({
-		    	route: '/:portfolio_id/new',
+		    	route: '/:portfolio_id/add',
 		    	transaction: null,
-		    	connectOutlets: function(router, portfolio) {
-		    		Luxin.log('showing new asset form');
-		    		var ac = router.get("applicationController");
-		    		ac.connectOutlet({ name: 'newAsset', outletName: 'detail', context: portfolio});
-		    	},
-		    	upload: function(router, event) {
-		    		var form = event.target.form;
-		    		var view = event.view;
-		    		var form_data = new FormData(form);
-		    		// append portfolio_id
-		    		form_data.append('portfolio_id', event.context.get('id'));
-		    		var uploadModel = new Luxin.Asset();
-		    		var success_callback = function(){
-		    			Luxin.log('uploaded!');
-		    		}
-		    		var error_callback = function() {
-		    			Luxin.log('error uploading');
-		    		}
-		    		uploadModel.upload(form_data, success_callback, error_callback);
-		    		console.log('upload event triggered');
-		    		event.preventDefault();
+		    	connectOutlets: function(router) {
+		    		Luxin.log('showing add asset form');
 		    	}
 		    })
-	    }),
-	    assets: Ember.Route.extend({
-	    	route: '/assets',
-	    	connectOutlets: function(router) {
-	    		Luxin.log('showing add asset form');
-	    		var ac = router.get("applicationController");
-	    		ac.connectOutlet({ name: 'assets'});
-	    	}
 	    })
 	})
 });

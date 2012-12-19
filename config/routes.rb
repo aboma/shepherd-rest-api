@@ -1,13 +1,15 @@
 LuxinDAM::Application.routes.draw do
   
   current_api_routes = lambda do
-    devise_for :users
+    #match '/*path' => 'application#options', :via => :options
+        
+    devise_for :users, :path_names => { :sign_up => "login" }
  
     devise_scope :user do
-      resources :sessions, :only => [:create, :destroy, :show]
+      resources :sessions, :only => [:index, :create, :destroy, :show]
+      get "logout" => "sessions#destroy", :as => "logout"
+      get "login" => "sessions#new", :as => "login"
     end
-    #get "logout" => "sessions#destroy", :as => "logout"
-    #get "login" => "sessions#new", :as => "login"
     resources :portfolios        
     #resources :users
     #resources :sessions
@@ -16,7 +18,7 @@ LuxinDAM::Application.routes.draw do
   end
   
   constraints ApiVersion.new(1) do
-    scope :module => :v1, &current_api_routes
+    scope :module => :V1, &current_api_routes
   end
 
   # The priority is based upon order of creation:

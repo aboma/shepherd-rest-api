@@ -5,7 +5,15 @@ Luxin.Router = Ember.Router.extend({
 	root : Ember.Route.extend({
 		index : Ember.Route.extend({
 			route : '/',
-			redirectsTo : 'portfolios'
+			//redirectsTo : 'portfolios',
+			connectOutlets : function(router) {
+				var ac = router.get('applicationController');
+				ac.connectOutlet({
+					name : 'topnav',
+					outletName : 'topnav'
+				});
+				router.transitionTo('root.portfolios');
+			}
 		}),
 		portfolios : Ember.Route.extend({
 			route : '/portfolios',

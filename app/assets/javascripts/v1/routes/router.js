@@ -11,21 +11,27 @@ Luxin.Router = Ember.Router.extend({
 			route : '/portfolios',
 			showPortfolio : Ember.Route.transitionTo('show_portfolio'),
 			createPortfolio : Ember.Route.transitionTo('new_portfolio'),
+			edit : Ember.Route.transitionTo('edit_portfolio'),
+			add : Ember.Route.transitionTo('add_asset'),
 			connectOutlets : function(router) {
 				Luxin.log('setting up portfolios route');
-				var ac = router.get("applicationController");
+				var ac = router.get('applicationController');
+				var pc = router.get('portfoliosController');
 				ac.connectOutlet({
 					name : 'portfolios',
 					outletName : 'master',
 					context : Luxin.store.findQuery(Luxin.Portfolio, '')
-				});
+				});					
 				// bind change in selected portfolio to trigger routing 
 				// to show portfolio
-				router.get('portfoliosController').addObserver('selectedPortfolio', function() {
-					var portfolio = this.get('selectedPortfolio');
-					if (portfolio)
-						router.transitionTo('root.portfolios.show_portfolio', portfolio);
-				});
+				if (!pc.hasObserverFor('selectedPortfolio')) {
+					Luxin.log('selected portfolio changed to ' + this.get('selectedPortfolio.name'));
+					pc.addObserver('selectedPortfolio', function() {
+						var portfolio = this.get('selectedPortfolio');
+						if (portfolio)
+							router.transitionTo('root.portfolios.show_portfolio', portfolio);
+					});
+				}
 			},
 
 			show_portfolio : Ember.Route.extend({
@@ -42,8 +48,6 @@ Luxin.Router = Ember.Router.extend({
 				add : Ember.Route.transitionTo('add_asset'),
 				connectOutlets : function(router, portfolio) {
 					Luxin.log('showing portfolio');
-					//var psc = router.get('portfoliosController');
-					//psc.set('selected', portfolio);
 					var ac = router.get("applicationController");
 					ac.connectOutlet({
 						name : 'portfolio',
@@ -70,13 +74,18 @@ Luxin.Router = Ember.Router.extend({
 						this.transaction.rollback();
 						this.transaction.destroy();
 					}
-					router.transitionTo('root.portfolios.show_portfolio',
-							event.context);
+					router.transitionTo('root.portfolios.show_portfolio', event.context);
 				},
 				remove : function(router, event) {
-					event.context.deleteRecord();
+					var portfolio = event.context;
+					var portfoliosController = router.get('portfoliosController');
+					// delete portfolio and return to portfolios list
+					portfolio.one('didDelete', function() {
+						portfoliosController.set('selectedPortfolio', null);
+						router.transitionTo('root.portfolios');
+					});
+					portfolio.deleteRecord();
 					this.transaction.commit();
-					router.transitionTo('root.portfolios');
 				},
 				save : function(router, event) {
 					portfolio = event.context;
@@ -84,12 +93,13 @@ Luxin.Router = Ember.Router.extend({
 					// clean up unused transaction
 					if (portfolio.get('isDirty')) {
 						// callback will show portfolio once the id is available
-						portfolio.didLoad = function() {
-							router.transitionTo('show_portfolio', portfolio);
-						}
+						portfolio.one('didLoad', function() {
+							router.transitionTo('root.portfolios.show_portfolio', portfolio);
+						});
 						this.transaction.commit();
+					} else {
+						router.transitionTo('root.portfolios.show_portfolio', portfolio);
 					}
-					router.transitionTo('show_portfolio', portfolio);
 				},
 				connectOutlets : function(router, portfolio) {
 					Luxin.log('showing edit portfolio form for '
@@ -117,8 +127,7 @@ Luxin.Router = Ember.Router.extend({
 				connectOutlets : function(router) {
 					Luxin.log('showing new portfolio form');
 					this.transaction = Luxin.store.transaction();
-					var newPortfolio = this.transaction.createRecord(
-							Luxin.Portfolio, {});
+					var newPortfolio = this.transaction.createRecord(Luxin.Portfolio, {});
 					var ac = router.get("applicationController");
 					ac.connectOutlet({
 						name : 'editPortfolio',
@@ -129,19 +138,12 @@ Luxin.Router = Ember.Router.extend({
 				save : function(router, event) {
 					var portfolio = event.context;
 					// create callback so that portfolio is shown once it is
-					// created
-					// and has an id (for URL serialization)
-					// clean up unused transaction;
+					// created and has an id (for URL serialization)
 					if (portfolio.get('isDirty')) {
 						// callback will show portfolio once the id is available
-						portfolio.one('didCreate',
-								function() {
-									Luxin.log('portfolio id is '
-											+ portfolio.get('id'));
-									router.transitionTo(
-											'root.portfolios.show_portfolio',
-											portfolio);
-								});
+						portfolio.one('didCreate', function() {
+							router.transitionTo('root.portfolios', portfolio);
+						});
 						this.transaction.commit();
 					}
 				},

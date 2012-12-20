@@ -2,8 +2,13 @@
 Luxin.Select2 = Ember.Select.extend({
 	didInsertElement : function() {
 		this._super();
+		var placeholderText = this.get('placeholderText');
+		if (!placeholderText)
+			this.set('placeholderText', '');
 		this.$().select2({
-			containerCssClass: 'select2-portfolio'
+			containerCssClass: 'select2-portfolio',
+			placeholder: placeholderText,
+			allowClear: true
 		});
 		this.$().on('change', function(e) {
 			if (e.val) {
@@ -12,17 +17,31 @@ Luxin.Select2 = Ember.Select.extend({
 		});
 	},
 	
+	// clear the selected value
+	clear : function() {
+		this.$().select2('val', '');
+		this.get('controller').clearSelected();
+	},
+	
 	// trigger change event on selectbox once data
 	// has been loaded to update options values
 	itemsChanged : function() {
 		console.log('select2 itemsChanged');
 		Ember.run.sync();
 		Ember.run.next(this, function() {
-			Luxin.log('running list update');
+			Luxin.log('updating select2 options list');
 			// trigger change event on select2
 			this.$().change();
+			// set value to null
+//			/this.clear();
 		});
 	}.observes('controller.content.isLoaded'),
+	
+	selectedItemChanged : function() {
+		var value = this.get('selection');
+		Luxin.log('selected item binding has changed to' + value + '; changing select2');
+		this.itemsChanged();
+	}.observes('selection')
 });
 
 // Put JQuery UI inside its own namespace

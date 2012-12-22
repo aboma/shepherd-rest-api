@@ -177,12 +177,43 @@ Luxin.Router = Ember.Router.extend({
 					ac.disconnectOutlet("detail");
 				}
 			}),
-			add_asset : Ember.Route.extend({
-				route : '/:portfolio_id/add',
-				transaction : null,
-				connectOutlets : function(router) {
-					console.log('showing add asset form');
-				}
+		    add_asset: Ember.Route.extend({
+		    	route: '/:id/add',
+				deserialize : function(router, context) {
+					return Luxin.Portfolio.find(context.id);
+				},
+				serialize : function(router, context) {
+					return {
+						id : context.id
+					}
+				},
+		    	transaction: null,
+		    	connectOutlets: function(router, portfolio) {
+		    	    console.log('showing add asset form');
+		    	    console.log('showing new asset form');
+		    	    var ac = router.get("applicationController");
+		    	    ac.connectOutlet({ 
+		    	    	name: 'newAsset', 
+		    	    	outletName: 'detail', 
+		    	    	context: portfolio
+		    	    });
+		    	},
+		    	upload: function(router, event) {
+		    	    var form = event.target.form;
+		    	    var view = event.view;
+		    	    var form_data = new FormData(form);
+		    	    var uploadModel = new Luxin.Asset();
+		    	    var success_callback = function(){
+		    			console.log('uploaded!');
+		    			router.transitionTo('root.portfolios.show_portfolio', event.context)
+		    	    };
+		    	    var error_callback = function() {
+		    	        console.log('error uploading');
+		    	    };
+		    	    uploadModel.upload(form_data, success_callback, error_callback);
+		    	    console.log('upload event triggered');
+		    	    event.preventDefault();
+	    	 	}
 			})
 		})
 	})

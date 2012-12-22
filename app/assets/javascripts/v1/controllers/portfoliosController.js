@@ -4,6 +4,7 @@ Luxin.PortfoliosController = Ember.ArrayController.extend({
 	selectedPortfolio: null,
 	
 	clearSelected : function() {
+		console.log('clearing selected portfolio');
 		this.set('selectedPortfolio', null);
 	},
 	
@@ -23,9 +24,9 @@ Luxin.PortfoliosController = Ember.ArrayController.extend({
   	}.property('arrangedContent.@each.name', 'portfolioNameFilter').cacheable(),
  */
   	contentLoaded: function() {
-  		Luxin.log('controller content is loaded');
+  		console.log('controller content is loaded');
   		// set default value to null so prompt is shown, not first item
-  		this.set('selectedPortfolio', null);
+  		//this.set('selectedPortfolio', null);
   	}.observes('content.isLoaded')
 });
 

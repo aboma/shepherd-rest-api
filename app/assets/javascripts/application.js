@@ -6,7 +6,6 @@
 //
 //= require jquery-1.8.3
 //= require handlebars
-//= require debug-console-log-v0.4
 //= require ember-latest.js
 //= require ember-data-latest.js
 //= require bootstrap-modal

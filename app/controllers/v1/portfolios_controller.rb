@@ -59,7 +59,7 @@ class V1::PortfoliosController < V1::ApplicationController
   def destroy  
     @portfolio = Portfolio.find(params[:id])
     @portfolio.destroy
-    head :no_content
+    render :json => {}
   end
   
 end

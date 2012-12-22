@@ -12,35 +12,41 @@ Luxin.Select2 = Ember.Select.extend({
 		});
 		this.$().on('change', function(e) {
 			if (e.val) {
-				Luxin.log('user selected item ' + e.val);
+				console.log('user selected item ' + e.val);
 			}
 		});
 	},
 	
 	// clear the selected value
 	clear : function() {
+		console.log('clearing selected value');
 		this.$().select2('val', '');
-		this.get('controller').clearSelected();
 	},
+	
+	// respond to load of data through binding
+	itemsLoaded : function() {
+		console.log('select2 items loaded');
+		this.itemsChanged();
+	}.observes('controller.content.isLoaded'),
 	
 	// trigger change event on selectbox once data
 	// has been loaded to update options values
-	itemsChanged : function() {
-		console.log('select2 itemsChanged');
+	itemsChanged : function(clearSelection) {
 		Ember.run.sync();
 		Ember.run.next(this, function() {
-			Luxin.log('updating select2 options list');
+			console.log('updating select2 options list');
 			// trigger change event on select2
 			this.$().change();
-			// set value to null
-//			/this.clear();
+			if (clearSelection)
+				this.clear();
 		});
-	}.observes('controller.content.isLoaded'),
+	},
 	
 	selectedItemChanged : function() {
 		var value = this.get('selection');
-		Luxin.log('selected item binding has changed to' + value + '; changing select2');
-		this.itemsChanged();
+		console.log('selected item changed to ' + value + '; changing select2');
+		var clear = (value === null);
+		this.itemsChanged(clear);
 	}.observes('selection')
 });
 

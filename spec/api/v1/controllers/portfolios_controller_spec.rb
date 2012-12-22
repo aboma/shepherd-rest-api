@@ -132,10 +132,12 @@ describe V1::PortfoliosController, :type => :controller do
     end
   end
   
+### PUT UPDATE ========================================================
   describe "PUT update" do
     pending
   end
   
+### DELETE ========================================================
   describe "DELETE" do
     pending
   end

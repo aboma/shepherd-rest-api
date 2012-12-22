@@ -22,17 +22,18 @@ if (typeof String.prototype.startsWith != 'function') {
 
 window.Luxin = Ember.Application.create();
 
-Luxin.log = function(object) {
-	debug.log(object);
+if (!window.console) {
+	window.console = {};
+	window.console.log = function(object) {}
 }
 
 Luxin.displayError = function(e) {
 	if (typeof e === 'string') {
 		// display error strings
-		debug.log(e);
+		console.log(e);
 	} else if (typeof e === 'object' && e.responseText !== undefined) {
 		// TODO - further process json errors
-		debug.log(e.responseText);
+		console.log(e.responseText);
 	} else {
 		alert("An unexpected error occurred.");
 	}

@@ -15,35 +15,41 @@ Luxin.Router = Ember.Router.extend({
 				router.transitionTo('root.portfolios');
 			}
 		}),
+		// LIST PORTFOLIOS =============================================
 		portfolios : Ember.Route.extend({
 			route : '/portfolios',
+			initialState : 'index',
 			showPortfolio : Ember.Route.transitionTo('show_portfolio'),
 			createPortfolio : Ember.Route.transitionTo('new_portfolio'),
-			edit : Ember.Route.transitionTo('edit_portfolio'),
-			add : Ember.Route.transitionTo('add_asset'),
-			connectOutlets : function(router) {
-				console.log('setting up portfolios route');
-				var ac = router.get('applicationController');
-				var pc = router.get('portfoliosController');
-				ac.connectOutlet({
-					name : 'portfolios',
-					outletName : 'master',
-					context : Luxin.store.findAll(Luxin.Portfolio)
-				});					
-				// bind change in selected portfolio to trigger routing 
-				// to show portfolio
-				if (!pc.hasObserverFor('selectedPortfolio')) {
-					console.log('selected portfolio changed to ' + this.get('selectedPortfolio.name'));
-					pc.addObserver('selectedPortfolio', function() {
-						var portfolio = this.get('selectedPortfolio');
-						if (portfolio)
-							router.transitionTo('root.portfolios.show_portfolio', portfolio);
-						else
-							router.transitionTo('root.portfolios');
-					});
+			index : Ember.Route.extend({
+				edit : Ember.Route.transitionTo('edit_portfolio'),
+				add : Ember.Route.transitionTo('add_asset'),
+				connectOutlets : function(router) {
+					console.log('setting up portfolios route');
+					var ac = router.get('applicationController');
+					var portController = router.get('portfoliosController');
+					ac.connectOutlet({
+						name : 'portfolios',
+						outletName : 'master',
+						context : Luxin.store.findAll(Luxin.Portfolio)
+					});					
+					// clear selected portfolio (needed if coming from substate)
+					portController.clearSelected();
+					// bind change in selected portfolio to trigger routing 
+					// to show portfolio or portfolio list if null
+					if (!portController.hasObserverFor('selectedPortfolio')) {
+						portController.addObserver('selectedPortfolio', function() {
+							console.log('selected portfolio changed to ' + this.get('selectedPortfolio.name'));
+							var portfolio = this.get('selectedPortfolio');
+							if (portfolio)
+								router.transitionTo('root.portfolios.show_portfolio', portfolio);
+							else
+								router.transitionTo('root.portfolios.index');
+						});
+					}
 				}
-			},
-
+			}),
+			// SHOW PORTFOLIO =============================================
 			show_portfolio : Ember.Route.extend({
 				route : '/:id',
 		        deserialize:  function(router, context){
@@ -66,11 +72,11 @@ Luxin.Router = Ember.Router.extend({
 					});
 				},
 				exit : function(router) {
-					var pc = router.get('portfolioController');
-					pc.set('content', null);
+					router.get('portfolioController').set('content', null);
+					router.get('applicationController').disconnectOutlet("detail");
 				}
 			}),
-
+			// EDIT PORTFOLIO =========================================
 			edit_portfolio : Ember.Route.extend({
 				route : '/:id/edit',
 				transaction : null,
@@ -92,18 +98,16 @@ Luxin.Router = Ember.Router.extend({
 				},
 				remove : function(router, event) {
 					var portfolio = event.context;
-					var portfoliosController = router.get('portfoliosController');
 					// delete portfolio and return to portfolios list
 					portfolio.one('didDelete', function() {
 						console.log('portfolio deleted');
-						portfoliosController.clearSelected();
-						router.transitionTo('root.portfolios');
+						router.transitionTo('root.portfolios.index');
 					});
 					portfolio.deleteRecord();
 					this.transaction.commit();
 				},
 				save : function(router, event) {
-					portfolio = event.context;
+					var portfolio = event.context;
 					// commit record if it has changed; exit function will
 					// clean up unused transaction
 					if (portfolio.get('isDirty')) {
@@ -129,13 +133,12 @@ Luxin.Router = Ember.Router.extend({
 					});
 				},
 				exit : function(router) {
+					router.get("editPortfolioController").set('content', null);
+					router.get("applicationController").disconnectOutlet("detail");
 					console.log('exiting portfolio edit');
-					var pc = router.get("editPortfolioController");
-					pc.set('content', null);
-					var ac = router.get("applicationController");
-					ac.disconnectOutlet("detail");
 				}
 			}),
+			// NEW PORTFOLIO ======================================================
 			new_portfolio : Ember.Route.extend({
 				route : '/new',
 				transaction : null,
@@ -149,6 +152,7 @@ Luxin.Router = Ember.Router.extend({
 						outletName : 'detail',
 						context : newPortfolio
 					});
+					//TODO set selected portfolio to null without rerouting
 				},
 				save : function(router, event) {
 					var portfolio = event.context;
@@ -166,17 +170,18 @@ Luxin.Router = Ember.Router.extend({
 					}
 				},
 				cancel : function(router, event) {
-					router.transitionTo('root.portfolios');
 					if (this.transaction) {
 						this.transaction.rollback();
 						this.transaction.destroy();
 					}
+					router.transitionTo('root.portfolios');
 				},
 				exit : function(router) {
 					var ac = router.get("applicationController");
 					ac.disconnectOutlet("detail");
 				}
 			}),
+			// ADD ASSET ==========================================================
 		    add_asset: Ember.Route.extend({
 		    	route: '/:id/add',
 				deserialize : function(router, context) {

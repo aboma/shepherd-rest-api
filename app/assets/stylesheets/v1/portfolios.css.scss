@@ -21,3 +21,7 @@ div#portfolioHeader {
 .select2-portfolio {
   min-width: 210px;
 }
+
+.select2-container .select2-choice, .select2-drop {
+  text-shadow: none;
+}

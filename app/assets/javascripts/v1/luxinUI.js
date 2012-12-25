@@ -11,43 +11,25 @@ Luxin.Select2 = Ember.Select.extend({
 			allowClear: true
 		});
 		this.$().on('change', function(e) {
-			if (e.val) {
-				console.log('user selected item ' + e.val);
+			console.log('user selected item ' + e.val);
+			if (e.val === '') {
+				//TODO - send event to the router notifying it of clear				
 			}
 		});
-	},
-	
-	// clear the selected value
-	clear : function() {
-		console.log('clearing selected value');
-		this.$().select2('val', '');
 	},
 	
 	// respond to load of data through binding
 	itemsLoaded : function() {
 		console.log('select2 items loaded');
-		this.itemsChanged();
-	}.observes('controller.content.isLoaded'),
-	
-	// trigger change event on selectbox once data
-	// has been loaded to update options values
-	itemsChanged : function(clearSelection) {
 		Ember.run.sync();
+		// trigger change event on selectbox once data
+		// has been loaded to update options values
 		Ember.run.next(this, function() {
 			console.log('updating select2 options list');
 			// trigger change event on select2
 			this.$().change();
-			if (clearSelection)
-				this.clear();
 		});
-	},
-	
-	selectedItemChanged : function() {
-		var value = this.get('selection');
-		console.log('selected item changed to ' + value + '; changing select2');
-		var clear = (value === null);
-		this.itemsChanged(clear);
-	}.observes('selection')
+	}.observes('controller.content.isLoaded')
 });
 
 // Put JQuery UI inside its own namespace

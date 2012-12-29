@@ -1,5 +1,8 @@
 // select box utilizing Select2 functionality
 Luxin.Select2 = Ember.Select.extend({
+    defaultTemplate: Ember.Handlebars.compile('<option></option>{{#each view.content}}{{view Ember.SelectOption contentBinding="this"}}{{/each}}'),
+
+    // initialize Select2 once view inserted in DOM
 	didInsertElement : function() {
 		this._super();
 		var placeholderText = this.get('placeholderText');
@@ -9,12 +12,6 @@ Luxin.Select2 = Ember.Select.extend({
 			containerCssClass: 'select2-portfolio',
 			placeholder: placeholderText,
 			allowClear: true
-		});
-		this.$().on('change', function(e) {
-			console.log('user selected item ' + e.val);
-			if (e.val === '') {
-				//TODO - send event to the router notifying it of clear				
-			}
 		});
 	},
 	

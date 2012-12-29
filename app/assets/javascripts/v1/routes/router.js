@@ -12,7 +12,7 @@ Luxin.Router = Ember.Router.extend({
 					name : 'topnav',
 					outletName : 'topnav'
 				});
-				router.transitionTo('root.portfolios');
+				router.transitionTo('root.portfolios.index');
 			}
 		}),
 		// LIST PORTFOLIOS =============================================
@@ -22,6 +22,7 @@ Luxin.Router = Ember.Router.extend({
 			showPortfolio : Ember.Route.transitionTo('show_portfolio'),
 			createPortfolio : Ember.Route.transitionTo('new_portfolio'),
 			index : Ember.Route.extend({
+				route : '',
 				edit : Ember.Route.transitionTo('edit_portfolio'),
 				add : Ember.Route.transitionTo('add_asset'),
 				connectOutlets : function(router) {
@@ -162,7 +163,7 @@ Luxin.Router = Ember.Router.extend({
 						// callback will show portfolio once the id is available
 						portfolio.one('didCreate', function() {
 							console.log('portfolio created');
-							router.transitionTo('root.portfolios.show_portfolio', portfolio);
+							Ember.Route.transitionTo('root.portfolios.show_portfolio', portfolio);	
 						});
 						this.transaction.commit();
 					} else {
@@ -174,7 +175,7 @@ Luxin.Router = Ember.Router.extend({
 						this.transaction.rollback();
 						this.transaction.destroy();
 					}
-					router.transitionTo('root.portfolios');
+					router.transitionTo('root.portfolios.index');
 				},
 				exit : function(router) {
 					var ac = router.get("applicationController");

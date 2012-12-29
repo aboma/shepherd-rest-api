@@ -50,7 +50,7 @@ class V1::PortfoliosController < V1::ApplicationController
           render :json => @portfolio, :serializer => V1::PortfolioSerializer
         else 
           @error_pres = V1::ErrorPresenter.new(@portfolio.errors)
-          render :json => { :error => @error_pres.as_json }, :status => :unprocessable_entity
+          render :json => { :error => @portfolio.errors }, :status => :unprocessable_entity
         end
       end
     end

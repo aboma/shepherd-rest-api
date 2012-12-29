@@ -1,7 +1,7 @@
 LuxinDAM::Application.routes.draw do
   
   current_api_routes = lambda do
-    #match '/*path' => 'application#options', :via => :options
+    match '/*path' => 'application#options', :via => :options
         
     devise_for :users, :path_names => { :sign_up => "login" }
  
@@ -10,9 +10,9 @@ LuxinDAM::Application.routes.draw do
       get "logout" => "sessions#destroy", :as => "logout"
       get "login" => "sessions#new", :as => "login"
     end
-    resources :portfolios        
-    #resources :users
-    #resources :sessions
+    resources :portfolios do
+      resources :assets
+    end       
     resources :assets
     root :to => "application#index"    
   end

@@ -25,4 +25,8 @@ class Portfolio < ActiveRecord::Base
   validates :created_by_id, :presence => true
   validates :updated_by_id, :presence => true
   
+  def assets
+    relationships.find(:all, :params => { :portfolio_id => self.id })
+  end
+  
 end

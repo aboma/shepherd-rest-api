@@ -2,7 +2,7 @@ class V1::PortfolioSerializer < ActiveModel::Serializer
   include Rails.application.routes.url_helpers
   
   attributes :id, :name, :description, :created_at, :updated_at
-  has_many :relationships
+  #has_many :relationships
    
   def attributes
     hash = super

@@ -2,11 +2,22 @@ Luxin.PortfoliosController = Ember.ArrayController.extend({
 	sortProperties: ['name'],
 	sortAscending: true, 
 	selectedPortfolio: null,
+		
+	initialize : function() {
+		this.connectControllers('portfolio');
+	}, 
 	
 	clearSelected : function() {
 		console.log('clearing selected portfolio');
 		this.set('selectedPortfolio', null);
 	},
+	
+	// set selected portfolio if one is set on the portfolioController
+	observeSelected : function(){
+		console.log('responding to change of port on portController');
+		var port = this.portfolioController.get('content');
+		this.set('selected', port);
+	}.observes('portfolioController.content'),
 	
 /*	portfolioNameFilter: '',
 	

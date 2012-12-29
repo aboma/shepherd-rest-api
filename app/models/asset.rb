@@ -24,13 +24,14 @@ class Asset < ActiveRecord::Base
   validates :name, :presence => true, :uniqueness => { :case_sensitive => false }
   
   # create a relationship between a portfolio and this asset
-  def relate!(portfolio_id)
-    relationships.create(:portfolio_id => portfolio_id, :relationship_type => 'Asset') 
+  def relate!(portfolio)
+    relationships.create(:portfolio_id => portfolio.id, :relationship_type => 'Asset') 
   end
   
   # return all portfolios that this asset is associated with
   def portfolios
-    relationships.find_by_asset_id(self.id)
+    #relationships.find_by_asset_id(self.id)
+    relationships.find(:all, :params => { :asset_id => self.id })
   end
   
   # mount Carrierwave uploader for file uploads

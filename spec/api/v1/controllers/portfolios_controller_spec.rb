@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe V1::PortfoliosController, :type => :controller do
   
+  # get a valid authorization to use on requests
   get_auth_token
   
   ### GET INDEX ==================================================
@@ -11,7 +12,7 @@ describe V1::PortfoliosController, :type => :controller do
         it "should return 401 unauthorized code for #{format}" do
           request.env['X-AUTH-TOKEN'] = '1111'
           get :index, :format => format
-          response.status.should == 401     
+          subject.status.should == 401     
         end
       end
     end
@@ -26,7 +27,23 @@ describe V1::PortfoliosController, :type => :controller do
     end
     
     context "with valid authorization token" do
-      pending
+      def get_index format
+          request.env['X-AUTH-TOKEN'] = @auth_token
+          get :index, :format => format
+      end
+      [:xml, :html].each do |format| 
+        it "should return 406 code for format #{format}" do
+          get_index format
+          response.status.should == 406  
+        end
+      end    
+      it "should return 200 success code for json format" do
+          get_index :json
+          response.status.should == 200        
+      end   
+      it "should return list of portfolios in json format" do
+        pending
+      end   
     end 
   end
   

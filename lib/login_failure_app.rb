@@ -14,7 +14,7 @@ class LoginFailureApp < Devise::FailureApp
   def invalid_token
     self.status = 401
     self.content_type = request.format.to_s
-    self.response_body = "Access denied, invalid token."
+    self.response_body = "{ \"error\": \"true\", \"message\": \"Access denied, invalid token.\" }"
   end
   
   def invalid_credentials

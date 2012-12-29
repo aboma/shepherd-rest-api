@@ -7,8 +7,8 @@ class V1::PortfoliosController < V1::ApplicationController
     @portfolios = Portfolio.all
     respond_to do |format|
       format.json do
-          render :json => @portfolios, :each_serializer => V1::PortfolioSerializer
-       end
+        render :json => @portfolios, :each_serializer => V1::PortfolioSerializer
+      end
     end
   end
   

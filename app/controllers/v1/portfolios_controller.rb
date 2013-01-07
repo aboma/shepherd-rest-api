@@ -56,10 +56,19 @@ class V1::PortfoliosController < V1::ApplicationController
     end
   end
 
+  # delete portfolio if it exists
   def destroy  
-    @portfolio = Portfolio.find(params[:id])
-    @portfolio.destroy
-    render :json => {}
+    respond_to do |format|
+      format.json do
+        begin
+          @portfolio = Portfolio.find(params[:id])
+          @portfolio.destroy
+          render :json => {}
+        rescue ActiveRecord::RecordNotFound => e
+          render :json => { :message => 'no portfolio at this address' }, :status => 404
+        end
+      end
+    end
   end
   
 end

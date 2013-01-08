@@ -47,7 +47,7 @@ describe V1::PortfoliosController, :type => :controller do
         response.status.should == 200        
       end   
       it "should return list of portfolios in json format" do
-        @port = FactoryGirl.create(:portfolio)
+        create_portfolio
         get_index :json
         parsed = JSON.parse(response.body)
         #TODO parsed.should have_json_path("portfolios")
@@ -58,9 +58,11 @@ describe V1::PortfoliosController, :type => :controller do
   ### GET SHOW ==========================================================
   describe "GET show" do   
     context "with invalid authorization token" do
+      before :each do
+        create_portfolio
+      end
       [:json, :xml, :html].each do |format| 
         it "should return 401 unauthorized code for #{format}" do
-          @port = FactoryGirl.create(:portfolio)
           request.env['X-AUTH-TOKEN'] = '1111'
           get :show, :id => @port.id, :format => format
           response.status.should == 401     
@@ -69,9 +71,11 @@ describe V1::PortfoliosController, :type => :controller do
     end
     
     context "without authorization token" do 
+      before :each do
+        create_portfolio
+      end
       [:json, :xml, :html].each do |format| 
         it "should return 401 unauthorized code for #{format}" do
-          @port = FactoryGirl.create(:portfolio)
           get :show, :id => @port.id, :format => format
           response.status.should == 401
         end     
@@ -81,8 +85,8 @@ describe V1::PortfoliosController, :type => :controller do
     context "with valid authorization token" do
       context "valid portfolio id" do
         before :each do
+          create_portfolio
           request.env['X-AUTH-TOKEN'] = @auth_token
-          @port = FactoryGirl.create(:portfolio)
           get :show, :id => @port.id, :format => :json
           @parsed = JSON.parse(response.body)
         end
@@ -131,7 +135,7 @@ describe V1::PortfoliosController, :type => :controller do
       end
     end  
     
-    context "with authorization token" do   
+    context "with valid authorization token" do   
       context "with XML or HTML format" do
         pending
       end    
@@ -161,6 +165,9 @@ describe V1::PortfoliosController, :type => :controller do
           end       
           it "responds with JSON format" do
             response.header['Content-Type'].should include 'application/json'
+          end
+          it "responds with Location header" do
+            response.header['Location'].should be_present
           end
         end
       end
@@ -202,7 +209,10 @@ describe V1::PortfoliosController, :type => :controller do
           it "returns 200 success status code" do
             response.status.should == 200
           end
-          it "returns the updated portfolio in JSON format" do
+          it "responds with JSON format" do
+            response.header['Content-Type'].should include 'application/json'
+          end
+          it "returns the updated portfolio" do
             pending
           end
         end
@@ -213,6 +223,9 @@ describe V1::PortfoliosController, :type => :controller do
               update_portfolio( { :id => @port.id + 1 }, :json )
               response.status.should == 422
             end
+          end
+          describe "invalid portfolio id" do
+            pending
           end
         end
       end
@@ -267,7 +280,7 @@ describe V1::PortfoliosController, :type => :controller do
             id = @port.id + 5
             expect {
               delete_portfolio( id, :json)
-            }.to change(Portfolio, :count).by(0)
+            }.to_not change(Portfolio, :count)
           end
           it "returns 404 not found status code" do
             create_portfolio

@@ -18,6 +18,7 @@ class V1::PortfoliosController < V1::ApplicationController
     respond_to do |format|
       format.json do
         if @portfolio.valid?
+          response.headers['Location'] = portfolio_path(@portfolio)
           render :json => @portfolio, :serializer => V1::PortfolioSerializer
         else 
           render :json => { :error => @portfolio.errors }, :status => :unprocessable_entity

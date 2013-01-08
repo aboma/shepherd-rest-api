@@ -43,14 +43,18 @@ class V1::PortfoliosController < V1::ApplicationController
   # update portfolio and save updated by information for audit
   def update
     @portfolio = Portfolio.find(params[:id])
-    @result = @portfolio.update_attributes(params[:portfolio].merge(:updated_by_id => current_user.id))
+    if (params[:portfolio][:id] && params[:portfolio][:id] != params[:id])
+      error = { :message => 'can not change portfolio id' }
+    else
+      @result = @portfolio.update_attributes(params[:portfolio].merge(:updated_by_id => current_user.id))
+    end
     respond_to do |format|
       format.json do
         if @result
           render :json => @portfolio, :serializer => V1::PortfolioSerializer
         else 
-          @error_pres = V1::ErrorPresenter.new(@portfolio.errors)
-          render :json => { :error => @portfolio.errors }, :status => :unprocessable_entity
+          errors = @portfolio.errors ? @portfolio.errors : error
+          render :json => { :error => errors }, :status => :unprocessable_entity
         end
       end
     end

@@ -5,6 +5,11 @@ describe V1::PortfoliosController, :type => :controller do
   # get a valid authorization to use on requests
   get_auth_token
   
+  # global helper methods
+  def create_portfolio 
+    @port = FactoryGirl.create(:portfolio) 
+  end
+  
   ### GET INDEX ==================================================
   describe "GET index" do   
     context "with invalid authorization token" do
@@ -164,17 +169,59 @@ describe V1::PortfoliosController, :type => :controller do
   
 ### PUT UPDATE ========================================================
   describe "PUT update" do
-    describe "user should not be able to change portfolio id number" do
-      pending
+    context "unauthorized user" do
+      [:json, :xml, :html].each do |format| 
+        it "returns 401 unauthorized code for #{format}" do
+          create_portfolio
+          request.env['X-AUTH-TOKEN'] = '1111'
+          put :update, :id => @port.id, :portfolio => { :name => :update } , :format => format 
+          response.status.should == 401     
+        end
+      end
+    end
+    context "authorized user" do
+      def update_portfolio(attrs, format)
+        request.env['X-AUTH-TOKEN'] = @auth_token
+        put :update, :id => @port.id, :portfolio => attrs , :format => format         
+      end
+      context "HTML or XML format" do
+        it "returns 406 not acceptable code" do
+          create_portfolio
+          [:html, :xml].each do |format|
+            update_portfolio( { :description => :boom }, format )
+            response.status.should == 406
+          end
+        end
+      end
+      context "JSON format" do
+        context "valid input" do
+          before :each do
+            create_portfolio
+            update_portfolio( { :description => :boom }, :json )
+          end
+          it "returns 200 success status code" do
+            response.status.should == 200
+          end
+          it "returns the updated portfolio in JSON format" do
+            pending
+          end
+        end
+        context "invalid input" do
+          describe "changing portfolio id number" do
+            it "returns status code 422" do
+              create_portfolio
+              update_portfolio( { :id => @port.id + 1 }, :json )
+              response.status.should == 422
+            end
+          end
+        end
+      end
     end
   end
   
 ### DELETE ========================================================
   describe "DELETE" do 
-    def create_portfolio 
-      @port = FactoryGirl.create(:portfolio) 
-    end
-    
+   
     context "unauthorized user" do
       [:json, :xml, :html].each do |format| 
         it "should return 401 unauthorized code for #{format}" do

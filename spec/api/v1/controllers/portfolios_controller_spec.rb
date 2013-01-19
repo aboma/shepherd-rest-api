@@ -1,5 +1,7 @@
 require 'spec_helper'
 
+# Uses shared examples to test common controller functionality
+# such as authorization. These are loacted in shared_examples.rb
 describe V1::PortfoliosController, :type => :controller do
   
   # get a valid authorization to use on requests
@@ -10,42 +12,21 @@ describe V1::PortfoliosController, :type => :controller do
     @port = FactoryGirl.create(:portfolio) 
   end
   
-  ### Shared Examples
-  shared_examples_for "a protected action" do 
-    [:json, :xml, :html].each do |format| 
-      context "with invalid authorization token" do
-        it "should return 401 unauthorized code for #{format}" do
-          token = '111'
-          action(format, token)
-          subject.status.should == 401     
-        end
-      end
-      
-      context "without authorization token" do   
-        it "should return 401 unauthorized code for #{format}" do
-          token = nil
-          action(format, token)
-          response.status.should == 401
-        end     
-      end
-    end
-  end
-  
   ### GET INDEX ==================================================
   describe "GET index" do   
-    def get_index(format, token)
-      request.env['X-AUTH-TOKEN'] = token if token
-      get :index, :format => format
-    end
-    
+    #shared example
     it_should_behave_like "a protected action" do
-      def action(format, token)
-        request.env['X-AUTH-TOKEN'] = token if token
+      def action(format, data)
         get :index, :format => format
       end      
     end
 
     context "with valid authorization token" do
+      def get_index(format, token)
+        request.env['X-AUTH-TOKEN'] = token if token
+        get :index, :format => format
+      end
+    
       [:xml, :html].each do |format| 
         it "should return 406 code for format #{format}" do
           get_index format, @auth_token
@@ -66,31 +47,14 @@ describe V1::PortfoliosController, :type => :controller do
   end
   
   ### GET SHOW ==========================================================
-  describe "GET show" do   
-    context "with invalid authorization token" do
-      before :each do
-        create_portfolio
-      end
-      [:json, :xml, :html].each do |format| 
-        it "should return 401 unauthorized code for #{format}" do
-          request.env['X-AUTH-TOKEN'] = '1111'
-          get :show, :id => @port.id, :format => format
-          response.status.should == 401     
-        end
-      end
-    end
-    
-    context "without authorization token" do 
-      before :each do
-        create_portfolio
-      end
-      [:json, :xml, :html].each do |format| 
-        it "should return 401 unauthorized code for #{format}" do
-          get :show, :id => @port.id, :format => format
-          response.status.should == 401
-        end     
-      end
-    end
+  describe "GET show" do  
+    #shared example
+    it_should_behave_like "a protected action" do
+      let(:data) { { :id => @port.id } }
+      def action(format, data)
+        get :show, data, :format => format
+      end      
+    end 
     
     context "with valid authorization token" do
       context "valid portfolio id" do
@@ -121,31 +85,19 @@ describe V1::PortfoliosController, :type => :controller do
   
   ### POST CREATE ========================================================
   describe "POST create" do
-    def post_portfolio attrs, format
-      request.env['X-AUTH-TOKEN'] = @auth_token
-      post :create, :portfolio => attrs, :format => format 
-    end 
-      
-    context "without authorization token" do    
-      [:json, :xml, :html].each do |format| 
-        it "should return 401 unauthorized code for #{format}" do
-          post :create, :portfolio => FactoryGirl.attributes_for(:portfolio), :format => format
-          response.status.should == 401   
-        end
-      end
+    #shared example
+    it_should_behave_like "a protected action" do
+      let(:data) { FactoryGirl.attributes_for(:portfolio) }
+      def action(format, data)
+        post :create, :portfolio => data, :format => format 
+      end   
     end
-    
-    context "with invalid authorization token" do
-      [:json, :xml, :html].each do |format| 
-        it "should return 401 unauthorized code for #{format}" do
-          request.env['X-AUTH-TOKEN'] = '1111'
-          post :create, :portfolio => FactoryGirl.attributes_for(:portfolio), :format => format
-          response.status.should == 401     
-        end
-      end
-    end  
-    
-    context "with valid authorization token" do   
+          
+    context "with valid authorization token" do 
+      def post_portfolio attrs, format
+        request.env['X-AUTH-TOKEN'] = @auth_token
+        post :create, :portfolio => attrs, :format => format 
+      end  
       context "with XML or HTML format" do
         pending
       end    
@@ -186,6 +138,7 @@ describe V1::PortfoliosController, :type => :controller do
   
 ### PUT UPDATE ========================================================
   describe "PUT update" do
+    
     context "unauthorized user" do
       [:json, :xml, :html].each do |format| 
         it "returns 401 unauthorized code for #{format}" do

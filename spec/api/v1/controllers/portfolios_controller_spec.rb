@@ -10,45 +10,55 @@ describe V1::PortfoliosController, :type => :controller do
     @port = FactoryGirl.create(:portfolio) 
   end
   
-  ### GET INDEX ==================================================
-  describe "GET index" do   
-    context "with invalid authorization token" do
-      [:json, :xml, :html].each do |format| 
+  ### Shared Examples
+  shared_examples_for "a protected action" do 
+    [:json, :xml, :html].each do |format| 
+      context "with invalid authorization token" do
         it "should return 401 unauthorized code for #{format}" do
-          request.env['X-AUTH-TOKEN'] = '1111'
-          get :index, :format => format
+          token = '111'
+          action(format, token)
           subject.status.should == 401     
         end
       end
-    end
-    
-    context "without authorization token" do   
-      [:json, :xml, :html].each do |format| 
+      
+      context "without authorization token" do   
         it "should return 401 unauthorized code for #{format}" do
-          get :index, :format => format
+          token = nil
+          action(format, token)
           response.status.should == 401
         end     
       end
     end
+  end
+  
+  ### GET INDEX ==================================================
+  describe "GET index" do   
+    def get_index(format, token)
+      request.env['X-AUTH-TOKEN'] = token if token
+      get :index, :format => format
+    end
     
+    it_should_behave_like "a protected action" do
+      def action(format, token)
+        request.env['X-AUTH-TOKEN'] = token if token
+        get :index, :format => format
+      end      
+    end
+
     context "with valid authorization token" do
-      def get_index format
-          request.env['X-AUTH-TOKEN'] = @auth_token
-          get :index, :format => format
-      end
       [:xml, :html].each do |format| 
         it "should return 406 code for format #{format}" do
-          get_index format
+          get_index format, @auth_token
           response.status.should == 406  
-        end
+        end 
       end    
       it "should return 200 success code for json format" do
-        get_index :json
+        get_index :json, @auth_token
         response.status.should == 200        
       end   
       it "should return list of portfolios in json format" do
         create_portfolio
-        get_index :json
+        get_index :json, @auth_token
         parsed = JSON.parse(response.body)
         #TODO parsed.should have_json_path("portfolios")
       end   
@@ -225,7 +235,9 @@ describe V1::PortfoliosController, :type => :controller do
             end
           end
           describe "invalid portfolio id" do
-            pending
+            it "returns status code 404 not found" do
+              pending
+            end
           end
         end
       end
@@ -233,8 +245,7 @@ describe V1::PortfoliosController, :type => :controller do
   end
   
 ### DELETE ========================================================
-  describe "DELETE" do 
-   
+  describe "DELETE" do   
     context "unauthorized user" do
       [:json, :xml, :html].each do |format| 
         it "should return 401 unauthorized code for #{format}" do

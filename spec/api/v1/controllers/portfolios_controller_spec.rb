@@ -16,8 +16,8 @@ describe V1::PortfoliosController, :type => :controller do
   describe "GET index" do   
     #shared example
     it_should_behave_like "a protected action" do
-      def action(format, data)
-        get :index, :format => format
+      def action(args_hash)
+        get :index, :format => args_hash[:format]
       end      
     end
 
@@ -48,13 +48,15 @@ describe V1::PortfoliosController, :type => :controller do
   
   ### GET SHOW ==========================================================
   describe "GET show" do  
-    #shared example
-    it_should_behave_like "a protected action" do
-      let(:data) { { :id => @port.id } }
-      def action(format, data)
-        get :show, data, :format => format
-      end      
-    end 
+    context "unauthorized user" do
+      #shared example
+      it_should_behave_like "a protected action" do
+        let(:data) { { :id => @port.id } }
+        def action(args_hash)
+          get :show, args_hash[:data], :format => args_hash[:format]
+        end      
+      end 
+    end
     
     context "with valid authorization token" do
       context "valid portfolio id" do
@@ -78,7 +80,15 @@ describe V1::PortfoliosController, :type => :controller do
         end
       end
       context "invalid portfolio id" do
-        pending
+        before :each do
+          create_portfolio
+          @port.id += 5
+          request.env['X-AUTH-TOKEN'] = @auth_token
+          get :show, :id => @port.id, :format => :json
+        end
+        it "responds with 404 not found" do
+          response.status.should == 404
+        end
       end
     end 
   end
@@ -86,11 +96,13 @@ describe V1::PortfoliosController, :type => :controller do
   ### POST CREATE ========================================================
   describe "POST create" do
     #shared example
-    it_should_behave_like "a protected action" do
-      let(:data) { FactoryGirl.attributes_for(:portfolio) }
-      def action(format, data)
-        post :create, :portfolio => data, :format => format 
-      end   
+    context "unauthorized user" do
+      it_should_behave_like "a protected action" do
+        let(:data) { FactoryGirl.attributes_for(:portfolio) }
+        def action(args_hash)
+          post :create, :portfolio => args_hash[:data], :format => args_hash[:format] 
+        end   
+      end
     end
           
     context "with valid authorization token" do 
@@ -138,17 +150,18 @@ describe V1::PortfoliosController, :type => :controller do
   
 ### PUT UPDATE ========================================================
   describe "PUT update" do
-    
+    #shared example
     context "unauthorized user" do
-      [:json, :xml, :html].each do |format| 
-        it "returns 401 unauthorized code for #{format}" do
-          create_portfolio
-          request.env['X-AUTH-TOKEN'] = '1111'
-          put :update, :id => @port.id, :portfolio => { :name => :update } , :format => format 
-          response.status.should == 401     
-        end
+      it_should_behave_like "a protected action" do
+        port = FactoryGirl.create(:portfolio) 
+        let(:data) { { :name => :update_name } }
+        let(:id) { port.id }
+        def action(args_hash)
+          put :update, :id => args_hash[:id], :portfolio => args_hash[:data] , :format => args_hash[:format] 
+        end   
       end
     end
+
     context "authorized user" do
       def update_portfolio(attrs, format)
         request.env['X-AUTH-TOKEN'] = @auth_token
@@ -180,16 +193,20 @@ describe V1::PortfoliosController, :type => :controller do
           end
         end
         context "invalid input" do
+          before :each do 
+            create_portfolio
+          end
           describe "changing portfolio id number" do
             it "returns status code 422" do
-              create_portfolio
-              update_portfolio( { :id => @port.id + 1 }, :json )
+              update_portfolio( { :id => @port.id + 111 }, :json )
               response.status.should == 422
             end
           end
           describe "invalid portfolio id" do
             it "returns status code 404 not found" do
-              pending
+              @port.id = '1111'   # change portfolio id to one that does not exist
+              update_portfolio( { :name => 'test' }, :json )
+              response.status.should == 404
             end
           end
         end
@@ -200,13 +217,12 @@ describe V1::PortfoliosController, :type => :controller do
 ### DELETE ========================================================
   describe "DELETE" do   
     context "unauthorized user" do
-      [:json, :xml, :html].each do |format| 
-        it "should return 401 unauthorized code for #{format}" do
-          create_portfolio
-          request.env['X-AUTH-TOKEN'] = '1111'
-          delete :destroy, { :id => @port.id }, :format => format 
-          response.status.should == 401     
-        end
+      it_should_behave_like "a protected action" do
+        port = FactoryGirl.create(:portfolio) 
+        let(:id) { port.id }
+        def action(args_hash)
+          delete :destroy, :id => args_hash[:id] , :format => args_hash[:format] 
+        end   
       end
     end
     
@@ -239,17 +255,17 @@ describe V1::PortfoliosController, :type => :controller do
           end
         end
         context "invalid portfolio number specified" do
-          it "does not change the number of portfolios" do
+          before :each do
             create_portfolio
-            id = @port.id + 5
+            @id = @port.id + 5            
+          end
+          it "does not change the number of portfolios" do
             expect {
-              delete_portfolio( id, :json)
+              delete_portfolio( @id, :json)
             }.to_not change(Portfolio, :count)
           end
           it "returns 404 not found status code" do
-            create_portfolio
-            id = @port.id + 5
-            delete_portfolio( id, :json)
+            delete_portfolio( @id, :json)
             response.status.should == 404
           end
         end

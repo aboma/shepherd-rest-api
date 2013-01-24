@@ -25,7 +25,8 @@ class Asset < ActiveRecord::Base
   
   # create a relationship between a portfolio and this asset
   def relate!(portfolio)
-    relationships.create(:portfolio_id => portfolio.id, :relationship_type => 'Asset') 
+    logger.info("creating asset<->portfolio relationship")
+    relationships.create(:asset_id => self.id, :portfolio_id => portfolio.id, :relationship_type => 'Asset') 
   end
   
   # return all portfolios that this asset is associated with

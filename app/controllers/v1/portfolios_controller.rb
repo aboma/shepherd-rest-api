@@ -62,4 +62,11 @@ class V1::PortfoliosController < V1::ApplicationController
     render :json => {}
   end
   
+  private 
+  
+  def find
+    @portfolio = Portfolio.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    @error = "portfolio not found"
+  end
 end

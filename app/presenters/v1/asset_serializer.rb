@@ -1,4 +1,15 @@
 class V1::AssetSerializer < ActiveModel::Serializer
-  attributes :id, :name, :file, :description, :portfolios
+  include Rails.application.routes.url_helpers
+    
+  attributes :id, :file
+  
+  def attributes
+    hash = super
+    hash[:links] = [
+      { :rel => 'self', :href => assets_path(asset) }
+      #  :rel => 'thumbnail', href => :thumbnail_path }
+    ]
+    hash
+  end
   
 end

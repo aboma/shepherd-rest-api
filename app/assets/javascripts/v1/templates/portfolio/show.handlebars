@@ -9,5 +9,8 @@
 	</div>
 	<div id='portfolioDetails'>
 		<span>Showing {{name}} Portfolio</span>
+		{{#each asset in assets}}
+			<div>Asset {{asset}} exists</div>
+		{{/each}}
 	</div>
 {{/with}}

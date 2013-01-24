@@ -12,7 +12,7 @@
 
 class Relationship < ActiveRecord::Base
   belongs_to :portfolio
-  belongs_to :asset, :class_name => "Asset", :foreign_key => :relationship_id
+  belongs_to :asset  #, :class_name => "Asset", :foreign_key => :relationship_id
   
   validates :asset_id, :presence => true
   validates :portfolio_id, :presence => true

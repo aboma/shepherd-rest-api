@@ -2,6 +2,8 @@ Luxin.Asset = DS.Model.extend({
 	name : DS.attr('string'),
 	url : DS.attr('string'),
 	thumbnail_path : DS.attr('string'),
+	links : DS.attr('links'),
+	portfolio : DS.hasMany('Luxin.Portfolio'),
 
 	upload : function(form_data, success_callback, error_callback) {
 		$.ajax({

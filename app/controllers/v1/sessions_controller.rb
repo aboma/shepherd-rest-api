@@ -27,7 +27,7 @@ class V1::SessionsController < Devise::SessionsController
   def show
     respond_to do |format|
       format.json do
-        # if it gets here, token is valid
+        user = warden.authenticate!(:scope => resource_name)
         render :status => 200, :json => {}
       end      
     end

@@ -10,37 +10,40 @@ describe V1::SessionsController, :type => :controller do
       post :create, :user => { :email => args[:email], :password => args[:pw] }, :format => args[:format]    
     end
     context "unauthorized user" do
-      context "with invalid password for JSON" do
-        it "returns 401 unauthorized code" do
-          post_create_session :email => @user.email, :pw => "#{@pw}sssss", :format => :json
-          response.status.should == 401
-        end
-        
+      context "HTML or XML format" do                 
         [:xml, :html].each do |format| 
           before :each do
             post_create_session :email => @user.email, :pw => "#{@pw}sssss", :format => format 
           end
-          it "returns unauthorized 406 code for #{format}" do
-            response.status.should == 406
+          it "returns unauthorized 401 code for #{format}" do
+            response.status.should == 401
           end
         end
-      end    
-      context "with valid password" do
-        before :each do
-          post_create_session :email => @user.email, :pw => @pw, :format => :json
-          @body = JSON.parse(response.body) 
-        end
-        it "returns success code" do
-          response.status.should == 200
-        end
-        it "returns two fields" do
-          @body['session'].should have(2).items          
-        end
-        it "returns success message" do
-          @body['session']['success'].should be_true
-        end
-        it "returns authentication token" do
-          @body['session']['auth_token'].should be_present
+      end
+      context "JSON format" do
+        context "with invalid password for JSON" do
+          it "returns 401 unauthorized code" do
+            post_create_session :email => @user.email, :pw => "#{@pw}sssss", :format => :json
+            response.status.should == 401
+          end
+        end    
+        context "with valid password" do
+          before :each do
+            post_create_session :email => @user.email, :pw => @pw, :format => :json
+            @body = JSON.parse(response.body) 
+          end
+          it "returns success code" do
+            response.status.should == 200
+          end
+          it "returns two fields" do
+            @body['session'].should have(2).items          
+          end
+          it "returns success message" do
+            @body['session']['success'].should be_true
+          end
+          it "returns authentication token" do
+            @body['session']['auth_token'].should be_present
+          end
         end
       end
     end

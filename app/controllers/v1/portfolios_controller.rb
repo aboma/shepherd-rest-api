@@ -2,7 +2,7 @@ class V1::PortfoliosController < V1::ApplicationController
   
   respond_to :json
   
-  # list all portfolios, including ones marked as deleted
+  # list all portfolios
   def index
     @portfolios = Portfolio.all
     respond_to do |format|

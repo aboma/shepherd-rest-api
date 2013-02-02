@@ -27,7 +27,31 @@ module VilioSharedExamples
     end
   end
   
-  shared_examples_for "responds with JSON" do
+  # Shared example that test a JSON index action on a controller
+  # to see that it returns 406 for other formats and 200
+  # for JSON format
+  shared_examples_for "JSON controller index action" do
+    def get_index(format, token)
+      request.env['X-AUTH-TOKEN'] = token if token
+      get :index, :format => format
+    end
+   
+    [:xml, :html].each do |format| 
+      it "should return 406 code for format #{format}" do
+        get_index format, @auth_token
+        response.status.should == 406  
+      end 
+    end    
+    
+    before :each do
+      get_index :json, @auth_token 
+    end
+    
+    it_should_behave_like "an action that responds with JSON"
+  end
+  
+  # Test whether response is success and content type returned is JSON
+  shared_examples_for "an action that responds with JSON" do
     it "responds with success 200 status code" do
       response.status.should == 200       
     end       

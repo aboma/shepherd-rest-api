@@ -14,6 +14,7 @@ LuxinDAM::Application.routes.draw do
       resources :assets
     end       
     resources :assets
+    resources :relationships
     root :to => "application#index"    
   end
   

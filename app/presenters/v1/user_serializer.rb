@@ -1,4 +1,4 @@
-class V1::UserSerializer < ActiveModel::Serializer
+class V1::UserSerializer < V1::LuxinSerializer
   attributes :id, :email, :last_name, :first_name
   
 end

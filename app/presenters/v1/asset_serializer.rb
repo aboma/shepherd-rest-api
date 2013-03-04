@@ -1,4 +1,4 @@
-class V1::AssetSerializer < ActiveModel::Serializer
+class V1::AssetSerializer < V1::LuxinSerializer
   include Rails.application.routes.url_helpers
     
   attributes :id, :file

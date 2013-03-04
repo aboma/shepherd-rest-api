@@ -1,4 +1,4 @@
-class V1::PortfolioSerializer < ActiveModel::Serializer
+class V1::PortfolioSerializer < V1::LuxinSerializer
   include Rails.application.routes.url_helpers
   
   attributes :id, :name, :description, :created_at, :updated_at

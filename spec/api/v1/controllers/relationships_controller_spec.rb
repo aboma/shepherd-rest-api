@@ -20,5 +20,12 @@ describe V1::RelationshipsController, :type => :controller do
     end
     
     it_should_behave_like "JSON controller index action"
+    
+    describe "with a portfolio_id as a query parameter" do
+      it "returns relationships filtered by portfolio id" do
+        pending
+      end
+    end
+    
   end  
 end

@@ -25,9 +25,8 @@ class V1::RelationshipsController < V1::ApplicationController
   # Find portfolio requested by user, if one is requested,
   # to filter relationships by
   def find_portfolio
-    if (params[:portfolio_id]) 
-      @portfolio = Portfolio.find_by_id(params[:portfolio_id])
-    end
+    return nil unless params[:portfolio_id]
+    @portfolio = Portfolio.find_by_id(params[:portfolio_id])
   rescue ActiveRecord::RecordNotFound
     @error = "portfolio not found"
   end

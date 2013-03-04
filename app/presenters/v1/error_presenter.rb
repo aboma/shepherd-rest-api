@@ -1,4 +1,5 @@
-class V1::ErrorPresenter
+module V1
+class ErrorPresenter
   
   attr_reader :errors
   
@@ -16,4 +17,5 @@ class V1::ErrorPresenter
     error_hash = { :errors => error_hash } if include_root
     error_hash
   end
+end
 end

@@ -1,4 +1,6 @@
-class V1::UserSerializer < V1::LuxinSerializer
-  attributes :id, :email, :last_name, :first_name
-  
+module V1
+  class UserSerializer < V1::LuxinSerializer
+    attributes :id, :email, :last_name, :first_name
+    
+  end
 end

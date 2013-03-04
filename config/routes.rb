@@ -8,7 +8,6 @@ LuxinDAM::Application.routes.draw do
       get "logout" => "sessions#destroy", :as => "logout"
       get "login" => "sessions#new", :as => "login"
     end
-    devise_for :users, :path_names => { :sign_up => "login" }, :class_name => 'V1::User'
   
     resources :portfolios do
       resources :assets
@@ -18,8 +17,9 @@ LuxinDAM::Application.routes.draw do
     root :to => "application#index"    
   end
   
-  constraints ApiVersion.new(1) do
-    scope :module => :V1, &current_api_routes
+  constraints ApiVersion.new(:version => 1, :default => true) do
+    scope :module => :V1, :defaults => {:format => 'json'}, &current_api_routes
+    devise_for :users, :path_names => { :sign_up => "login" }, :class_name => 'V1::User'
   end
   
   # The priority is based upon order of creation:

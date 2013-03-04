@@ -35,6 +35,7 @@ group :development, :test do
   gem 'rspec-rails', '~> 2.10.1'
   gem 'factory_girl_rails', '~> 3.0.0'
   gem 'annotate', "~> 2.5.0"
+  gem 'json_spec', '~> 1.1.0'
 end
 
 group :test do

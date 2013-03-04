@@ -7,7 +7,7 @@ describe V1::RelationshipsController, :type => :controller do
   
     # global helper methods
   def create_portfolio 
-    @port = FactoryGirl.create(:portfolio) 
+    @port = FactoryGirl.create(:v1_portfolio) 
   end
   
   ### GET INDEX ==================================================

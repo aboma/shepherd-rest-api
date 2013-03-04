@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe User do
+describe V1::User do
   before :each do
-    @user = FactoryGirl.build(:user)
+    @user = FactoryGirl.build(:v1_user)
   end
   
   subject { @user } 
@@ -13,7 +13,7 @@ describe User do
     it { should respond_to(:last_name) }
     it { should respond_to(:password) }
     it "should add a user to the user table upon save" do
-      lambda { @user.save }.should change(User, :count).by(1)
+      lambda { @user.save }.should change(V1::User, :count).by(1)
     end
     it { should be_valid }
   end

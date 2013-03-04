@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Asset do
+describe V1::Asset do
   # before do 
     # @asset = FactoryGirl.build(:asset)
   # end

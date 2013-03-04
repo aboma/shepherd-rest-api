@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Portfolio do
+describe V1::Portfolio do
   before :each do
-    @portfolio = FactoryGirl.build(:portfolio)
+    @portfolio = FactoryGirl.build(:v1_portfolio)
   end
   
   subject { @portfolio }
@@ -12,7 +12,7 @@ describe Portfolio do
     it { should respond_to(:description) }
     it { should be_valid }
     it "should add a portfolio to the portfolio table upon save" do
-      lambda { @portfolio.save }.should change(Portfolio, :count).by(1)
+      lambda { @portfolio.save }.should change(V1::Portfolio, :count).by(1)
     end
     it { should be_valid }
   end

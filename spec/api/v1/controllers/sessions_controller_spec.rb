@@ -98,7 +98,7 @@ describe V1::SessionsController, :type => :controller do
       end
       it "changes user's authorization code" do
         destroy_session
-        @changed_user = User.find_by_id(@user.id)
+        @changed_user = V1::User.find_by_id(@user.id)
         @changed_user.authentication_token.should_not == @user.authentication_token
       end
     end

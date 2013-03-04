@@ -9,7 +9,7 @@ describe V1::PortfoliosController, :type => :controller do
   
   # global helper methods
   def create_portfolio 
-    @port = FactoryGirl.create(:portfolio) 
+    @port = FactoryGirl.create(:v1_portfolio) 
   end
   
   ### GET INDEX ==================================================
@@ -98,7 +98,7 @@ describe V1::PortfoliosController, :type => :controller do
     #shared example
     context "unauthorized user" do
       it_should_behave_like "a protected action" do
-        let(:data) { FactoryGirl.attributes_for(:portfolio) }
+        let(:data) { FactoryGirl.attributes_for(:v1_portfolio) }
         def action(args_hash)
           post :create, :portfolio => args_hash[:data], :format => args_hash[:format] 
         end   
@@ -126,12 +126,12 @@ describe V1::PortfoliosController, :type => :controller do
         context "with valid attributes" do
           it "increases number of portfolios by 1" do   
             expect{ 
-              post_portfolio(FactoryGirl.attributes_for(:portfolio), :json)
-            }.to change(Portfolio, :count).by(1)
+              post_portfolio(FactoryGirl.attributes_for(:v1_portfolio), :json)
+            }.to change(V1::Portfolio, :count).by(1)
           end    
           
           before :each do
-             @port_attrs = FactoryGirl.attributes_for(:portfolio)
+             @port_attrs = FactoryGirl.attributes_for(:v1_portfolio)
              post_portfolio(@port_attrs, :json)
           end         
           it "responds with success 200 status code" do
@@ -153,7 +153,7 @@ describe V1::PortfoliosController, :type => :controller do
     #shared example
     context "unauthorized user" do
       it_should_behave_like "a protected action" do
-        port = FactoryGirl.create(:portfolio) 
+        port = FactoryGirl.create(:v1_portfolio) 
         let(:data) { { :name => :update_name } }
         let(:id) { port.id }
         def action(args_hash)
@@ -218,7 +218,7 @@ describe V1::PortfoliosController, :type => :controller do
   describe "DELETE" do   
     context "unauthorized user" do
       it_should_behave_like "a protected action" do
-        port = FactoryGirl.create(:portfolio) 
+        port = FactoryGirl.create(:v1_portfolio) 
         let(:id) { port.id }
         def action(args_hash)
           delete :destroy, :id => args_hash[:id] , :format => args_hash[:format] 
@@ -246,7 +246,7 @@ describe V1::PortfoliosController, :type => :controller do
             create_portfolio
             expect { 
               delete_portfolio( @port.id, :json)
-            }.to change(Portfolio, :count).by(-1)
+            }.to change(V1::Portfolio, :count).by(-1)
           end
           it "returns status code 200 success" do
             create_portfolio
@@ -262,7 +262,7 @@ describe V1::PortfoliosController, :type => :controller do
           it "does not change the number of portfolios" do
             expect {
               delete_portfolio( @id, :json)
-            }.to_not change(Portfolio, :count)
+            }.to_not change(V1::Portfolio, :count)
           end
           it "returns 404 not found status code" do
             delete_portfolio( @id, :json)

@@ -1,6 +1,9 @@
+## namespace variable
+ns = "V1"
+
 FactoryGirl.define do
 
-  factory :user do
+  factory :v1_user, :class => V1::User do
     sequence(:email) { |n| "email#{n}@factory.com" }
     first_name "Factory"
     last_name "User"
@@ -10,7 +13,7 @@ FactoryGirl.define do
     updated_by_id 1
   end
   
-  factory :portfolio do
+  factory :v1_portfolio, :class => V1::Portfolio do
     sequence(:name ){ |n| "Portfolio#{n}" }
     created_by_id 1
     updated_by_id 1

@@ -33,7 +33,9 @@ module V1
     end
     
     def show 
-      asset = Asset.find_by_id(params[:asset_id])
+      asset_id = params[:asset_id] || params[:id]
+      asset = Asset.find_by_id(asset_id)
+      debugger
       respond_to do |format|
         format.json do
           if asset 

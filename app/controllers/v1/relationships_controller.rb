@@ -1,5 +1,5 @@
 module V1 
-  class RelationshipsController < V1::ApplicationController
+  class V1::RelationshipsController < V1::ApplicationController
     before_filter :find_portfolio, :only => [:index]
     
     # Either return all relationships or return relationships
@@ -29,7 +29,7 @@ module V1
       return nil unless params[:portfolio_id]
       @portfolio = Portfolio.find_by_id(params[:portfolio_id])
     rescue ActiveRecord::RecordNotFound
-      @error = "portfolio not found"
+      @error = "portfolio with id #{params[:portfolio_id]} not found"
     end
   end
 end

@@ -3,9 +3,11 @@ module V1
     include CarrierWave::RMagick
   
     storage :file
-  
+
+    # store files in rails root rather than application public directory
+    # so that files are not deleted on application upgrade
     def store_dir
-      "/opt/uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
+      "#{Rails.root.join('public', 'vilio', 'uploads')}/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
     end
   
     version :thumb do

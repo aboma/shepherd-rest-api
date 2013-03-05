@@ -2,7 +2,7 @@ module V1
   class AssetSerializer < V1::LuxinSerializer
     include Rails.application.routes.url_helpers
       
-    attributes :id, :name, :description, :file
+    attributes :id, :name, :description, :file, :filename
     
     def attributes
       hash = super
@@ -12,5 +12,11 @@ module V1
       ]
       hash
     end
+    
+    def filename
+      "#{object.file.filename}"
+    end
+    
+
   end
 end

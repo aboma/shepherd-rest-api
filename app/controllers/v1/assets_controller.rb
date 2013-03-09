@@ -16,6 +16,7 @@ module V1
     end
     
     def create
+      #all_params = params[:asset] || params
       all_params = params.merge(:created_by_id => current_user.id, :updated_by_id => current_user.id)
       asset = Asset.create(all_params)
       if (asset.valid? && @portfolio)
@@ -35,7 +36,6 @@ module V1
     def show 
       asset_id = params[:asset_id] || params[:id]
       asset = Asset.find_by_id(asset_id)
-      debugger
       respond_to do |format|
         format.json do
           if asset 

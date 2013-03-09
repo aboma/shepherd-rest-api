@@ -10,6 +10,7 @@
 
 # Ignore other unneeded files.
 doc/
+public/vilio
 *.swp
 *~
 .project

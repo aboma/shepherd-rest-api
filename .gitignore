@@ -10,7 +10,6 @@
 
 # Ignore other unneeded files.
 doc/
-public/vilio
 *.swp
 *~
 .project
@@ -18,3 +17,5 @@ public/vilio
 
 # ignore upload tmp files
 /public/uploads
+/public/files
+/public/vilio

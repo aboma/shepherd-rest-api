@@ -3,6 +3,7 @@ module V1
     include Rails.application.routes.url_helpers
     
     attributes :id, :name, :description, :created_at, :updated_at
+    
     #has_many :relationships
      
     def attributes

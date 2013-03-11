@@ -17,10 +17,10 @@ class V1::ApplicationController < ApplicationController
   
   # get authorization token from HTTP header if it is not in the URL parameters
   def get_auth_token
-    params[:auth_token] = request.headers["X-AUTH-TOKEN"]
-    params[:auth_token] ||= session[:auth_token]
+    params[:auth_token] = request.headers["X-AUTH-TOKEN"] || cookies[:auth_token]
+    #params[:auth_token] ||= session[:auth_token]
     unless request.method == "OPTIONS"
-      logger.info ">>> AUTH_TOKEN MISSING" unless request.headers["X-AUTH-TOKEN"]
+      logger.info ">>> AUTH_TOKEN MISSING" unless params[:auth_token]
       logger.info ">>> no API version specfied" unless request.headers["X-API-Version"]
     end
   end 
@@ -34,7 +34,7 @@ class V1::ApplicationController < ApplicationController
   end
   
   def log_user
-    logger.info "*** Current User is #{current_user}"
+    logger.info "*** Current User is #{current_user.email}" unless request.method == "OPTIONS"
   end
   
   # If this is a preflight OPTIONS request, then short-circuit the

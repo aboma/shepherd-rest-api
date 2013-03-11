@@ -9,10 +9,14 @@ LuxinDAM::Application.routes.draw do
       get "login" => "sessions#new", :as => "login"
     end
   
-    resources :portfolios do
-      resources :assets
-    end       
-    resources :assets
+    resources :portfolios      
+    # serve assets under root directory or portfolio directory
+    scope '(/portfolios/:portfolio_id)' do 
+      resources :assets do
+        get "file" => "assets#file", :as => "file", :format => 'html'
+        get "thumbnail" => "assets#thumbnail", :as => "thumbnail", :format => 'html'
+      end
+    end
     resources :relationships
     root :to => "application#index"    
   end

@@ -36,6 +36,6 @@ module V1
     end
     
     # mount Carrierwave uploader for file uploads
-    mount_uploader :file, V1::ImageUploader
+    mount_uploader :file, V1::AssetUploader
   end
 end

@@ -1,14 +1,16 @@
 module V1
   class AssetSerializer < V1::LuxinSerializer
     include Rails.application.routes.url_helpers
-      
+    include ActionController
+    
     attributes :id, :name, :description, :file_path, :filename
     
     def attributes
       hash = super
+      thumbnail_url = File.join(root_url, object.file.thumb.url);
       hash[:links] = [
-        { :rel => 'self', :href => assets_path(asset) },
-        { :rel => 'thumbnail', :href => "#{object.file.thumb.url}" }
+        { :rel => 'self', :href => assets_url(asset) },
+        { :rel => 'thumbnail', :href => "#{thumbnail_url}" }
       ]
       hash
     end

@@ -1,7 +1,8 @@
 source 'http://rubygems.org'
 
 gem 'rails', '3.2'
-gem 'sqlite3'
+#gem 'sqlite3'
+gem 'pg', '~> 0.14.1'
 gem 'devise', '2.1.2'
 gem 'rmagick', '~> 2.13.1'
 gem 'carrierwave', '~> 0.6.2'

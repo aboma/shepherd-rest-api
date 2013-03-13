@@ -1,2 +1,0 @@
-defaults: &DEFAULTS
-  authentication_type = :local

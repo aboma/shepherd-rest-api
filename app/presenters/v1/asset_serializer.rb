@@ -1,5 +1,5 @@
 module V1
-  class AssetSerializer < V1::LuxinSerializer
+  class AssetSerializer < V1::VilioSerializer
     include Rails.application.routes.url_helpers
     include ActionController
     

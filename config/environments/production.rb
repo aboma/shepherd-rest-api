@@ -1,4 +1,4 @@
-LuxinDAM::Application.configure do
+VilioDAM::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
   # Code is not reloaded between requests

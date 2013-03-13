@@ -1,5 +1,5 @@
 module V1
-  class PortfolioSerializer < V1::LuxinSerializer
+  class PortfolioSerializer < V1::VilioSerializer
     include Rails.application.routes.url_helpers
     
     attributes :id, :name, :description, :created_at, :updated_at

@@ -1,4 +1,4 @@
-LuxinDAM::Application.routes.draw do
+VilioDAM::Application.routes.draw do
   
   current_api_routes = lambda do
     match '/*path' => 'application#cors_preflight_check', :via => :options

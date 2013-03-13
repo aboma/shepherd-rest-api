@@ -1,5 +1,5 @@
 module V1
-  class LuxinSerializer < ActiveModel::Serializer
+  class VilioSerializer < ActiveModel::Serializer
     #sideload related data by default
     embed :ids, :include => true
   end

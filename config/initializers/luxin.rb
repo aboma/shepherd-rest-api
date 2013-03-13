@@ -1,1 +1,1 @@
-Luxin_CONFIG = YAML.load_file(Rails.root.join('config', 'luxin.yml'))[Rails.env]
+VILIO_CONFIG = YAML.load_file(Rails.root.join('config', 'vilio.yml'))[Rails.env]

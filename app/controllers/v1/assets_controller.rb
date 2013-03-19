@@ -16,12 +16,11 @@ module V1
     end
     
     def create
-      #all_params = params[:asset] || params
-      all_params = params.merge(:created_by_id => current_user.id, :updated_by_id => current_user.id)
-      asset = Asset.create(all_params)
-      if (asset.valid? && @portfolio)
-        relationship = asset.relate!(@portfolio)
-      end
+      alt_params = params.merge(:created_by_id => current_user.id, :updated_by_id => current_user.id)
+      asset = Asset.create(alt_params)
+      #if (asset.valid? && @portfolio)
+      #  relationship = asset.relate!(@portfolio)
+      #end
       respond_to do |format|
         format.json do
           if asset.valid?

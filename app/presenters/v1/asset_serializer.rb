@@ -1,15 +1,15 @@
 module V1
   class AssetSerializer < V1::VilioSerializer
     include Rails.application.routes.url_helpers
-    include ActionController
     
-    attributes :id, :name, :description, :file_path, :filename
+    attributes :id, :name, :description, :filename
     
     def attributes
       hash = super
       thumbnail_url = File.join(root_url, object.file.thumb.url);
+      aid = id || object.id
       hash[:links] = [
-        { :rel => 'self', :href => assets_url(asset) },
+        { :rel => 'self', :href => asset_url(:id => aid) },
         { :rel => 'thumbnail', :href => "#{thumbnail_url}" }
       ]
       hash

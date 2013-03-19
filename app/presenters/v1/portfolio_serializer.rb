@@ -9,7 +9,7 @@ module V1
     def attributes
       hash = super
       hash[:links] = [
-        { :rel => 'self', :href => portfolio_path(portfolio) }
+        { :rel => 'self', :href => portfolio_url(id) }
       ]
       hash
     end

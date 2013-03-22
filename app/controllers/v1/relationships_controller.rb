@@ -1,5 +1,5 @@
 module V1 
-  class V1::RelationshipsController < V1::ApplicationController
+  class RelationshipsController < V1::ApplicationController
     before_filter :find_portfolio, :only => [:index, :create]
     before_filter :find_asset, :only => [:index, :create]
     

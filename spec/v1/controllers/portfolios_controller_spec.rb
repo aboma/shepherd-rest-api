@@ -1,11 +1,18 @@
 require 'spec_helper'
 
 # Uses shared examples to test common controller functionality
-# such as authorization. These are loacted in shared_examples.rb
+# such as authorization. These are located in shared_examples.rb
 describe V1::PortfoliosController, :type => :controller do
+  include LoginHelper
   
   # get a valid authorization to use on requests
-  get_auth_token
+  before :all do
+    create_test_user
+  end
+  
+  after :all do
+    destroy_test_user
+  end
   
   # global helper methods
   def create_portfolio 
@@ -18,7 +25,7 @@ describe V1::PortfoliosController, :type => :controller do
     it_should_behave_like "a protected action" do
       def action(args_hash)
         get :index, :format => args_hash[:format]
-      end      
+      end
     end
 
     context "with valid authorization token" do
@@ -49,6 +56,9 @@ describe V1::PortfoliosController, :type => :controller do
   ### GET SHOW ==========================================================
   describe "GET show" do  
     context "unauthorized user" do
+      before :each do
+        create_portfolio
+      end
       #shared example
       it_should_behave_like "a protected action" do
         let(:data) { { :id => @port.id } }

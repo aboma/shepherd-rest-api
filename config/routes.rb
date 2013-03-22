@@ -22,7 +22,7 @@ VilioDAM::Application.routes.draw do
   end
   
   constraints ApiVersion.new(:version => 1, :default => true) do
-    scope :module => :V1, :defaults => {:format => 'json'}, &current_api_routes
+    scope :module => :v1, :constraints => ApiVersion.new(:version => 1, :default => true), &current_api_routes
     devise_for :users, :path_names => { :sign_up => "login" }, :class_name => 'V1::User'
   end
   

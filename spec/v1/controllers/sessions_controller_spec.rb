@@ -1,8 +1,16 @@
 require 'spec_helper'
 
 describe V1::SessionsController, :type => :controller do
-
-  get_auth_token
+  include LoginHelper
+  
+  # get a valid authorization to use on requests
+  before :all do
+    create_test_user
+  end
+  
+  after :all do
+    destroy_test_user
+  end
   
   describe "CREATE session" do   
     def post_create_session(args)

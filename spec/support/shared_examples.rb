@@ -54,6 +54,13 @@ module VilioSharedExamples
     it_should_behave_like "an action that responds with JSON"
   end
   
+  shared_examples_for "JSON controller show action" do
+    def get_show(format, token)
+      request.env['X-AUTH-TOKEN'] = token if token
+      get :show, :format => format
+    end
+  end
+  
   # Test whether response is success and content type returned is JSON
   shared_examples_for "an action that responds with JSON" do
     it "responds with success 200 status code" do

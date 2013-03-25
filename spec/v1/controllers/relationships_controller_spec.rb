@@ -18,8 +18,7 @@ describe V1::RelationshipsController, :type => :controller do
   end
   
   ### GET INDEX ==================================================
-  describe "GET index" do 
-    #shared example
+  describe "get INDEX" do 
     it_should_behave_like "a protected action" do
       def action(args_hash)
         get :index, :format => args_hash[:format]
@@ -33,6 +32,15 @@ describe V1::RelationshipsController, :type => :controller do
         pending
       end
     end
-    
-  end  
+  end
+  
+  ### GET SHOW ==========================================================
+#  describe "get SHOW" do
+#    it_should_behave_like "a protected action" do
+#      let(:data) { { :portfolio_id => @port.id } }
+#      def action(args_hash)
+#        get :show, args_hash[:data], :format => args_hash[:format]
+#      end      
+#    end    
+#  end
 end

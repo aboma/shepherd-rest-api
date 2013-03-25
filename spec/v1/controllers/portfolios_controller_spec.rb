@@ -20,8 +20,7 @@ describe V1::PortfoliosController, :type => :controller do
   end
   
   ### GET INDEX ==================================================
-  describe "GET index" do   
-    #shared example
+  describe "get INDEX" do   
     it_should_behave_like "a protected action" do
       def action(args_hash)
         get :index, :format => args_hash[:format]
@@ -29,32 +28,18 @@ describe V1::PortfoliosController, :type => :controller do
     end
 
     context "with valid authorization token" do
-      def get_index(format, token)
-        request.env['X-AUTH-TOKEN'] = token if token
-        get :index, :format => format
-      end
-    
-      [:xml, :html].each do |format| 
-        it "should return 406 code for format #{format}" do
-          get_index format, @auth_token
-          response.status.should == 406  
-        end 
-      end    
-      it "should return 200 success code for json format" do
-        get_index :json, @auth_token
-        response.status.should == 200        
-      end   
-      it "should return list of portfolios in json format" do
-        create_portfolio
-        get_index :json, @auth_token
-        parsed = JSON.parse(response.body)
-        #TODO parsed.should have_json_path("portfolios")
-      end   
+      it_should_behave_like "JSON controller index action"
+#      it "should return list of portfolios in json format" do
+#       create_portfolio
+#        get_index :json, @auth_token
+#        parsed = JSON.parse(response.body)
+#        #TODO parsed.should have_json_path("portfolios")
+#      end   
     end 
   end
   
   ### GET SHOW ==========================================================
-  describe "GET show" do  
+  describe "get SHOW" do  
     context "unauthorized user" do
       before :each do
         create_portfolio
@@ -104,29 +89,33 @@ describe V1::PortfoliosController, :type => :controller do
   end
   
   ### POST CREATE ========================================================
-  describe "POST create" do
-    #shared example
-    context "unauthorized user" do
-      it_should_behave_like "a protected action" do
-        let(:data) { FactoryGirl.attributes_for(:v1_portfolio) }
-        def action(args_hash)
-          post :create, :portfolio => args_hash[:data], :format => args_hash[:format] 
-        end   
-      end
+  describe "post CREATE" do
+    it_should_behave_like "a protected action" do
+      let(:data) { FactoryGirl.attributes_for(:v1_portfolio) }
+      def action(args_hash)
+        post :create, :portfolio => args_hash[:data], :format => args_hash[:format] 
+      end   
     end
-          
+           
     context "with valid authorization token" do 
       def post_portfolio attrs, format
         request.env['X-AUTH-TOKEN'] = @auth_token
         post :create, :portfolio => attrs, :format => format 
       end  
       context "with XML or HTML format" do
-        pending
+        [:xml, :html].each do |format|
+          before :each do
+            post_portfolio(FactoryGirl.attributes_for(:v1_portfolio), format)          
+          end
+          it "should return 406 code for format #{format}" do
+            response.status.should == 406  
+          end
+        end          
       end    
       context "with JSON format" do    
         context "with invalid attributes" do
           before :each do
-            post_portfolio({ :inv_attr => "invalid port" }, :json)
+            post_portfolio({ :inv_attr => "invalid attribute" }, :json)
           end
           it "responds with 422 unprocessable entity" do
             response.status.should == 422
@@ -158,18 +147,15 @@ describe V1::PortfoliosController, :type => :controller do
     end
   end
   
-### PUT UPDATE ========================================================
-  describe "PUT update" do
-    #shared example
-    context "unauthorized user" do
-      it_should_behave_like "a protected action" do
-        port = FactoryGirl.create(:v1_portfolio) 
-        let(:data) { { :name => :update_name } }
-        let(:id) { port.id }
-        def action(args_hash)
-          put :update, :id => args_hash[:id], :portfolio => args_hash[:data] , :format => args_hash[:format] 
-        end   
-      end
+  ### PUT UPDATE ========================================================
+  describe "put UPDATE" do
+    it_should_behave_like "a protected action" do
+      port = FactoryGirl.create(:v1_portfolio) 
+      let(:data) { { :name => :update_name } }
+      let(:id) { port.id }
+      def action(args_hash)
+        put :update, :id => args_hash[:id], :portfolio => args_hash[:data] , :format => args_hash[:format] 
+      end   
     end
 
     context "authorized user" do
@@ -178,10 +164,12 @@ describe V1::PortfoliosController, :type => :controller do
         put :update, :id => @port.id, :portfolio => attrs , :format => format         
       end
       context "HTML or XML format" do
-        it "returns 406 not acceptable code" do
-          create_portfolio
-          [:html, :xml].each do |format|
+        [:html, :xml].each do |format|
+          before :each do
+            create_portfolio
             update_portfolio( { :description => :boom }, format )
+          end
+          it "returns 406 not acceptable code" do
             response.status.should == 406
           end
         end
@@ -191,6 +179,7 @@ describe V1::PortfoliosController, :type => :controller do
           before :each do
             create_portfolio
             update_portfolio( { :description => :boom }, :json )
+            @parsed = JSON.parse(response.body)
           end
           it "returns 200 success status code" do
             response.status.should == 200
@@ -199,7 +188,7 @@ describe V1::PortfoliosController, :type => :controller do
             response.header['Content-Type'].should include 'application/json'
           end
           it "returns the updated portfolio" do
-            pending
+            @parsed['portfolio']['id'].should == @port.id
           end
         end
         context "invalid input" do
@@ -224,7 +213,7 @@ describe V1::PortfoliosController, :type => :controller do
     end
   end
   
-### DELETE ========================================================
+  ### DELETE ========================================================
   describe "DELETE" do   
     context "unauthorized user" do
       it_should_behave_like "a protected action" do
@@ -243,23 +232,26 @@ describe V1::PortfoliosController, :type => :controller do
       end
       context "with XML or HTML format" do
         [:xml, :html].each do |format| 
-          it "should return 406 not acceptable for #{format}" do
+          before :each do
             create_portfolio
-            delete_portfolio( @port.id, format)
+            delete_portfolio( @port.id, format)            
+          end
+          it "should return 406 not acceptable for #{format}" do
             response.status.should == 406
           end
         end
       end
       context "with JSON format" do
         context "valid portfolio number specified" do
-          it "decreases number of portfolios by 1" do   
+          before :each do
             create_portfolio
+          end
+          it "decreases number of portfolios by 1" do   
             expect { 
               delete_portfolio( @port.id, :json)
             }.to change(V1::Portfolio, :count).by(-1)
           end
           it "returns status code 200 success" do
-            create_portfolio
             delete_portfolio( @port.id, :json)
             response.status.should == 200
           end

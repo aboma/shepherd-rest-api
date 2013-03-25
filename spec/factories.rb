@@ -1,3 +1,5 @@
+include ActionDispatch::TestProcess
+
 ## namespace variable
 ns = "V1"
 
@@ -18,6 +20,11 @@ FactoryGirl.define do
     created_by_id 1
     updated_by_id 1
     description "factorygirl portfolio"
+  end
+  
+  factory :asset do
+    file { File.open(File.join(Rails.root, 'spec', 'fixtures', 'images', 'test_image.jpg')) }
+    name { |n| "asset test name #{n}" }
   end
 
 end

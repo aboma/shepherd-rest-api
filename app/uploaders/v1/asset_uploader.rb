@@ -4,8 +4,12 @@ module V1
   
     storage :file
 
+    def cache_dir
+      "#{Rails.root}/tmp/uploads/#{Rails.env}/files"
+    end
+
     def store_dir
-      "files/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
+      "files/#{Rails.env}/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
     end
   
     version :thumb do

@@ -3,15 +3,24 @@ class V1::ApplicationController < ApplicationController
   prepend_before_filter :get_auth_token
   before_filter :authenticate_user!, :except => :cors_preflight_check
   after_filter :cors_set_access_control_headers, :log_user
-  
-  respond_to :json
-   
+    
   # respond to options requests with blank text/plain as per spec
   def cors_preflight_check
-    #cors_set_access_control_headers
     logger.info ">>> responding to CORS request"
     render :text => '', :content_type => 'text/plain'
   end
+  
+  
+  protected
+ 
+  # Respond with HTTP code 406 if not JSON format; do not do
+  # any other processing
+  def allow_only_json_requests
+    if request.format != Mime::JSON
+      render :json => {}, :status => :not_acceptable
+    end
+  end
+  
 
   private
   

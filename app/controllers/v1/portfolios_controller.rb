@@ -1,7 +1,6 @@
 module V1
   class PortfoliosController < V1::ApplicationController
-    
-    respond_to :json
+    before_filter :allow_only_json_requests
     
     # list all portfolios
     def index
@@ -15,14 +14,16 @@ module V1
     
     # create portfolio and save created_by and updated_by user ids for audit purposes
     def create
-      @portfolio = Portfolio.create(params[:portfolio].merge(:created_by_id => current_user.id, :updated_by_id => current_user.id))  
+      portfolio = V1::Portfolio.new
+      portfolio.attributes = params[:portfolio].merge(:created_by_id => current_user.id, :updated_by_id => current_user.id) 
+      portfolio.save
       respond_to do |format|
         format.json do
-          if @portfolio.valid?
-            response.headers['Location'] = portfolio_path(@portfolio)
-            render :json => @portfolio, :serializer => V1::PortfolioSerializer
+          if portfolio.valid?
+            response.headers['Location'] = portfolio_path(portfolio)
+            render :json => portfolio, :serializer => V1::PortfolioSerializer
           else 
-            render :json => { :error => @portfolio.errors }, :status => :unprocessable_entity
+            render :json => { :error => portfolio.errors }, :status => :unprocessable_entity
           end
         end
       end
@@ -88,5 +89,6 @@ module V1
     rescue ActiveRecord::RecordNotFound
       @error = "portfolio not found"
     end
+    
   end
 end

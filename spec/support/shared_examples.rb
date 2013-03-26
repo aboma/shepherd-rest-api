@@ -61,11 +61,8 @@ module VilioSharedExamples
     end
   end
   
-  # Test whether response is success and content type returned is JSON
-  shared_examples_for "an action that responds with JSON" do
-    it "responds with success 200 status code" do
-      response.status.should == 200       
-    end       
+  # Test whether response content type returned is JSON
+  shared_examples_for "an action that responds with JSON" do    
     it "responds with JSON format" do
       response.header['Content-Type'].should include 'application/json'
     end

@@ -61,11 +61,9 @@ describe V1::PortfoliosController, :type => :controller do
           get :show, :id => @port.id, :format => :json
           @parsed = JSON.parse(response.body)
         end
+        it_should_behave_like "an action that responds with JSON"
         it "responds with success 200 status code" do
           response.status.should == 200       
-        end    
-        it "responds with JSON format" do
-          response.header['Content-Type'].should include 'application/json'
         end
         it "responds with the asked for portfolio" do
           @parsed['portfolio']['id'].should == @port.id
@@ -113,13 +111,16 @@ describe V1::PortfoliosController, :type => :controller do
         end          
       end    
       context "with JSON format" do    
-        context "with invalid attributes" do
+        context "without required attributes" do
           before :each do
             post_portfolio({ :inv_attr => "invalid attribute" }, :json)
           end
           it "responds with 422 unprocessable entity" do
             response.status.should == 422
           end
+        end
+        context "with invalid attributes" do
+          pending
         end
           
         context "with valid attributes" do
@@ -132,12 +133,10 @@ describe V1::PortfoliosController, :type => :controller do
           before :each do
              @port_attrs = FactoryGirl.attributes_for(:v1_portfolio)
              post_portfolio(@port_attrs, :json)
-          end         
+          end
+          it_should_behave_like "an action that responds with JSON"       
           it "responds with success 200 status code" do
             response.status.should == 200       
-          end       
-          it "responds with JSON format" do
-            response.header['Content-Type'].should include 'application/json'
           end
           it "responds with Location header" do
             response.header['Location'].should be_present
@@ -181,11 +180,9 @@ describe V1::PortfoliosController, :type => :controller do
             update_portfolio( { :description => :boom }, :json )
             @parsed = JSON.parse(response.body)
           end
+          it_should_behave_like "an action that responds with JSON"
           it "returns 200 success status code" do
             response.status.should == 200
-          end
-          it "responds with JSON format" do
-            response.header['Content-Type'].should include 'application/json'
           end
           it "returns the updated portfolio" do
             @parsed['portfolio']['id'].should == @port.id
@@ -233,11 +230,16 @@ describe V1::PortfoliosController, :type => :controller do
       context "with XML or HTML format" do
         [:xml, :html].each do |format| 
           before :each do
-            create_portfolio
-            delete_portfolio( @port.id, format)            
+            create_portfolio          
           end
           it "should return 406 not acceptable for #{format}" do
+            delete_portfolio(@port.id, format)
             response.status.should == 406
+          end
+          it "does not delete a portfolio" do
+            expect {
+              delete_portfolio(@port.id, format)
+            }.to_not change(V1::Portfolio, :count)
           end
         end
       end
@@ -261,7 +263,7 @@ describe V1::PortfoliosController, :type => :controller do
             create_portfolio
             @id = @port.id + 5            
           end
-          it "does not change the number of portfolios" do
+          it "does not delete a portfolio" do
             expect {
               delete_portfolio( @id, :json)
             }.to_not change(V1::Portfolio, :count)

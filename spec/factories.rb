@@ -22,9 +22,11 @@ FactoryGirl.define do
     description "factorygirl portfolio"
   end
   
-  factory :asset do
-    file { File.open(File.join(Rails.root, 'spec', 'fixtures', 'images', 'test_image.jpg')) }
-    name { |n| "asset test name #{n}" }
+  factory :v1_asset, :class => V1::Asset do
+    file { File.open(File.join(Rails.root, 'spec', 'fixtures', 'images', 'test_image.jpeg')) }
+    sequence(:name) { |n| "asset test name #{n}" }
+    created_by_id 1
+    updated_by_id 1
   end
 
 end

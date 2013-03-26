@@ -31,4 +31,16 @@ RSpec.configure do |config|
   # examples within a transaction, remove the following line or assign false
   # instead of true.
   config.use_transactional_fixtures = true
+  
+  config.after(:all) do
+    # Get rid of the linked images (Carrierwave)
+    if Rails.env.test? || Rails.env.cucumber?
+      tmp = FactoryGirl.create(:v1_asset)
+      store_path = File.dirname(File.dirname(tmp.file.url))
+      temp_path = tmp.file.cache_dir
+      FileUtils.rm_rf(Dir["#{Rails.root}/public/#{store_path}/[^.]*"])
+      FileUtils.rm_rf(Dir["#{temp_path}/[^.]*"])
+    end
+  end
+
 end

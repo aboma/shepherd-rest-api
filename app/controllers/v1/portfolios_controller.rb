@@ -4,22 +4,20 @@ module V1
     
     # list all portfolios
     def index
-      @portfolios = Portfolio.all
+      portfolios = Portfolio.all
       respond_to do |format|
         format.json do
-          render :json => @portfolios, :each_serializer => V1::PortfolioSerializer
+          render :json => portfolios, :each_serializer => V1::PortfolioSerializer
         end
       end
     end
     
     # create portfolio and save created_by and updated_by user ids for audit purposes
     def create
-      portfolio = V1::Portfolio.new
-      portfolio.attributes = params[:portfolio].merge(:created_by_id => current_user.id, :updated_by_id => current_user.id) 
-      portfolio.save
       respond_to do |format|
         format.json do
-          if portfolio.valid?
+          portfolio = V1::Portfolio.new
+          if update_portfolio(portfolio)
             response.headers['Location'] = portfolio_path(portfolio)
             render :json => portfolio, :serializer => V1::PortfolioSerializer
           else 
@@ -31,12 +29,12 @@ module V1
   
     # show individual portfolio details
     def show
-      @portfolio = Portfolio.find_by_id(params[:id])
       respond_to do |format|
         format.json do
-          if @portfolio
-            render :json => @portfolio, :serializer => V1::PortfolioSerializer
-          else 
+          begin
+            portfolio = Portfolio.find(params[:id])
+            render :json => portfolio, :serializer => V1::PortfolioSerializer
+          rescue
             render :json => {}, :status => 404
           end
         end
@@ -45,23 +43,21 @@ module V1
   
     # update portfolio and save updated by information for audit
     def update
-      @portfolio = Portfolio.find_by_id(params[:id], :lock => true)
+      portfolio = Portfolio.find_by_id(params[:id])
       if (params[:portfolio][:id] && params[:portfolio][:id] != params[:id])
         error = { :message => 'can not change portfolio id', :status => 422 }
-      elsif !@portfolio
+      elsif !portfolio
         error = { :message => 'portfolio not found', :status => 404 }
-      else
-        @updated_port = @portfolio.update_attributes(params[:portfolio].merge(:updated_by_id => current_user.id))
-        @portfolio = Portfolio.find_by_id(params[:id])
       end
       respond_to do |format|
         format.json do
-          if error 
+          if error
             render :json => { :error => error[:message] }, :status => error[:status]
-          elsif @updated_port
-            render :json => @portfolio, :serializer => V1::PortfolioSerializer
+          elsif update_portfolio(portfolio)
+            portfolio.reload
+            render :json => portfolio, :serializer => V1::PortfolioSerializer
           else 
-            render :json => { :error => @updated_port.errors }, :status => :unprocessable_entity
+            render :json => { :error => portfolio.errors }, :status => :unprocessable_entity
           end
         end
       end
@@ -72,10 +68,10 @@ module V1
       respond_to do |format|
         format.json do
           begin
-            @portfolio = Portfolio.find(params[:id])
-            @portfolio.destroy
+            portfolio = Portfolio.find(params[:id])
+            portfolio.destroy
             render :json => {}
-          rescue ActiveRecord::RecordNotFound => e
+          rescue
             render :json => { :message => 'no portfolio at this address' }, :status => 404
           end
         end
@@ -84,11 +80,19 @@ module V1
     
     private 
     
-    def find
+    def find_portfolio
       @portfolio = Portfolio.find(params[:id])
     rescue ActiveRecord::RecordNotFound
       @error = "portfolio not found"
     end
     
+    def update_portfolio(portfolio)
+      port_params = params[:portfolio].merge(:created_by_id => current_user.id, :updated_by_id => current_user.id)
+      portfolio.attributes = port_params
+      portfolio.save!
+      return true
+    rescue
+      return false
+    end
   end
 end

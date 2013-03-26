@@ -22,13 +22,7 @@ module V1
     attr_accessible :name, :file, :description, :created_by_id, :updated_by_id, :deleted_by_id, :deleted_at  
       
     validates :name, :presence => true, :uniqueness => { :case_sensitive => false }
-    
-    # create a relationship between a portfolio and this asset
-    def relate!(portfolio)
-      logger.info("creating asset<->portfolio relationship")
-      relationships.create(:asset_id => self.id, :portfolio_id => portfolio.id, :relationship_type => 'Asset') 
-    end
-    
+      
     # return all portfolios that this asset is associated with
     def portfolios
       #relationships.find_by_asset_id(self.id)

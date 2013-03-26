@@ -1,20 +1,22 @@
 module V1 
   class RelationshipsController < V1::ApplicationController
+    V1::Concerns::Relate
+    
     before_filter :find_portfolio, :only => [:index, :create]
     before_filter :find_asset, :only => [:index, :create]
     
     # Either return all relationships or return relationships
     # filtered by portfolio or asset
     def index
-      @relations = @portfolio.relationships if @portfolio
-      @relations = @asset.relationships if @asset
-      @relations = Relationship.find(:all) unless @portfolio || @asset
+      relations = @portfolio.relationships if @portfolio
+      relations = @asset.relationships if @asset
+      relations = Relationship.find(:all) unless @portfolio || @asset
       respond_to do |format|
         format.json do
           if (@error)
             render :error => @error, :serializer => V1::RelationshipSerializer
           else
-            render :json => @relations, :each_serializer => V1::RelationshipSerializer
+            render :json => relations, :each_serializer => V1::RelationshipSerializer
           end
         end      
       end
@@ -35,7 +37,8 @@ module V1
         end
         if (@asset.valid?)
           logger.info "creating relationship"
-          relationship = @asset.relate!(@portfolio)
+          #relationship = @asset.relate!(@portfolio)
+          relationship = relate_asset_and_portfolio(@asset, @portfolio)
         end
       end
       respond_to do |format|
@@ -56,7 +59,7 @@ module V1
     def find_portfolio
       return nil unless params[:portfolio_id]
       @portfolio = Portfolio.find_by_id(params[:portfolio_id])
-    rescue ActiveRecord::RecordNotFound
+    rescue
       @error = "portfolio with id #{params[:portfolio_id]} not found"
     end
     
@@ -65,8 +68,17 @@ module V1
     def find_asset
       return nil unless params[:asset_id]
       @asset = Asset.find_by_id(params[:asset_id])
-    rescue ActiveRecord::RecordNotFound
+    rescue
       @error = "asset with id #{params[:asset_id]} not found"
+    end
+    
+    def update_relation(relation)
+      rel_params = params[:relationship].merge(:created_by_id => current_user.id, :updated_by_id => current_user.id)
+      relation.attributes = rel_params
+      relationship.save!
+      return true
+    rescue
+      return false
     end
   end
 end

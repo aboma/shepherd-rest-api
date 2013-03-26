@@ -16,5 +16,8 @@ module V1
     
     validates :asset_id, :presence => true
     validates :portfolio_id, :presence => true
+    
+    validates_associated :portfolio
+    validates_associated :asset
   end
 end

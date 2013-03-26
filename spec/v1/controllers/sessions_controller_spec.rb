@@ -23,8 +23,8 @@ describe V1::SessionsController, :type => :controller do
           before :each do
             post_create_session :email => @user.email, :pw => "#{@pw}sssss", :format => format 
           end
-          it "returns unauthorized 401 code for #{format}" do
-            response.status.should == 401
+          it "returns not acceptable 406 code for #{format}" do
+            response.status.should == 406
           end
         end
       end

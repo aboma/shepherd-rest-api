@@ -14,11 +14,11 @@ describe V1::AssetsController, :type => :controller do
     
     # global helper methods
   def create_portfolio 
-    @port = FactoryGirl.create(:v1_portfolio) 
+    FactoryGirl.create(:v1_portfolio) 
   end
   
   def create_asset
-    @asset = FactoryGirl.create(:v1_asset)
+    FactoryGirl.create(:v1_asset)
   end
   
   ### GET INDEX ==================================================
@@ -41,12 +41,11 @@ describe V1::AssetsController, :type => :controller do
   
   ### GET SHOW ===================================================
   describe "get SHOW" do
+    let(:asset) { create_asset }
+    
     context "unauthorized user" do
-      before :each do
-        create_asset
-      end
       it_should_behave_like "a protected action" do
-        let(:data) { { :id => @asset.id } }
+        let(:data) { { :id => asset.id } }
         def action(args_hash)
           get :show, args_hash[:data], :format => args_hash[:format]
         end      
@@ -57,19 +56,18 @@ describe V1::AssetsController, :type => :controller do
         before :each do
           create_asset
           request.env['X-AUTH-TOKEN'] = @auth_token
-          get :show, :id => @asset.id, :format => :json
+          get :show, :id => asset.id, :format => :json
           @parsed = JSON.parse(response.body)
         end
         it_should_behave_like "an action that responds with JSON"
         it "responds with the asked for asset" do
-          @parsed['asset']['id'].should == @asset.id
+          @parsed['asset']['id'].should == asset.id
         end 
       end
       context "invalid asset id" do
         before :each do
-          create_asset
           request.env['X-AUTH-TOKEN'] = @auth_token
-          get :show, :id => @asset.id + 111, :format => :json
+          get :show, :id => asset.id + 111, :format => :json
           @parsed = JSON.parse(response.body)
         end
         it_should_behave_like "an action that responds with JSON"
@@ -114,21 +112,25 @@ describe V1::AssetsController, :type => :controller do
           pending
         end
         context "missing required attributes" do
-          before :each do
-            attrs = FactoryGirl.attributes_for(:v1_asset)
-            attrs.delete(:name)
-            post_asset(attrs, :json)
-          end
-          it "responds with 422 unprocessable entity" do
-            response.status.should == 422
-          end
+          let(:valid_attrs) { FactoryGirl.attributes_for(:v1_asset) }
+          let(:invalid_attrs) { 
+            valid_attrs.delete(:name)
+            valid_attrs
+          }
           it "does not create an asset" do
-            pending
+            expect{ 
+              post_asset(invalid_attrs, :json)
+            }.to_not change(V1::Asset, :count)
+          end
+          #subject {}
+          it "responds with 422 unprocessable entity" do
+            post_asset(invalid_attrs, :json)
+            response.status.should == 422
           end
         end
         
         context "with valid attributes" do
-          it "increases number of assets by 1" do   
+          it "creates one asset" do   
             expect{ 
               post_asset(FactoryGirl.attributes_for(:v1_asset), :json)
             }.to change(V1::Asset, :count).by(1)

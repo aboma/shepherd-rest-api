@@ -16,7 +16,7 @@ describe V1::PortfoliosController, :type => :controller do
   
   # global helper methods
   def create_portfolio 
-    @port = FactoryGirl.create(:v1_portfolio) 
+    FactoryGirl.create(:v1_portfolio) 
   end
   
   ### GET INDEX ==================================================
@@ -39,14 +39,11 @@ describe V1::PortfoliosController, :type => :controller do
   end
   
   ### GET SHOW ==========================================================
-  describe "get SHOW" do  
+  describe "get SHOW" do
+    let(:port) { create_portfolio }
     context "unauthorized user" do
-      before :each do
-        create_portfolio
-      end
-      #shared example
       it_should_behave_like "a protected action" do
-        let(:data) { { :id => @port.id } }
+        let(:data) { { :id => port.id } }
         def action(args_hash)
           get :show, args_hash[:data], :format => args_hash[:format]
         end      
@@ -54,11 +51,10 @@ describe V1::PortfoliosController, :type => :controller do
     end
     
     context "with valid authorization token" do
-      context "valid portfolio id" do
+      context "valid portfolio id" do      
         before :each do
-          create_portfolio
           request.env['X-AUTH-TOKEN'] = @auth_token
-          get :show, :id => @port.id, :format => :json
+          get :show, :id => port.id, :format => :json
           @parsed = JSON.parse(response.body)
         end
         it_should_behave_like "an action that responds with JSON"
@@ -66,18 +62,18 @@ describe V1::PortfoliosController, :type => :controller do
           response.status.should == 200       
         end
         it "responds with the asked for portfolio" do
-          @parsed['portfolio']['id'].should == @port.id
+          @parsed['portfolio']['id'].should == port.id
         end
         it "responds with the portfolio name" do
-          @parsed['portfolio']['name'].should == @port.name
+          @parsed['portfolio']['name'].should == port.name
         end
       end
       context "invalid portfolio id" do
+        let(:port) { create_portfolio }
         before :each do
-          create_portfolio
-          @port.id += 5
+          port.id += 5
           request.env['X-AUTH-TOKEN'] = @auth_token
-          get :show, :id => @port.id, :format => :json
+          get :show, :id => port.id, :format => :json
         end
         it "responds with 404 not found" do
           response.status.should == 404
@@ -148,8 +144,8 @@ describe V1::PortfoliosController, :type => :controller do
   
   ### PUT UPDATE ========================================================
   describe "put UPDATE" do
+    let(:port) { create_portfolio }
     it_should_behave_like "a protected action" do
-      port = FactoryGirl.create(:v1_portfolio) 
       let(:data) { { :name => :update_name } }
       let(:id) { port.id }
       def action(args_hash)
@@ -160,13 +156,12 @@ describe V1::PortfoliosController, :type => :controller do
     context "authorized user" do
       def update_portfolio(attrs, format)
         request.env['X-AUTH-TOKEN'] = @auth_token
-        put :update, :id => @port.id, :portfolio => attrs , :format => format         
+        put :update, :id => port.id, :portfolio => attrs , :format => format         
       end
       context "HTML or XML format" do
         [:html, :xml].each do |format|
           before :each do
-            create_portfolio
-            update_portfolio( { :description => :boom }, format )
+            update_portfolio({ :description => :boom }, format )
           end
           it "returns 406 not acceptable code" do
             response.status.should == 406
@@ -176,7 +171,6 @@ describe V1::PortfoliosController, :type => :controller do
       context "JSON format" do
         context "valid input" do
           before :each do
-            create_portfolio
             update_portfolio( { :description => :boom }, :json )
             @parsed = JSON.parse(response.body)
           end
@@ -185,22 +179,19 @@ describe V1::PortfoliosController, :type => :controller do
             response.status.should == 200
           end
           it "returns the updated portfolio" do
-            @parsed['portfolio']['id'].should == @port.id
+            @parsed['portfolio']['id'].should == port.id
           end
         end
         context "invalid input" do
-          before :each do 
-            create_portfolio
-          end
           describe "changing portfolio id number" do
             it "returns status code 422" do
-              update_portfolio( { :id => @port.id + 111 }, :json )
+              update_portfolio( { :id => port.id + 111 }, :json )
               response.status.should == 422
             end
           end
           describe "invalid portfolio id" do
             it "returns status code 404 not found" do
-              @port.id = '1111'   # change portfolio id to one that does not exist
+              port.id = '1111'   # change portfolio id to one that does not exist
               update_portfolio( { :name => 'test' }, :json )
               response.status.should == 404
             end
@@ -211,10 +202,10 @@ describe V1::PortfoliosController, :type => :controller do
   end
   
   ### DELETE ========================================================
-  describe "DELETE" do   
+  describe "DELETE" do
+    let!(:port) { create_portfolio }
     context "unauthorized user" do
-      it_should_behave_like "a protected action" do
-        port = FactoryGirl.create(:v1_portfolio) 
+      it_should_behave_like "a protected action" do 
         let(:id) { port.id }
         def action(args_hash)
           delete :destroy, :id => args_hash[:id] , :format => args_hash[:format] 
@@ -229,47 +220,38 @@ describe V1::PortfoliosController, :type => :controller do
       end
       context "with XML or HTML format" do
         [:xml, :html].each do |format| 
-          before :each do
-            create_portfolio          
-          end
           it "should return 406 not acceptable for #{format}" do
-            delete_portfolio(@port.id, format)
+            delete_portfolio(port.id, format)
             response.status.should == 406
           end
           it "does not delete a portfolio" do
             expect {
-              delete_portfolio(@port.id, format)
+              delete_portfolio(port.id, format)
             }.to_not change(V1::Portfolio, :count)
           end
         end
       end
       context "with JSON format" do
         context "valid portfolio number specified" do
-          before :each do
-            create_portfolio
-          end
           it "decreases number of portfolios by 1" do   
             expect { 
-              delete_portfolio( @port.id, :json)
+              delete_portfolio(port.id, :json)
             }.to change(V1::Portfolio, :count).by(-1)
           end
           it "returns status code 200 success" do
-            delete_portfolio( @port.id, :json)
+            delete_portfolio(port.id, :json)
             response.status.should == 200
           end
         end
         context "invalid portfolio number specified" do
-          before :each do
-            create_portfolio
-            @id = @port.id + 5            
-          end
+          let(:invalid_id) { port.id + 555 }
           it "does not delete a portfolio" do
             expect {
-              delete_portfolio( @id, :json)
+              delete_portfolio(invalid_id, :json)
             }.to_not change(V1::Portfolio, :count)
           end
           it "returns 404 not found status code" do
-            delete_portfolio( @id, :json)
+            delete_portfolio(invalid_id, :json)
             response.status.should == 404
           end
         end

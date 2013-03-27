@@ -14,6 +14,8 @@ module V1
     belongs_to :portfolio
     belongs_to :asset  #, :class_name => "Asset", :foreign_key => :relationship_id
     
+    attr_accessible :asset_id, :portfolio_id, :created_by_id, :updated_by_id, :relationship_type
+    
     validates :asset_id, :presence => true
     validates :portfolio_id, :presence => true
     

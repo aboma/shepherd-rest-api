@@ -22,12 +22,6 @@ module V1
     attr_accessible :name, :file, :description, :created_by_id, :updated_by_id, :deleted_by_id, :deleted_at  
       
     validates :name, :presence => true, :uniqueness => { :case_sensitive => false }
-      
-    # return all portfolios that this asset is associated with
-    def portfolios
-      #relationships.find_by_asset_id(self.id)
-      relationships.find(:all, :params => { :asset_id => self.id })
-    end
     
     # mount Carrierwave uploader for file uploads
     mount_uploader :file, V1::AssetUploader

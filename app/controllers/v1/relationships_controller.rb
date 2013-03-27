@@ -1,7 +1,9 @@
 module V1 
   class RelationshipsController < V1::ApplicationController
-    V1::Concerns::Relate
+    include V1::Concerns::Relate
+    include V1::Concerns::Auditable
     
+    before_filter :allow_only_json_requests, :except => [:create]
     before_filter :find_portfolio, :only => [:index, :create]
     before_filter :find_asset, :only => [:index, :create]
     
@@ -14,7 +16,7 @@ module V1
       respond_to do |format|
         format.json do
           if (@error)
-            render :error => @error, :serializer => V1::RelationshipSerializer
+            render :json => { :error => @error }, :status => 422
           else
             render :json => relations, :each_serializer => V1::RelationshipSerializer
           end
@@ -27,26 +29,18 @@ module V1
     # relationship
     def create
       @error = 'no portfolio id specified' unless @portfolio
-      unless @error
-        ## attempt to create asset before adding relationship      
-        unless @asset
-          logger.info "creating asset"
-          alt_params = params.merge(:created_by_id => current_user.id, :updated_by_id => current_user.id)
-          @asset = V1::Asset.create(alt_params)
-          #TODO handle asset creation error
-        end
-        if (@asset.valid?)
-          logger.info "creating relationship"
-          #relationship = @asset.relate!(@portfolio)
-          relationship = relate_asset_and_portfolio(@asset, @portfolio)
-        end
+      unless (@error)
+        relation = V1::Relationship.new
+        @asset = V1::Asset.new unless @asset
+        created = create_relation(relation, @asset, @portfolio)
+        @error = (relation.errors.to_a + @asset.errors.to_a) if !created
       end
       respond_to do |format|
         format.json do
           if (@error)
-            render :error => @error, :serializer => V1::RelationshipSerializer
+            render :json => { :error => @error }, :status => 422
           else
-            render :json => relationship, :serializer => V1::RelationshipSerializer
+            render :json => relation, :serializer => V1::RelationshipSerializer
           end
         end        
       end
@@ -72,13 +66,18 @@ module V1
       @error = "asset with id #{params[:asset_id]} not found"
     end
     
-    def update_relation(relation)
-      rel_params = params[:relationship].merge(:created_by_id => current_user.id, :updated_by_id => current_user.id)
-      relation.attributes = rel_params
-      relationship.save!
+    def create_relation(relation, asset, portfolio)
+      V1::Relationship.transaction do  
+        if asset.new_record?
+          asset.attributes = add_audit_params(asset, params) 
+          asset.save!         
+        end
+        relate_asset_and_portfolio!(relation, asset, portfolio)
+      end
       return true
-    rescue
-      return false
+    rescue => e
+      logger.error "error creating relationship: #{e}"
+      return false  
     end
   end
 end

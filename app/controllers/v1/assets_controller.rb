@@ -1,5 +1,7 @@
 module V1
   class AssetsController < V1::ApplicationController
+    include V1::Concerns::Asset
+    
     before_filter :allow_only_json_requests
     before_filter :find_portfolio, :only => [:index, :create]
     
@@ -19,13 +21,9 @@ module V1
     
     def create
       asset = V1::Asset.new
-      asset.attributes = params[:asset].merge(:created_by_id => current_user.id, :updated_by_id => current_user.id) 
-      #if (asset.valid? && @portfolio)
-      #  relationship = asset.relate!(@portfolio)
-      #end
       respond_to do |format|
         format.json do
-          if asset.save
+          if update_asset(asset)
             response.headers['Location'] = assets_path(asset)
             render :json => asset, :serializer => V1::AssetSerializer
           else

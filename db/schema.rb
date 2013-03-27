@@ -39,6 +39,10 @@ ActiveRecord::Schema.define(:version => 20121116033801) do
     t.string   "relationship_type"
     t.integer  "asset_id"
     t.integer  "portfolio_id"
+    t.datetime "deleted_at"
+    t.integer  "created_by_id",     :null => false
+    t.integer  "updated_by_id"
+    t.integer  "deleted_by_id"
     t.datetime "created_at",        :null => false
     t.datetime "updated_at",        :null => false
   end

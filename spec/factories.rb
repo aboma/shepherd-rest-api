@@ -29,4 +29,10 @@ FactoryGirl.define do
     updated_by_id 1
   end
 
+  factory :v1_relationship, :class => V1::Relationship do
+    portfolio_id 1
+    asset_id 1
+    created_by_id 1
+    updated_by_id 1
+  end
 end

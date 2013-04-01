@@ -26,30 +26,49 @@ describe V1::RelationshipsController, :type => :controller do
     yield attrs
   end
   
+  let(:relation) { FactoryGirl.create(:v1_relationship) }
+  
+#  let(:relation) do
+#    given_relation_attrs_with({ :valid_asset => true, :valid_portfolio => true}) do |attrs|
+#      FactoryGirl.create(:v1_relationship, attrs)
+#    end 
+#  end
+  
   ### GET INDEX ==================================================
-  describe "get INDEX" do 
-    it_should_behave_like "a protected action" do
-      def action(args_hash)
-        get :index, :format => args_hash[:format]
-      end      
+  describe "get INDEX" do
+    context "unauthorized user" do
+      it_should_behave_like "a protected action" do
+        def action(args_hash)
+          get :index, :format => args_hash[:format]
+        end      
+      end 
     end
-    
-    it_should_behave_like "JSON controller index action"
-    
-    describe "with a portfolio_id as a query parameter" do
-      it "returns relationships filtered by portfolio id" do
-        pending
+    context "with valid authorization token" do
+      def get_index(format)
+        request.env['X-AUTH-TOKEN'] = @auth_token
+        get :index, :format => format 
+      end
+      context "with XML or HTML format" do
+        [:xml, :html].each do |format|
+          before :each do 
+            get_index(format) 
+          end
+          it "should return 406 code for format #{format}" do
+            response.status.should == 406  
+          end
+        end
+      end
+      it_should_behave_like "JSON controller index action"        
+      describe "with a portfolio_id as a query parameter" do
+        it "returns relationships filtered by portfolio id" do
+          pending
+        end
       end
     end
   end
   
   ### GET SHOW ==========================================================
   describe "get SHOW" do
-    let(:relation) do
-      given_relation_attrs_with({ :valid_asset => true, :valid_portfolio => true}) do |attrs|
-        FactoryGirl.create(:v1_relationship, attrs)
-      end
-    end
     context "unauthorized user" do
       it_should_behave_like "a protected action" do
         let(:data) { { :id => relation.id } }
@@ -60,37 +79,52 @@ describe V1::RelationshipsController, :type => :controller do
     end
     
     context "with valid authorization token" do
-      context "valid relationship id" do
-        before :each do
-          request.env['X-AUTH-TOKEN'] = @auth_token
-          get :show, :id => relation.id, :format => :json
-          @parsed = JSON.parse(response.body) 
-        end
-        it_should_behave_like "an action that responds with JSON"
-        it "responds with success 200 status code" do
-          response.status.should == 200       
-        end
-        it "responds with the asked for portfolio" do
-          @parsed['relationship']['id'].should == relation.id
+      def get_relation(format)
+        request.env['X-AUTH-TOKEN'] = @auth_token
+        get :show, :id => relation.id, :format => format
+        @parsed = JSON.parse(response.body)
+      end
+      context "with XML or HTML format" do
+        [:xml, :html].each do |format|
+          before :each do
+            get_relation(format) 
+          end
+          it "should return 406 code for format #{format}" do
+            response.status.should == 406  
+          end
         end
       end
-      context "valid asset and portfolio ids" do
-        pending
-      end
-      context "invalid relationship id" do
-        before :each do
-          relation.id += 5
-          request.env['X-AUTH-TOKEN'] = @auth_token
-          get :show, :id => relation.id, :format => :json
-          @parsed = JSON.parse(response.body)
+      context "with JSON format" do
+        context "valid relationship id" do
+          before :each do
+            get_relation(:json) 
+          end
+          it_should_behave_like "an action that responds with JSON"
+          it "responds with success 200 status code" do
+            response.status.should == 200       
+          end
+          it "responds with the asked for portfolio" do
+            @parsed['relationship']['id'].should == relation.id
+          end
         end
-        it "responds with 404 not found" do
-          response.status.should == 404
+        context "valid asset and portfolio ids" do
+          pending
         end
-        it "responds with error message" do
-          @parsed['error'].should == "relationship not found"
+        context "invalid relationship id" do
+          before :each do
+            relation.id += 5
+            request.env['X-AUTH-TOKEN'] = @auth_token
+            get :show, :id => relation.id, :format => :json
+            @parsed = JSON.parse(response.body)
+          end
+          it "responds with 404 not found" do
+            response.status.should == 404
+          end
+          it "responds with error message" do
+            @parsed['error'].should == "relationship not found"
+          end
         end
-      end
+    end
     end
   end
   
@@ -108,6 +142,8 @@ describe V1::RelationshipsController, :type => :controller do
         request.env['X-AUTH-TOKEN'] = @auth_token
         post :create, :relationship => attrs, :format => format 
       end
+      # create action accepts all formats to make it easier to 
+      # post files
       context "with XML or HTML format" do
         [:xml, :html].each do |format|
           before :each do
@@ -204,6 +240,97 @@ describe V1::RelationshipsController, :type => :controller do
               parsed['error'].should =~ /relationship already exists/
             end
           end
+        end
+      end
+    end
+  end
+  
+  ### post UPDATE =========================================================
+  describe "post UPDATE" do
+    it_should_behave_like "a protected action" do
+      let(:data) { FactoryGirl.attributes_for(:v1_relationship) }
+      def action(args_hash)
+        post :update, :id => relation.id, :relationship => args_hash[:data], :format => args_hash[:format] 
+      end   
+    end
+           
+    context "with valid authorization token" do
+      def post_update_relation id, attrs, format
+        request.env['X-AUTH-TOKEN'] = @auth_token
+        post :update, :id => id, :relationship => attrs, :format => format 
+      end  
+      context "with XML or HTML format" do
+        [:xml, :html].each do |format|
+          before :each do
+             given_relation_attrs_with({ :valid_asset => true, :valid_portfolio => true}) do |attrs|
+               post_update_relation(relation.id, attrs, format)
+             end        
+          end
+          it_should_behave_like "an action that responds with JSON"       
+          it "returns 406 code for format #{format}" do
+            response.status.should == 406  
+          end
+        end          
+      end
+      context "with JSON format" do
+        before :each do
+          given_relation_attrs_with({ :valid_asset => true, :valid_portfolio => true}) do |attrs|
+            post_update_relation(relation.id, attrs, :json)
+          end
+        end
+        it_should_behave_like "an action that responds with JSON"
+        it "returns 422 unprocessable entity" do
+          response.status.should == 422
+        end
+      end
+    end
+  end
+  
+  ### DELETE ===============================================
+  describe "delete DELETE" do
+    let!(:rel) { relation }
+    context "unauthorized user" do
+      it_should_behave_like "a protected action" do 
+        let(:id) { relation.id }
+        def action(args_hash)
+          delete :destroy, :id => args_hash[:id] , :format => args_hash[:format] 
+        end   
+      end
+    end         
+    context "with valid authorization token" do
+      def delete_relation(id, format)
+        request.env['X-AUTH-TOKEN'] = @auth_token
+        delete :destroy, :id => id, :format => format 
+      end
+      context "with XML or HTML format" do
+        [:xml, :html].each do |format|
+          it "does not change the number of relationships" do   
+            expect { 
+              delete_relation(rel.id, format)
+            }.to_not change(V1::Relationship, :count)
+          end
+          before :each do
+            delete_relation(rel.id, format)    
+          end
+          it_should_behave_like "an action that responds with JSON"       
+          it "should return 406 code for format #{format}" do
+            response.status.should == 406  
+          end
+        end          
+      end
+      context "with JSON format" do
+        it "decreases number of relationships by 1" do   
+          expect { 
+            delete_relation(rel.id, :json)
+          }.to change(V1::Relationship, :count).by(-1)
+        end
+        it "should respond with JSON" do
+          delete_relation(rel.id, :json)
+          response.header['Content-Type'].should include 'application/json'          
+        end
+        it "responds with success 200 status code" do
+          delete_relation(rel.id, :json)
+          response.status.should == 200       
         end
       end
     end

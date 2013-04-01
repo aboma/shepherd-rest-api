@@ -25,7 +25,7 @@ module V1
     # relationship
     def create
       @error = 'no portfolio id specified' if (!@portfolio && !@error)
-      @error = 'relationship already exists' if find_relation(params[:relationship])
+      @error = 'relationship already exists' if relation_exists?
       unless (@error)
         relation = V1::Relationship.new
         @asset = V1::Asset.new unless @asset
@@ -45,7 +45,7 @@ module V1
     end
     
     def show
-      relation = find_relation(params)
+      relation = find_relation
       respond_to do |format|
         format.json do
           if relation
@@ -57,9 +57,30 @@ module V1
       end
     end
     
+    # changes to relationships are not allowed: either they exist or they do not
+    def update
+      respond_to do |format|
+        format.json do
+          render :json => { :error => "changes to relationships not allowed" }, :status => 422
+        end
+      end
+    end
     
+    def destroy
+      relation = find_relation
+      respond_to do |format|
+        format.json do
+          if relation
+            relation.destroy
+            render :json => {}
+          else
+            render :json => { :error => "relationship not found" }, :status => 404
+          end
+        end        
+      end
+    end
     
-    private 
+  private 
     
     # Find portfolio requested by user, if one is requested,
     # to filter relationships by or to add to
@@ -81,25 +102,36 @@ module V1
       @error = "asset with id #{id} not found"
     end
     
-    def relation_exists?
-      args = { :portfolio_id => portfolio_id, :asset_id => asset_id }
-      V1::Relationship.exists?(args)
-    end
-    
-    def find_relation(args)
-      return V1::Relationship.find(args[:id]) if args[:id]
+    def find_relation
+      id = relation_id
+      return V1::Relationship.find(id) if id
       return V1::Relationship.where(:portfolio_id => portfolio_id).where(:asset_id => asset_id).first \
-        unless args[:id]
+        unless id
     rescue 
       return nil
+    end   
+        
+    def relation_exists?
+      id = relation_id
+      args = { :id => id } if id
+      args = { :portfolio_id => portfolio_id, :asset_id => asset_id } if (portfolio_id && asset_id)
+      return V1::Relationship.exists?(args) if args
+      return nil unless args
+    end
+    
+    def relation_id
+      return params[:relationship][:id] if params[:relationship] && params[:relationship][:id]
+      return params[:id]
     end
     
     def portfolio_id
-      params[:portfolio_id] || params[:relationship][:portfolio_id]
+      return params[:relationship][:portfolio_id] if params[:relationship] && params[:relationship][:portfolio_id]
+      return params[:portfolio_id]
     end
     
     def asset_id
-      params[:asset_id] || params[:relationship][:asset_id]
+      return params[:relationship][:asset_id] if params[:relationship] && params[:relationship][:asset_id]
+      return params[:asset_id]
     end
     
     # create relationship; if asset not provided, try to create

@@ -1,6 +1,7 @@
 module V1
   class PortfoliosController < V1::ApplicationController
     before_filter :allow_only_json_requests
+    before_filter :find_portfolio, :only => [:show, :update, :destroy]
     
     # list all portfolios
     def index
@@ -31,10 +32,9 @@ module V1
     def show
       respond_to do |format|
         format.json do
-          begin
-            portfolio = Portfolio.find(params[:id])
-            render :json => portfolio, :serializer => V1::PortfolioSerializer
-          rescue
+          if @portfolio
+            render :json => @portfolio, :serializer => V1::PortfolioSerializer
+          else
             render :json => {}, :status => 404
           end
         end
@@ -43,21 +43,20 @@ module V1
   
     # update portfolio and save updated by information for audit
     def update
-      portfolio = Portfolio.find_by_id(params[:id])
       if (params[:portfolio][:id] && params[:portfolio][:id] != params[:id])
         error = { :message => 'can not change portfolio id', :status => 422 }
-      elsif !portfolio
+      elsif !@portfolio
         error = { :message => 'portfolio not found', :status => 404 }
       end
       respond_to do |format|
         format.json do
           if error
             render :json => { :error => error[:message] }, :status => error[:status]
-          elsif update_portfolio(portfolio)
-            portfolio.reload
-            render :json => portfolio, :serializer => V1::PortfolioSerializer
+          elsif update_portfolio(@portfolio)
+            @portfolio.reload
+            render :json => @portfolio, :serializer => V1::PortfolioSerializer
           else 
-            render :json => { :error => portfolio.errors }, :status => :unprocessable_entity
+            render :json => { :error => @portfolio.errors }, :status => :unprocessable_entity
           end
         end
       end
@@ -67,11 +66,10 @@ module V1
     def destroy  
       respond_to do |format|
         format.json do
-          begin
-            portfolio = Portfolio.find(params[:id])
-            portfolio.destroy
+          if @portfolio
+            @portfolio.destroy
             render :json => {}
-          rescue
+          else
             render :json => { :message => 'no portfolio at this address' }, :status => 404
           end
         end

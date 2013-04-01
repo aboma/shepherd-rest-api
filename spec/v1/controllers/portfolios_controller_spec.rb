@@ -213,7 +213,7 @@ describe V1::PortfoliosController, :type => :controller do
       end
     end
     
-    context "authorized user" do
+    context "with valid authorization token" do
       def delete_portfolio(id, format)
         request.env['X-AUTH-TOKEN'] = @auth_token
         delete :destroy, :id => id, :format => format 

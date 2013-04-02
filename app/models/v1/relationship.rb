@@ -16,10 +16,10 @@ module V1
     
     attr_accessible :asset_id, :portfolio_id, :created_by_id, :updated_by_id, :relationship_type
     
-    validates :asset_id, :presence => true
-    validates :portfolio_id, :presence => true
+    validates :asset, :presence => true
+    validates :portfolio, :presence => true
     
-    validates_associated :portfolio
-    validates_associated :asset
+    validates :created_by_id, :presence => true
+    validates :updated_by_id, :presence => true
   end
 end

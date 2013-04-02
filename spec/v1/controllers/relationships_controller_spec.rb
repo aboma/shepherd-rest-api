@@ -21,13 +21,11 @@ describe V1::RelationshipsController, :type => :controller do
     yield attrs
   end
   
-  let(:relation) { FactoryGirl.create(:v1_relationship) }
-  
-#  let(:relation) do
-#    given_relation_attrs_with({ :valid_asset => true, :valid_portfolio => true}) do |attrs|
-#      FactoryGirl.create(:v1_relationship, attrs)
-#    end 
-#  end
+  let(:relation) do 
+    given_relation_attrs_with({:valid_asset => true, :valid_portfolio => true}) do |attrs|
+      return FactoryGirl.create(:v1_relationship, attrs) 
+    end
+  end 
   
   ### GET INDEX ==================================================
   describe "get INDEX" do

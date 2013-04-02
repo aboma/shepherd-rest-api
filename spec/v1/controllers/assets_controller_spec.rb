@@ -13,13 +13,8 @@ describe V1::AssetsController, :type => :controller do
   end
     
     # global helper methods
-  def create_portfolio 
-    FactoryGirl.create(:v1_portfolio) 
-  end
-  
-  def create_asset
-    FactoryGirl.create(:v1_asset)
-  end
+  let(:portfolio) { FactoryGirl.create(:v1_portfolio) }
+  let(:asset) { FactoryGirl.create(:v1_asset) }
   
   ### GET INDEX ==================================================
   describe "get INDEX" do
@@ -40,9 +35,7 @@ describe V1::AssetsController, :type => :controller do
   end
   
   ### GET SHOW ===================================================
-  describe "get SHOW" do
-    let(:asset) { create_asset }
-    
+  describe "get SHOW" do   
     context "unauthorized user" do
       it_should_behave_like "a protected action" do
         let(:data) { { :id => asset.id } }
@@ -54,7 +47,6 @@ describe V1::AssetsController, :type => :controller do
     context "with valid authorization token" do
       context "valid asset id" do
         before :each do
-          create_asset
           request.env['X-AUTH-TOKEN'] = @auth_token
           get :show, :id => asset.id, :format => :json
           @parsed = JSON.parse(response.body)

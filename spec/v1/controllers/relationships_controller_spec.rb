@@ -11,11 +11,6 @@ describe V1::RelationshipsController, :type => :controller do
   after :all do
     destroy_test_user
   end
-    
-    # global helper methods
-  def create_relationship 
-    FactoryGirl.create(:v1_relationship) 
-  end
   
   def given_relation_attrs_with(options)
     attrs = FactoryGirl.attributes_for(:v1_relationship)

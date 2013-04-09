@@ -58,17 +58,7 @@ describe V1::Relationship do
     specify { relation.save.should be false }    
   end
     
-  describe "requires a created by user id" do
-    before { relation.created_by_id = nil }
-    it { should_not be_valid }
-    specify { relation.save.should be false }
-  end
-  
-  describe "requires an updated by user id" do
-    before { relation.updated_by_id = nil }
-    it { should_not be_valid }
-    specify { relation.save.should be false }
-  end
+  it_should_behave_like "an auditable model"
   
   describe "timestamps" do
     describe "save a created by date" do

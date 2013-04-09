@@ -48,17 +48,7 @@ describe V1::Asset do
     specify { asset.save.should be true } 
   end
   
-  describe "requires a created by user id" do
-    before { asset.created_by_id = nil }
-    it { should_not be_valid }
-    specify { asset.save.should be false }
-  end
-  
-  describe "requires an updated by user id" do
-    before { asset.updated_by_id = nil }
-    it { should_not be_valid }
-    specify { asset.save.should be false }
-  end
+  it_should_behave_like "an auditable model"
   
   describe "timestamps" do
     describe "save a created by date" do
@@ -77,7 +67,7 @@ describe V1::Asset do
     it "removes an asset from the asset table" do
       expect { asset.destroy }.to change(V1::Asset, :count).by(-1)
     end
-    before do
+    before :each do
       asset.save
       portfolio = FactoryGirl.create(:v1_portfolio)
       relation = FactoryGirl.build(:v1_relationship)
@@ -87,6 +77,9 @@ describe V1::Asset do
     end
     it "removes any associated relationships" do
       expect { asset.destroy }.to change(V1::Relationship, :count).by(-1)      
+    end
+    it "does not remove associated portfolios" do
+      expect { asset.destroy }.to_not change(V1::Portfolio, :count)
     end
   end
 end

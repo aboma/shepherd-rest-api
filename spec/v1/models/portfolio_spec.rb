@@ -46,17 +46,7 @@ describe V1::Portfolio do
     specify { portfolio.save.should be true } 
   end
   
-  describe "requires a created by user id" do
-    before { portfolio.created_by_id = nil }
-    it { should_not be_valid }
-    specify { portfolio.save.should be false }
-  end
-  
-  describe "requires an updated by user id" do
-    before { portfolio.updated_by_id = nil }
-    it { should_not be_valid }
-    specify { portfolio.save.should be false }
-  end
+  it_should_behave_like "an auditable model"
   
   describe "timestamps" do
     describe "saves a created by date" do

@@ -67,4 +67,18 @@ module VilioSharedExamples
       response.header['Content-Type'].should include 'application/json'
     end
   end
+  
+  shared_examples_for "an auditable model" do
+    describe "requires a created by user id" do
+    before { subject.created_by_id = nil }
+    it { should_not be_valid }
+    specify { subject.save.should be false}
+  end
+  
+  describe "requires an updated by user id" do
+    before { subject.updated_by_id = nil }
+    it { should_not be_valid }
+    specify { subject.save.should be false }
+  end
+  end
 end 

@@ -1,1 +1,0 @@
-Luxin.TopnavController = Ember.ObjectController.extend({});

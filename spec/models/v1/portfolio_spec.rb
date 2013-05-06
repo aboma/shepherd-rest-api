@@ -46,6 +46,10 @@ describe V1::Portfolio do
     specify { portfolio.save.should be true } 
   end
   
+  describe "has assets through relationship" do
+    it { should have_many(:assets).through(:relationships) }
+  end
+  
   it_should_behave_like "an auditable model"
   
   describe "timestamps" do

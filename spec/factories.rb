@@ -35,4 +35,26 @@ FactoryGirl.define do
     created_by_id 1
     updated_by_id 1
   end
+  
+  factory :v1_field, :class => V1::MetadataField do
+    sequence(:name) { |n| "field#{n}" }
+    description "test field"
+    type "string"
+    created_by_id 1
+    updated_by_id 1    
+  end
+  
+  factory :v1_values_list, :class => V1::MetadataValuesList do
+    sequence(:name) { |n| "values list#{n}" }
+    description "values list"
+    created_by_id 1
+    updated_by_id 1    
+  end
+  
+  factory :v1_value, :class => V1::MetadataValue do
+    sequence(:value) { |v| "value#{v}" }
+    description "metadata value"
+    created_by_id 1
+    updated_by_id 1     
+  end
 end

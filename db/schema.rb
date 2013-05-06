@@ -11,11 +11,46 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121116033801) do
+ActiveRecord::Schema.define(:version => 20130502154748) do
 
   create_table "assets", :force => true do |t|
     t.string   "name",          :null => false
     t.string   "file",          :null => false
+    t.string   "description"
+    t.datetime "deleted_at"
+    t.integer  "created_by_id", :null => false
+    t.integer  "updated_by_id"
+    t.integer  "deleted_by_id"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  create_table "metadata_fields", :force => true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.string   "type"
+    t.string   "values_list_name"
+    t.datetime "deleted_at"
+    t.integer  "created_by_id",    :null => false
+    t.integer  "updated_by_id"
+    t.integer  "deleted_by_id"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+  end
+
+  create_table "metadata_values", :force => true do |t|
+    t.string   "value",         :null => false
+    t.string   "description"
+    t.datetime "deleted_at"
+    t.integer  "created_by_id", :null => false
+    t.integer  "updated_by_id"
+    t.integer  "deleted_by_id"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  create_table "metadata_values_lists", :force => true do |t|
+    t.string   "name",          :null => false
     t.string   "description"
     t.datetime "deleted_at"
     t.integer  "created_by_id", :null => false

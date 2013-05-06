@@ -33,6 +33,7 @@ end
 group :development, :test do
   # To use debugger
   gem 'debugger', '~> 1.5.0'
+  gem 'shoulda', '~> 3.4.0'
   #gem 'ruby-debug19', :require => 'ruby-debug'
   gem 'rspec-rails', '~> 2.13.0'
   gem 'factory_girl_rails', '~> 3.0.0'

@@ -2,20 +2,29 @@ require 'spec_helper'
 
 describe V1::AssetsController, :type => :controller do
   include LoginHelper
-  
+
   # get a valid authorization to use on requests
   before :all do
     create_test_user
   end
-  
+
   after :all do
     destroy_test_user
   end
-    
+
     # global helper methods
   let(:portfolio) { FactoryGirl.create(:v1_portfolio) }
   let(:asset) { FactoryGirl.create(:v1_asset) }
-  
+  let(:relationship) { create_relationship }
+
+  def create_relationship
+    attrs = FactoryGirl.attributes_for(:v1_relationship)
+    attrs[:asset_id] = asset.id 
+    attrs[:portfolio_id] = portfolio.id
+    FactoryGirl.create(:v1_relationship, attrs)
+  end 
+
+
   ### GET INDEX ==================================================
   describe "get INDEX" do
     it_should_behave_like "a protected action" do
@@ -23,17 +32,30 @@ describe V1::AssetsController, :type => :controller do
         get :index, :format => args_hash[:format]
       end
     end
-    
+
     context "with valid authorization token" do
       it_should_behave_like "JSON controller index action"
       context "given portfolio id" do
-        if "should return assets for that portfolio"
-          pending
+        it "should return assets for that portfolio" do
+          ass = FactoryGirl.create(:v1_asset)
+          port = FactoryGirl.create(:v1_portfolio)
+          rel_attrs = FactoryGirl.attributes_for(:v1_relationship)
+          rel_attrs[:portfolio_id] = port.id
+          rel_attrs[:asset_id] = ass.id
+          FactoryGirl.create(:v1_relationship, rel_attrs)
+          # create another relationship
+          rel2 = create_relationship
+          request.env["X-AUTH-TOKEN"] = @auth_token
+          get :index, :portfolio_id => portfolio.id, :format => :json
+          parsed = JSON.parse(response.body)
+          # make sure only second relationship is returned
+          parsed["assets"].length.should == 1
+          parsed["assets"][0]["id"].should == rel2.asset_id
         end
       end
     end
   end
-  
+
   ### GET SHOW ===================================================
   describe "get SHOW" do   
     context "unauthorized user" do
@@ -69,7 +91,7 @@ describe V1::AssetsController, :type => :controller do
       end 
     end
   end
-  
+
     ### POST CREATE ========================================================
   describe "post CREATE" do
     it_should_behave_like "a protected action" do
@@ -78,7 +100,7 @@ describe V1::AssetsController, :type => :controller do
         post :create, :asset => args_hash[:data], :format => args_hash[:format] 
       end   
     end
-           
+
     context "with valid authorization token" do 
       def post_asset attrs, format
         request.env['X-AUTH-TOKEN'] = @auth_token
@@ -120,7 +142,7 @@ describe V1::AssetsController, :type => :controller do
             response.status.should == 422
           end
         end
-        
+
         context "with valid attributes" do
           it "creates one asset" do   
             expect{ 

@@ -4,21 +4,21 @@ require 'spec_helper'
 # such as authorization. These are located in shared_examples.rb
 describe V1::PortfoliosController, :type => :controller do
   include LoginHelper
-  
+
   # get a valid authorization to use on requests
   before :all do
     create_test_user
   end
-  
+
   after :all do
     destroy_test_user
   end
-  
+
   # global helper methods
   def create_portfolio 
     FactoryGirl.create(:v1_portfolio) 
   end
-  
+
   ### GET INDEX ==================================================
   describe "get INDEX" do   
     it_should_behave_like "a protected action" do
@@ -37,7 +37,7 @@ describe V1::PortfoliosController, :type => :controller do
 #      end   
     end 
   end
-  
+
   ### GET SHOW ==========================================================
   describe "get SHOW" do
     let(:port) { create_portfolio }
@@ -49,7 +49,7 @@ describe V1::PortfoliosController, :type => :controller do
         end      
       end 
     end
-    
+
     context "with valid authorization token" do
       context "valid portfolio id" do      
         before :each do
@@ -81,7 +81,7 @@ describe V1::PortfoliosController, :type => :controller do
       end
     end 
   end
-  
+
   ### POST CREATE ========================================================
   describe "post CREATE" do
     it_should_behave_like "a protected action" do
@@ -90,7 +90,7 @@ describe V1::PortfoliosController, :type => :controller do
         post :create, :portfolio => args_hash[:data], :format => args_hash[:format] 
       end   
     end
-           
+
     context "with valid authorization token" do 
       def post_portfolio attrs, format
         request.env['X-AUTH-TOKEN'] = @auth_token
@@ -118,14 +118,14 @@ describe V1::PortfoliosController, :type => :controller do
         context "with invalid attributes" do
           pending
         end
-          
+
         context "with valid attributes" do
           it "increases number of portfolios by 1" do   
             expect{ 
               post_portfolio(FactoryGirl.attributes_for(:v1_portfolio), :json)
             }.to change(V1::Portfolio, :count).by(1)
           end    
-          
+
           before :each do
              @port_attrs = FactoryGirl.attributes_for(:v1_portfolio)
              post_portfolio(@port_attrs, :json)
@@ -141,7 +141,7 @@ describe V1::PortfoliosController, :type => :controller do
       end
     end
   end
-  
+
   ### PUT UPDATE ========================================================
   describe "put UPDATE" do
     let(:port) { create_portfolio }
@@ -183,12 +183,6 @@ describe V1::PortfoliosController, :type => :controller do
           end
         end
         context "invalid input" do
-          describe "changing portfolio id number" do
-            it "returns status code 422" do
-              update_portfolio( { :id => port.id + 111 }, :json )
-              response.status.should == 422
-            end
-          end
           describe "invalid portfolio id" do
             it "returns status code 404 not found" do
               port.id = '1111'   # change portfolio id to one that does not exist
@@ -200,7 +194,7 @@ describe V1::PortfoliosController, :type => :controller do
       end
     end
   end
-  
+
   ### DELETE ========================================================
   describe "DELETE" do
     let!(:port) { create_portfolio }
@@ -212,7 +206,7 @@ describe V1::PortfoliosController, :type => :controller do
         end   
       end
     end
-    
+
     context "with valid authorization token" do
       def delete_portfolio(id, format)
         request.env['X-AUTH-TOKEN'] = @auth_token

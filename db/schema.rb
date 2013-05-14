@@ -29,13 +29,13 @@ ActiveRecord::Schema.define(:version => 20130502154748) do
     t.string   "name"
     t.string   "description"
     t.string   "type"
-    t.string   "values_list_name"
+    t.integer  "allowed_values_list_id"
     t.datetime "deleted_at"
-    t.integer  "created_by_id",    :null => false
+    t.integer  "created_by_id",          :null => false
     t.integer  "updated_by_id"
     t.integer  "deleted_by_id"
-    t.datetime "created_at",       :null => false
-    t.datetime "updated_at",       :null => false
+    t.datetime "created_at",             :null => false
+    t.datetime "updated_at",             :null => false
   end
 
   create_table "metadata_values", :force => true do |t|

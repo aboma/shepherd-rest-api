@@ -15,15 +15,21 @@ RSpec.configure do |config|
   # config.mock_with :mocha
   # config.mock_with :flexmock
   # config.mock_with :rr
+  config.color_enabled = true
+
+  config.tty = true
+
+  config.formatter = :progress   #:documentation
+
   config.mock_with :rspec
 
   config.include JsonSpec::Helpers
 
   config.include FactoryGirl::Syntax::Methods
-  
+
   # helpers for Devise authentication
   config.include Devise::TestHelpers, :type => :controller
-   
+
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
@@ -31,7 +37,7 @@ RSpec.configure do |config|
   # examples within a transaction, remove the following line or assign false
   # instead of true.
   config.use_transactional_fixtures = true
-  
+
   config.after(:all) do
     # Get rid of the linked images (Carrierwave)
     if Rails.env.test? || Rails.env.cucumber?

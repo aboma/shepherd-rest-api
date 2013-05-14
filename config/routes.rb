@@ -1,14 +1,14 @@
 VilioDAM::Application.routes.draw do
-  
+
   current_api_routes = lambda do
     match '/*path' => 'application#cors_preflight_check', :via => :options
-        
+
     devise_scope :user do
       resources :sessions, :only => [:index, :create, :destroy, :show]
       get "logout" => "sessions#destroy", :as => "logout"
       get "login" => "sessions#new", :as => "login"
     end
-  
+
     resources :portfolios      
     # serve assets under root directory or portfolio directory
     scope '(portfolios/:portfolio_id)' do 
@@ -17,15 +17,20 @@ VilioDAM::Application.routes.draw do
         get "thumbnail" => "assets#thumbnail", :as => "thumbnail", :format => 'html'
       end
     end
+
     resources :relationships
+    resources :metadata_fields, :only => [:index, :show, :create, :update], :path => :fields
+    resources :metadata_values, :only => [:index, :show, :create], :path => :values
+    resources :metadata_values_lists, :only => [:index, :show, :create], :path => :metadatalists
+
     root :to => "application#index"    
   end
-  
+
   constraints ApiVersion.new(:version => 1, :default => true) do
     scope :module => :v1, :constraints => ApiVersion.new(:version => 1, :default => true), &current_api_routes
     devise_for :users, :path_names => { :sign_up => "login" }, :class_name => 'V1::User'
   end
-  
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

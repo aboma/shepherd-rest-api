@@ -24,7 +24,8 @@ module V1
     attr_accessible :name, :description, :type, :created_at, :created_by_id, :updated_at, :updated_by_id
 
     validates :name, :presence => true, :uniqueness => { :case_sensitive => false }
-    validates :type, :presence => true
+    validates :type, inclusion: { in: %w(string boolean integer date),
+      message: "%{value} is not in list: string, boolean, integer, date" }
     validates :created_by_id, :presence => true
     validates :updated_by_id, :presence => true
 

@@ -19,9 +19,9 @@ VilioDAM::Application.routes.draw do
     end
 
     resources :relationships
-    resources :metadata_fields, :only => [:index, :show, :create, :update], :path => :fields
-    resources :metadata_values, :only => [:index, :show, :create], :path => :values
-    resources :metadata_values_lists, :only => [:index, :show, :create], :path => :metadatalists
+    resources :metadata_fields, :only => [:index, :show, :create, :update]
+    resources :metadata_values, :only => [:index, :show, :create]
+    resources :metadata_values_lists, :only => [:index, :show, :create]
 
     root :to => "application#index"    
   end

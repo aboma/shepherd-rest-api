@@ -8,7 +8,7 @@ module V1
       fields = V1::MetadataField.all
       respond_to do |format|
         format.json do
-          render :json => fields, :root => "fields", :each_serializer => V1::MetadataFieldSerializer
+          render :json => fields, :root => "metadata_fields", :each_serializer => V1::MetadataFieldSerializer
         end
       end
     end
@@ -17,7 +17,7 @@ module V1
       respond_to do |format|
         format.json do
           if @field
-            render :json => @field, :root => "field", :serializer => V1::MetadataFieldSerializer
+            render :json => @field, :root => "metadata_field", :serializer => V1::MetadataFieldSerializer
           else 
             render :json => {}, :status => 404
           end
@@ -34,7 +34,7 @@ module V1
             field = V1::MetadataField.new
             if update_field(field)
               response.headers['Location'] = metadata_field_path(field)
-              render :json => field, :root => "field", :serializer => V1::MetadataFieldSerializer
+              render :json => field, :root => "metadata_field", :serializer => V1::MetadataFieldSerializer
             else 
               render :json => { :error => field.errors }, :status => :unprocessable_entity
             end
@@ -52,7 +52,7 @@ module V1
           end
           if update_field(@field)
             @field.reload
-            render :json => @field, :root => "field", :serializer => V1::MetadataFieldSerializer
+            render :json => @field, :root => "metadata_field", :serializer => V1::MetadataFieldSerializer
           else 
             render :json => { :error => field.errors }, :status => :unprocessable_entity 
           end
@@ -68,12 +68,12 @@ module V1
     end
 
     def update_field(field)
-      field.attributes = add_audit_params(field, params[:field])
+      field.attributes = add_audit_params(field, params[:metadata_field])
       field.save
     end
 
     def exists?
-      name = params[:field][:name]
+      name = params[:metadata_field][:name]
       return false unless name
       result = V1::MetadataField.find_by_name(name)
       return result.nil? == false

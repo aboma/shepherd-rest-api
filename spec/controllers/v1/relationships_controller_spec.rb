@@ -2,16 +2,16 @@ require 'spec_helper'
 
 describe V1::RelationshipsController, :type => :controller do
   include LoginHelper
-  
+
   # get a valid authorization to use on requests
   before :all do
     create_test_user
   end
-  
+
   after :all do
     destroy_test_user
   end
-  
+
   def given_relation_attrs_with(options)
     attrs = FactoryGirl.attributes_for(:v1_relationship)
     attrs[:asset_id] = FactoryGirl.create(:v1_asset).id if options[:valid_asset]
@@ -20,13 +20,13 @@ describe V1::RelationshipsController, :type => :controller do
     attrs[:portfolio_id] = '12345' unless options[:valid_portfolio]
     yield attrs
   end
-  
+
   let(:relation) do 
     given_relation_attrs_with({:valid_asset => true, :valid_portfolio => true}) do |attrs|
       return FactoryGirl.create(:v1_relationship, attrs) 
     end
   end 
-  
+
   ### GET INDEX ==================================================
   describe "get INDEX" do
     context "unauthorized user" do
@@ -51,15 +51,17 @@ describe V1::RelationshipsController, :type => :controller do
           end
         end
       end
-      it_should_behave_like "JSON controller index action"        
-      describe "with a portfolio_id as a query parameter" do
-        it "returns relationships filtered by portfolio id" do
-          pending
+      context "with JSON format" do
+        it_should_behave_like "JSON controller index action"        
+        describe "with a portfolio_id as a query parameter" do
+          it "returns relationships filtered by portfolio id" do
+            pending
+          end
         end
       end
     end
   end
-  
+
   ### GET SHOW ==========================================================
   describe "get SHOW" do
     context "unauthorized user" do
@@ -70,7 +72,7 @@ describe V1::RelationshipsController, :type => :controller do
         end      
       end 
     end
-    
+
     context "with valid authorization token" do
       def get_relation(format)
         request.env['X-AUTH-TOKEN'] = @auth_token
@@ -120,7 +122,7 @@ describe V1::RelationshipsController, :type => :controller do
     end
     end
   end
-  
+
   ### POST CREATE ========================================================
   describe "post CREATE" do
     it_should_behave_like "a protected action" do
@@ -129,7 +131,7 @@ describe V1::RelationshipsController, :type => :controller do
         post :create, :relationship => args_hash[:data], :format => args_hash[:format] 
       end   
     end
-           
+
     context "with valid authorization token" do 
       def post_relation attrs, format        
         request.env['X-AUTH-TOKEN'] = @auth_token
@@ -158,7 +160,7 @@ describe V1::RelationshipsController, :type => :controller do
               end
             }.to change(V1::Relationship, :count).by(1)
           end    
-          
+
           before :each do
             given_relation_attrs_with({ :valid_asset => true, :valid_portfolio => true}) do |attrs|
                post_relation(attrs, :json)
@@ -237,7 +239,7 @@ describe V1::RelationshipsController, :type => :controller do
       end
     end
   end
-  
+
   ### post UPDATE =========================================================
   describe "post UPDATE" do
     it_should_behave_like "a protected action" do
@@ -246,7 +248,7 @@ describe V1::RelationshipsController, :type => :controller do
         post :update, :id => relation.id, :relationship => args_hash[:data], :format => args_hash[:format] 
       end   
     end
-           
+
     context "with valid authorization token" do
       def post_update_relation id, attrs, format
         request.env['X-AUTH-TOKEN'] = @auth_token
@@ -278,7 +280,7 @@ describe V1::RelationshipsController, :type => :controller do
       end
     end
   end
-  
+
   ### DELETE ===============================================
   describe "delete DELETE" do
     let!(:rel) { relation }

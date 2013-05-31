@@ -9,6 +9,8 @@ VilioDAM::Application.routes.draw do
       get "login" => "sessions#new", :as => "login"
     end
 
+    resources :settings
+
     resources :portfolios      
     # serve assets under root directory or portfolio directory
     scope '(portfolios/:portfolio_id)' do 

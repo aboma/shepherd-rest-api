@@ -43,7 +43,7 @@ describe V1::MetadataFieldsController, :type => :controller do
         end
         it_should_behave_like "an action that responds with JSON"
         it "responds with the asked for field" do
-          @parsed['field']['id'].should == field.id
+          @parsed['metadata_field']['id'].should == field.id
         end
       end
       context "invalid field id" do
@@ -64,14 +64,14 @@ describe V1::MetadataFieldsController, :type => :controller do
     it_should_behave_like "a protected action" do
       let(:data) { FactoryGirl.attributes_for(:v1_metadata_field) }
       def action(args_hash)
-        post :create, :field => args_hash[:data], :format => args_hash[:format] 
+        post :create, :metadata_field => args_hash[:data], :format => args_hash[:format] 
       end   
     end
 
     context "with valid authorization token" do 
       def post_field attrs, format
         request.env['X-AUTH-TOKEN'] = @auth_token
-        post :create, :field => attrs, :format => format 
+        post :create, :metadata_field => attrs, :format => format 
       end  
       context "with XML or HTML format" do
         [:xml, :html].each do |format|
@@ -153,14 +153,14 @@ describe V1::MetadataFieldsController, :type => :controller do
     it_should_behave_like "a protected action" do
       let(:data) { FactoryGirl.attributes_for(:v1_metadata_field) }
       def action(args_hash)
-        post :update, :id => field.id, :field => args_hash[:data], :format => args_hash[:format] 
+        post :update, :id => field.id, :metadata_field => args_hash[:data], :format => args_hash[:format] 
       end   
     end
 
     context "with valid authorization token" do
       def post_update_field attrs, format
         request.env['X-AUTH-TOKEN'] = @auth_token
-        post :update, :id => field.id, :field => attrs, :format => format 
+        post :update, :id => field.id, :metadata_field => attrs, :format => format 
       end  
       context "with XML or HTML format" do
         [:xml, :html].each do |format|
@@ -184,7 +184,7 @@ describe V1::MetadataFieldsController, :type => :controller do
             response.status.should == 200
           end
           it "returns the updated field" do
-            @parsed['field']['id'].should == field.id
+            @parsed['metadata_field']['id'].should == field.id
           end
         end
         context "invalid input" do

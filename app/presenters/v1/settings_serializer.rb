@@ -3,7 +3,7 @@ module V1
 
     attributes :field_types
     def field_types
-      object.field_type
+      object.field_types.join(',')
     end
 
   end

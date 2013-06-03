@@ -5,7 +5,7 @@ module V1
     def index
       respond_to do |format|
         format.json do
-          render :json => Settings, :serializer => V1::SettingsSerializer
+          render :json => {}, :status => 405
         end
       end
     end
@@ -13,7 +13,7 @@ module V1
     def show
       respond_to do |format|
         format.json do
-          render :json => {}, :status => 405
+          render :json => Settings, :root => :setting, :serializer => V1::SettingsSerializer
         end
       end
     end

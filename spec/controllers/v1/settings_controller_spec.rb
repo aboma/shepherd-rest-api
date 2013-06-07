@@ -37,7 +37,12 @@ describe V1::SettingsController, :type => :controller do
         end
       end
       context "with JSON format" do
-        it_should_behave_like "JSON controller index action"        
+        before :each do 
+          get_index(:json) 
+        end  
+        it "returns 405 method not allowed error" do
+          response.status.should == 405
+        end
       end
     end
   end
@@ -63,8 +68,9 @@ describe V1::SettingsController, :type => :controller do
         before :each do
           get_setting(:json)
         end
-        it "returns 405 method not allowed error" do
-          response.status.should == 405
+        it_should_behave_like "an action that responds with JSON"       
+        it "responds with success 200 status code" do
+          response.status.should == 200       
         end
       end
     end

@@ -39,7 +39,7 @@ FactoryGirl.define do
   factory :v1_metadata_field, :class => V1::MetadataField do
     sequence(:name) { |n| "field#{n}" }
     description "test field"
-    type "string"
+    type "text"
     created_by_id 1
     updated_by_id 1    
   end

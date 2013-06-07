@@ -5,10 +5,10 @@ module V1
     before_filter :find_list, :only => [:show]
 
     def index
-      lists = V1::MetadataField.all
+      lists = V1::MetadataValuesList.all
       respond_to do |format|
         format.json do
-          render :json => lists, :root => "values_lists", :each_serializer => V1::MetadataValuesListSerializer
+          render :json => lists, :root => "metadata_values_lists", :each_serializer => V1::MetadataValuesListSerializer
         end
       end
     end
@@ -17,7 +17,7 @@ module V1
       respond_to do |format|
         format.json do
           if @list
-            render :json => @list, :root => "values_list", :serializer => V1::MetadataValuesListSerializer
+            render :json => @list, :root => "metadata_values_list", :serializer => V1::MetadataValuesListSerializer
           else
             render :json => {}, :status => :not_found
           end
@@ -34,7 +34,7 @@ module V1
             list = V1::MetadataValuesList.new
             if update_list(list)
               response.headers["Location"] = metadata_values_list_path(list)
-              render :json => list, :root => "values_list", :serializer => V1::MetadataValuesListSerializer
+              render :json => list, :root => "metadata_values_list", :serializer => V1::MetadataValuesListSerializer
             else
               render :json => { :error => list.errors }, :status => :unprocessable_entity
             end
@@ -47,7 +47,7 @@ module V1
   private
 
     def exists?
-      name = params[:values_list][:name]
+      name = params[:metadata_values_list][:name]
       return false unless name
       result = V1::MetadataValuesList.find_by_name(name)
       return result.nil? == false
@@ -60,7 +60,7 @@ module V1
     end
 
     def update_list(list)
-      list.attributes = add_audit_params(list, params[:values_list])
+      list.attributes = add_audit_params(list, params[:metadata_values_list])
       list.save
     end
   end

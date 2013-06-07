@@ -45,7 +45,7 @@ describe V1::MetadataValuesListsController, :type => :controller do
         end
         it_should_behave_like "an action that responds with JSON"
         it "responds with the asked for values list" do
-          @parsed['values_list']['id'].should == list.id
+          @parsed['metadata_values_list']['id'].should == list.id
         end
       end
       context "invalid values list id" do
@@ -66,26 +66,26 @@ describe V1::MetadataValuesListsController, :type => :controller do
     it_should_behave_like "a protected action" do
       let(:data) { FactoryGirl.attributes_for(:v1_values_list) }
       def action(args_hash)
-        post :create, :field => args_hash[:data], :format => args_hash[:format] 
+        post :create, :metadata_values_list => args_hash[:data], :format => args_hash[:format] 
       end   
     end
 
     context "with valid authorization token" do 
-      def post_field attrs, format
+      def post_list attrs, format
         request.env['X-AUTH-TOKEN'] = @auth_token
-        post :create, :values_list => attrs, :format => format
+        post :create, :metadata_values_list => attrs, :format => format
       end  
       context "with XML or HTML format" do
         [:xml, :html].each do |format|
           before :each do
-            post_field(FactoryGirl.attributes_for(:v1_values_list), format)        
+            post_list(FactoryGirl.attributes_for(:v1_values_list), format)        
           end
           it "should return 406 code for format #{format}" do
             response.status.should == 406  
           end
           it "does not create the values list" do
             expect{ 
-              post_field(FactoryGirl.attributes_for(:v1_values_list), format)
+              post_list(FactoryGirl.attributes_for(:v1_values_list), format)
             }.to_not change(V1::MetadataValuesList, :count)
           end
         end          
@@ -103,11 +103,11 @@ describe V1::MetadataValuesListsController, :type => :controller do
           end
           it "does not create an metadata values list" do
             expect{ 
-              post_field(dup_attrs, :json)
+              post_list(dup_attrs, :json)
             }.to_not change(V1::MetadataValuesList, :count)
           end
           it "responds with 409 conflict" do
-            post_field(dup_attrs, :json)
+            post_list(dup_attrs, :json)
             response.status.should == 409
           end
         end
@@ -119,12 +119,12 @@ describe V1::MetadataValuesListsController, :type => :controller do
           }
           it "does not create an metadata values list" do
             expect{ 
-              post_field(invalid_attrs, :json)
+              post_list(invalid_attrs, :json)
             }.to_not change(V1::MetadataValuesList, :count)
           end
           #subject {}
           it "responds with 422 unprocessable entity" do
-            post_field(invalid_attrs, :json)
+            post_list(invalid_attrs, :json)
             response.status.should == 422
           end
         end
@@ -132,11 +132,11 @@ describe V1::MetadataValuesListsController, :type => :controller do
         context "with valid attributes" do
           it "creates one values list" do   
             expect{ 
-              post_field(FactoryGirl.attributes_for(:v1_values_list), :json)
+              post_list(FactoryGirl.attributes_for(:v1_values_list), :json)
             }.to change(V1::MetadataValuesList, :count).by(1)
           end 
           before :each do
-            post_field(FactoryGirl.attributes_for(:v1_values_list), :json)
+            post_list(FactoryGirl.attributes_for(:v1_values_list), :json)
           end
           it_should_behave_like "an action that responds with JSON"       
           it "responds with success 200 status code" do

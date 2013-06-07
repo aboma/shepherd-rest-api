@@ -50,19 +50,19 @@ describe V1::MetadataField do
     specify { field.save.should be false }
   end
 
-  describe "type must be in list (string, boolean, integer, date)" do
+  describe "type must be in list (text, boolean, integer, date)" do
     context "value is in list" do
       before { field.type = 'boolean' }
       it { should be_valid }
       specify { field.save.should be true }
     end
     context "value is not in list" do
-      before { field.type = 'text' }
+      before { field.type = 'bananas' }
       it { should_not be_valid }
       specify { field.save.should be false }
       specify { 
         field.save
-        field.errors[:type].to_s.should =~ /text is not in list: string, boolean, integer, date/
+        field.errors[:type].to_s.should =~ /.*bananas is not in list:.*/
       }
     end
   end

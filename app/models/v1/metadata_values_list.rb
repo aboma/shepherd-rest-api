@@ -15,9 +15,9 @@
 
 module V1
   class MetadataValuesList < ActiveRecord::Base
-    has_many :fields, :class_name => "MetadataField", :inverse_of => :allowed_values_list
+    has_many :fields, :class_name => "V1::MetadataField", :inverse_of => :allowed_values_list
 
-    attr_accessible :name, :description, :updated_by_id, :created_by_id
+    attr_accessible :name, :description, :updated_by_id, :created_by_id, :fields
 
     validates :name, :presence => true, :uniqueness => { :case_sensitive => false }
     validates :created_by_id, :presence => true

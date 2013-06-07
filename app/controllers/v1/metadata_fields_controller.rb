@@ -69,7 +69,15 @@ module V1
 
     def update_field(field)
       field.attributes = add_audit_params(field, params[:metadata_field])
+      #set_associations(field)
       field.save
+    end
+
+    def set_associations(field)
+      list_id = params[:metadata_field][:allowed_values_list_id]
+      return unless list_id
+      list = V1::MetadataValuesList.find_by_id(list_id)
+      field.attributes.allowed_values_list = list
     end
 
     def exists?

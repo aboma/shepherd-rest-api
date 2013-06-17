@@ -30,14 +30,14 @@ module V1
       respond_to do |format|
         format.json do
           if exists?
-            render :json => { :error => "value already exists" }, :status => :conflict
+            render :json => { :errors => { :value => "value already exists" } }, :status => :conflict
           else
             value = V1::MetadataValue.new
             if update_value(value)
               response.headers["Location"] = metadata_value_path(value)
               render :json => value, :root => "value", :serializer => V1::MetadataValueSerializer
             else
-              render :json => { :error => value.errors }, :status => :unprocessable_entity
+              render :json => { :errors => value.errors }, :status => :unprocessable_entity
             end
           end
         end

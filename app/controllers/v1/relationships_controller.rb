@@ -2,11 +2,11 @@ module V1
   class RelationshipsController < V1::ApplicationController
     include V1::Concerns::Relate
     include V1::Concerns::Auditable
-    
+
     before_filter :allow_only_json_requests, :except => [:create]
     before_filter :find_portfolio, :only => [:index, :create]
     before_filter :find_asset, :only => [:index, :create]
-    
+
     # Either return all relationships or return relationships
     # filtered by portfolio or asset
     def index
@@ -19,13 +19,13 @@ module V1
         end      
       end
     end
-    
+
     # Create relationship between asset and portfolio; if asset 
     # details are posted too, create asset first, then create
     # relationship
     def create
-      @error = 'no portfolio id specified' if (!@portfolio && !@error)
-      @error = 'relationship already exists' if relation_exists?
+      @error = { :id => 'no portfolio id specified' } if (!@portfolio && !@error)
+      @error = { :id => 'relationship already exists' } if relation_exists?
       unless (@error)
         relation = V1::Relationship.new
         @asset = V1::Asset.new unless @asset
@@ -35,7 +35,7 @@ module V1
       respond_to do |format|
         format.json do
           if @error
-            render :json => { :error => @error }, :status => 422
+            render :json => { :errors => @error }, :status => 422
           else
             response.headers['Location'] = relationships_path(relation)
             render :json => relation, :serializer => V1::RelationshipSerializer
@@ -43,7 +43,7 @@ module V1
         end        
       end
     end
-    
+
     def show
       relation = find_relation
       respond_to do |format|
@@ -51,21 +51,21 @@ module V1
           if relation
             render :json => relation, :serializer => V1::RelationshipSerializer
           else
-            render :json => { :error => "relationship not found" }, :status => 404
+            render :json => { :errors => { :id => "relationship not found" } }, :status => 404
           end
         end
       end
     end
-    
+
     # changes to relationships are not allowed: either they exist or they do not
     def update
       respond_to do |format|
         format.json do
-          render :json => { :error => "changes to relationships not allowed" }, :status => 422
+          render :json => { :errors => { :id => "changes to relationships not allowed" } }, :status => 422
         end
       end
     end
-    
+
     def destroy
       relation = find_relation
       respond_to do |format|
@@ -74,14 +74,14 @@ module V1
             relation.destroy
             render :json => {}
           else
-            render :json => { :error => "relationship not found" }, :status => 404
+            render :json => { :errors => { :id => "relationship not found" } }, :status => 404
           end
         end        
       end
     end
-    
+
   private 
-    
+
     # Find portfolio requested by user, if one is requested,
     # to filter relationships by or to add to
     def find_portfolio
@@ -89,9 +89,9 @@ module V1
       return nil unless id
       @portfolio = V1::Portfolio.find(id)
     rescue
-      @error = "portfolio with id #{id} not found"
+      @error = { :id => "portfolio with id #{id} not found" }
     end
-    
+
     # Find asset requested by user, if one is requested, to filter
     # relationships by or to add to
     def find_asset
@@ -99,9 +99,9 @@ module V1
       return nil unless id
       @asset = V1::Asset.find(id)
     rescue
-      @error = "asset with id #{id} not found"
+      @error = { :id => "asset with id #{id} not found" }
     end
-    
+
     def find_relation
       id = relation_id
       return V1::Relationship.find(id) if id
@@ -110,7 +110,7 @@ module V1
     rescue 
       return nil
     end   
-        
+
     def relation_exists?
       id = relation_id
       args = { :id => id } if id
@@ -118,22 +118,22 @@ module V1
       return V1::Relationship.exists?(args) if args
       return nil unless args
     end
-    
+
     def relation_id
       return params[:relationship][:id] if params[:relationship] && params[:relationship][:id]
       return params[:id]
     end
-    
+
     def portfolio_id
       return params[:relationship][:portfolio_id] if params[:relationship] && params[:relationship][:portfolio_id]
       return params[:portfolio_id]
     end
-    
+
     def asset_id
       return params[:relationship][:asset_id] if params[:relationship] && params[:relationship][:asset_id]
       return params[:asset_id]
     end
-    
+
     # create relationship; if asset not provided, try to create
     # one from params and then create relationship to portfolio
     def create_relation(relation, asset, portfolio)

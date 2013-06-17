@@ -1,10 +1,10 @@
 module V1
   class AssetsController < V1::ApplicationController
     include V1::Concerns::Asset
-    
+
     before_filter :allow_only_json_requests
     before_filter :find_portfolio, :only => [:index, :create]
-    
+
     def index
       @assets = @portfolio.assets if @portfolio
       @assets ||= Asset.all
@@ -18,7 +18,7 @@ module V1
         end      
       end
     end
-    
+
     def create
       asset = V1::Asset.new
       respond_to do |format|
@@ -27,12 +27,12 @@ module V1
             response.headers['Location'] = assets_path(asset)
             render :json => asset, :serializer => V1::AssetSerializer
           else
-            render :json => { :error => asset.errors }, :status => :unprocessable_entity
+            render :json => { :errors => asset.errors }, :status => :unprocessable_entity
           end
         end
       end
     end
-    
+
     def show 
       asset_id = params[:asset_id] || params[:id]
       asset = Asset.find_by_id(asset_id)
@@ -46,9 +46,9 @@ module V1
         end
       end
     end
-    
+
     private 
-    
+
     def find_portfolio
       @portfolio = Portfolio.find_by_id(params[:portfolio_id])
     rescue ActiveRecord::RecordNotFound

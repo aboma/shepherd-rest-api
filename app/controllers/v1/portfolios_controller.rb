@@ -22,7 +22,7 @@ module V1
             response.headers['Location'] = portfolio_path(portfolio)
             render :json => portfolio, :serializer => V1::PortfolioSerializer
           else 
-            render :json => { :error => portfolio.errors }, :status => :unprocessable_entity
+            render :json => { :errors => portfolio.errors }, :status => :unprocessable_entity
           end
         end
       end
@@ -49,8 +49,8 @@ module V1
             @portfolio.reload
             render :json => @portfolio, :serializer => V1::PortfolioSerializer
           else 
-            render :json => { :error => 'portfolio not found' }, :status => 404 unless @portfolio
-            render :json => { :error => @portfolio.errors }, :status => :unprocessable_entity if @portfolio
+            render :json => { :errors => { :id => 'portfolio not found' } }, :status => 404 unless @portfolio
+            render :json => { :errors => @portfolio.errors }, :status => :unprocessable_entity if @portfolio
           end
         end
       end
@@ -64,7 +64,7 @@ module V1
             @portfolio.destroy
             render :json => {}
           else
-            render :json => { :message => 'no portfolio at this address' }, :status => 404
+            render :json => { :errors => { :id => 'no portfolio at this address' } }, :status => 404
           end
         end
       end

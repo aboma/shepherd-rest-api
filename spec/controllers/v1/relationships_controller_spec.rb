@@ -116,7 +116,7 @@ describe V1::RelationshipsController, :type => :controller do
             response.status.should == 404
           end
           it "responds with error message" do
-            @parsed['error'].should == "relationship not found"
+            @parsed['errors']['id'].should == "relationship not found"
           end
         end
     end
@@ -194,7 +194,7 @@ describe V1::RelationshipsController, :type => :controller do
             end
             it "responds with missing portfolio error" do
               parsed = JSON.parse(response.body)
-              parsed['error'].should =~ /portfolio with id \d+ not found/
+              parsed['errors']['id'].should =~ /portfolio with id \d+ not found/
             end
           end
           context "asset does not exist" do
@@ -216,7 +216,7 @@ describe V1::RelationshipsController, :type => :controller do
             end
             it "responds with missing portfolio error" do
               parsed = JSON.parse(response.body)
-              parsed['error'].should =~ /asset with id \d+ not found/
+              parsed['errors']['id'].should =~ /asset with id \d+ not found/
             end
           end
           context "relationship already exists between asset and portfolio" do
@@ -232,7 +232,7 @@ describe V1::RelationshipsController, :type => :controller do
             end
             it "responds with missing portfolio error" do
               parsed = JSON.parse(response.body)
-              parsed['error'].should =~ /relationship already exists/
+              parsed['errors']['id'].should =~ /relationship already exists/
             end
           end
         end

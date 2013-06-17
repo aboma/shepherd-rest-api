@@ -29,14 +29,14 @@ module V1
       respond_to do |format|
         format.json do
           if exists?
-            render :json => { :error => "field already exists" }, :status => :conflict
+            render :json => { :errors => { :name => "field name already exists" } }, :status => :conflict
           else
             field = V1::MetadataField.new
             if update_field(field)
               response.headers['Location'] = metadata_field_path(field)
               render :json => field, :root => "metadata_field", :serializer => V1::MetadataFieldSerializer
             else 
-              render :json => { :error => field.errors }, :status => :unprocessable_entity
+              render :json => { :errors => field.errors }, :status => :unprocessable_entity
             end
           end
         end
@@ -47,14 +47,14 @@ module V1
       respond_to do |format|
         format.json do
           unless @field 
-            render :json => {}, :status => :not_found
+            render :json => {}, :status => 404
             return
           end
           if update_field(@field)
             @field.reload
             render :json => @field, :root => "metadata_field", :serializer => V1::MetadataFieldSerializer
           else 
-            render :json => { :error => field.errors }, :status => :unprocessable_entity 
+            render :json => { :errors => field.errors }, :status => :unprocessable_entity 
           end
         end
       end

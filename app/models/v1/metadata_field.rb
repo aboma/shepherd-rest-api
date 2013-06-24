@@ -21,7 +21,7 @@ module V1
 
     belongs_to :allowed_values_list, :class_name => "V1::MetadataValuesList", :inverse_of => :fields
 
-    attr_accessible :name, :description, :type, :created_at, :created_by_id, :updated_at, :updated_by_id, :allowed_values_list_id
+    attr_accessible :name, :description, :type, :created_at, :updated_at, :allowed_values_list_id
 
     validates :name, :presence => true, :uniqueness => { :case_sensitive => false }
     validates :type, :inclusion => { :in => Settings.field_types,

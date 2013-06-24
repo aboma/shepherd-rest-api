@@ -49,12 +49,9 @@ module V1
     end
 
     def update_value(value)
-      value.attributes = add_audit_params(value, params[:metadata_list_value])
-      value.save!
-      return true
-    rescue => e
-      logger.error("error creating value #{e}")
-      return false
+      value.attributes = params[:metadata_list_value]
+      add_audit_params(value)
+      value.save
     end
 
   end

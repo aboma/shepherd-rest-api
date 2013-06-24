@@ -1,4 +1,5 @@
 class AddRelationships < ActiveRecord::Migration
+  #TODO: fix?
   def up
     create_table :relationships do |t|
       t.column :relationship_type, :string
@@ -8,7 +9,7 @@ class AddRelationships < ActiveRecord::Migration
       t.integer   :created_by_id,    :null => false
       t.integer   :updated_by_id,    :default => nil
       t.integer   :deleted_by_id,    :default => nil
-      
+
       t.timestamps
     end
   end

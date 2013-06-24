@@ -1,5 +1,6 @@
 module V1
   class PortfoliosController < V1::ApplicationController
+    include V1::Concerns::Auditable
     before_filter :allow_only_json_requests
     before_filter :find_portfolio, :only => [:show, :update, :destroy]
 
@@ -45,7 +46,7 @@ module V1
     def update
       respond_to do |format|
         format.json do
-          if update_portfolio(@portfolio)
+          if @portfolio && update_portfolio(@portfolio)
             @portfolio.reload
             render :json => @portfolio, :serializer => V1::PortfolioSerializer
           else 
@@ -79,12 +80,9 @@ module V1
     end
 
     def update_portfolio(portfolio)
-      port_params = params[:portfolio].merge(:created_by_id => current_user.id, :updated_by_id => current_user.id)
-      portfolio.attributes = port_params
-      portfolio.save!
-      return true
-    rescue
-      return false
+      portfolio.attributes = params[:portfolio]
+      add_audit_params(portfolio)
+      portfolio.save
     end
   end
 end

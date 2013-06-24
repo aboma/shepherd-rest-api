@@ -53,12 +53,9 @@ module V1
     end
 
     def update_user(user)
-      user.attributes = add_audit_params(user, params[:user])
-      user.save!
-      return true
-    rescue => e
-      logger.error("error creating user #{e}")
-      return false
+      user.attributes = params[:user]
+      add_audit_params(user)
+      user.save
     end
   end
 end

@@ -60,7 +60,8 @@ module V1
     end
 
     def update_list(list)
-      list.attributes = add_audit_params(list, params[:metadata_values_list])
+      list.attributes = params[:metadata_values_list]
+      add_audit_params(list)
       list.save
     end
   end

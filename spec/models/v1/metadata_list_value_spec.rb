@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe V1::MetadataListValue do
-  let(:value) { FactoryGirl.build(:v1_value) }
+  let(:list)  { FactoryGirl.create(:v1_values_list) }
+  let(:value) { FactoryGirl.build(:v1_value, { :metadata_values_list_id => list.id }) }
 
   subject { value }
 
@@ -32,4 +33,13 @@ describe V1::MetadataListValue do
     it { should be_valid }   
     specify { value.save.should be true } 
   end
+
+  describe "requires a metadata list id" do
+    before { value.metadata_values_list_id = nil }
+    it { should_not be_valid }
+    specify { value.save.should be false }
+  end
+
+  it_should_behave_like "an auditable model"
+
 end

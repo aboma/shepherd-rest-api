@@ -29,12 +29,12 @@ module V1
   class Relationship < ActiveRecord::Base
     belongs_to :portfolio
     belongs_to :asset  #, :class_name => "Asset", :foreign_key => :relationship_id
-    
-    attr_accessible :asset_id, :portfolio_id, :created_by_id, :updated_by_id, :relationship_type
-    
+
+    attr_accessible :asset_id, :portfolio_id, :relationship_type
+
     validates :asset, :presence => true
     validates :portfolio, :presence => true
-    
+
     validates :created_by_id, :presence => true
     validates :updated_by_id, :presence => true
   end

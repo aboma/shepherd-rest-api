@@ -15,10 +15,12 @@
 
 module V1
   class MetadataListValue < ActiveRecord::Base
+    belongs_to :metadata_values_list
 
-    attr_accessible :value, :updated_by_id, :created_by_id
+    attr_accessible :value, :metadata_values_list_id
 
     validates :value, :presence => true
+    validates :metadata_values_list, :presence => true
     validates :created_by_id, :presence => true
     validates :updated_by_id, :presence => true
   end

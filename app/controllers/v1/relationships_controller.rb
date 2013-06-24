@@ -139,9 +139,11 @@ module V1
     def create_relation(relation, asset, portfolio)
       V1::Relationship.transaction do  
         if asset.new_record?
-          asset.attributes = add_audit_params(asset, params) 
+          asset.attributes = params
+          add_audit_params(asset) 
           asset.save!         
         end
+        #add_audit_params(relation)
         relate_asset_and_portfolio!(relation, asset, portfolio)
       end
       return true

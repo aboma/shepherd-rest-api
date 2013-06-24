@@ -38,7 +38,7 @@ ActiveRecord::Schema.define(:version => 20130502154748) do
     t.datetime "updated_at",             :null => false
   end
 
-  create_table "metadata_values", :force => true do |t|
+  create_table "metadata_list_values", :force => true do |t|
     t.string   "value",         :null => false
     t.string   "description"
     t.datetime "deleted_at"

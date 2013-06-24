@@ -1,33 +1,64 @@
 module V1
   class UsersController < V1::ApplicationController
-    respond_to :json
-    
+    include V1::Concerns::Auditable
+    before_filter :allow_only_json_requests
+    before_filter :find_user, :only => [:show, :create]
+
     def index
-      @users = User.all
-      @user_presenter = @users.map {|u| V1::UserPresenter.new(u).as_json } 
-      render :json => @user_presenter.as_json
-    end
-    
-    def show
-      @user = User.find_by_id( params[:id] )
+      users = User.all
       respond_to do |format|
         format.json do
-          render :json => {}, :status => 404 unless @user
-          @user_presenter = V1::UserPresenter.new(@user)
-          render :json => @user_presenter.as_json
+          render :json => users, :each_serializer => V1::UserSerializer
         end
       end
     end
-    
-    def create
-      @user = User.new(params[:email].merge(:created_by_id => current_user.id, :updated_by_id => current_user.id))
-      @user.save
-      if @user.valid? 
-        @user_presenter = V1::UserPresenter.new(@user)
-        render :json => @user_presenter.as_json 
-      else
-        head no_content, :status => 422
+
+    def show
+      respond_to do |format|
+        format.json do
+          render :json => {}, :status => 404 unless @user
+          render :json => @user, :serializer => V1::UserSerializer if @user
+        end
       end
+    end
+
+    def create
+      respond_to do |format|
+        format.json do
+          if @user 
+            path = user_path(@user)
+            render :json => { :errors => { :email => "value already exists at #{path}" } }, :status => :conflict
+          else
+            user = V1::User.new
+            if update_user(user)
+              response.headers["Location"] = user_path(user)
+              render :json => user, :serializer => V1::UserSerializer
+            else
+              render :json => { :errors => user.errors }, :status => :unprocessable_entity
+            end
+          end
+        end
+      end
+    end
+
+  private
+
+    def find_user
+      @user = V1::User.find_by_id(params[:id])
+      unless @user 
+        if (params[:user] && params[:user][:email])
+          @user = V1::User.find_by_email(params[:user][:email])
+        end
+      end
+    end
+
+    def update_user(user)
+      user.attributes = add_audit_params(user, params[:user])
+      user.save!
+      return true
+    rescue => e
+      logger.error("error creating user #{e}")
+      return false
     end
   end
 end

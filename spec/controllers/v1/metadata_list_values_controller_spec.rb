@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe V1::MetadataValuesController, :type => :controller do
+describe V1::MetadataListValuesController, :type => :controller do
   include LoginHelper
 
   before :all do 
@@ -31,14 +31,14 @@ describe V1::MetadataValuesController, :type => :controller do
     it_should_behave_like "a protected action" do
       let(:data) { FactoryGirl.attributes_for(:v1_value) }
       def action(args_hash)
-        post :create, :field => args_hash[:data], :format => args_hash[:format] 
+        post :create, :metadata_list_value => args_hash[:data], :format => args_hash[:format] 
       end   
     end
 
     context "with valid authorization token" do 
       def post_field attrs, format
         request.env['X-AUTH-TOKEN'] = @auth_token
-        post :create, :value => attrs, :format => format 
+        post :create, :metadata_list_value => attrs, :format => format 
       end  
       context "with XML or HTML format" do
         [:xml, :html].each do |format|
@@ -51,29 +51,25 @@ describe V1::MetadataValuesController, :type => :controller do
           it "does not create the value" do
             expect{ 
               post_field(FactoryGirl.attributes_for(:v1_value), format)
-            }.to_not change(V1::MetadataValue, :count)
+            }.to_not change(V1::MetadataListValue, :count)
           end
         end          
       end    
       context "with JSON format" do    
         context "with invalid attributes" do
-          let(:valid_attrs) { FactoryGirl.attributes_for(:v1_value) }
-          let(:dup_attrs) {
+          let(:invalid_attrs) {
             attrs = FactoryGirl.attributes_for(:v1_value)
-            attrs[:value] = valid_attrs[:value]
+            attrs[:value] = nil 
             attrs
           }
-          before :each do
-            FactoryGirl.create(:v1_value, valid_attrs)
-          end
           it "does not create an metadata value" do
             expect{ 
-              post_field(dup_attrs, :json)
-            }.to_not change(V1::MetadataValue, :count)
+              post_field(invalid_attrs, :json)
+            }.to_not change(V1::MetadataListValue, :count)
           end
-          it "responds with 409 conflict" do
-            post_field(dup_attrs, :json)
-            response.status.should == 409
+          it "responds with 422 unprocessable entity" do
+            post_field(invalid_attrs, :json)
+            response.status.should == 422
           end
         end
         context "missing required attributes" do
@@ -85,7 +81,7 @@ describe V1::MetadataValuesController, :type => :controller do
           it "does not create an metadata value" do
             expect{ 
               post_field(invalid_attrs, :json)
-            }.to_not change(V1::MetadataValue, :count)
+            }.to_not change(V1::MetadataListValue, :count)
           end
           #subject {}
           it "responds with 422 unprocessable entity" do
@@ -98,7 +94,7 @@ describe V1::MetadataValuesController, :type => :controller do
           it "creates one value" do   
             expect{ 
               post_field(FactoryGirl.attributes_for(:v1_value), :json)
-            }.to change(V1::MetadataValue, :count).by(1)
+            }.to change(V1::MetadataListValue, :count).by(1)
           end 
           before :each do
             post_field(FactoryGirl.attributes_for(:v1_value), :json)

@@ -51,7 +51,7 @@ FactoryGirl.define do
     updated_by_id 1    
   end
 
-  factory :v1_value, :class => V1::MetadataValue do
+  factory :v1_value, :class => V1::MetadataListValue do
     sequence(:value) { |v| "value#{v}" }
     description "metadata value"
     created_by_id 1

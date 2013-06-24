@@ -1,5 +1,5 @@
 module V1
-  class MetadataValueSerializer < ActiveModel::Serializer
+  class MetadataListValueSerializer < ActiveModel::Serializer
 
     attributes :id, :value, :description
 

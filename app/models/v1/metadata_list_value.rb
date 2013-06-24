@@ -14,11 +14,11 @@
 #
 
 module V1
-  class MetadataValue < ActiveRecord::Base
+  class MetadataListValue < ActiveRecord::Base
 
     attr_accessible :value, :updated_by_id, :created_by_id
 
-    validates :value, :presence => true, :uniqueness => { :case_sensitive => false }
+    validates :value, :presence => true
     validates :created_by_id, :presence => true
     validates :updated_by_id, :presence => true
   end

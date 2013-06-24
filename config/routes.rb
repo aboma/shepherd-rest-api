@@ -4,6 +4,7 @@ VilioDAM::Application.routes.draw do
     match '/*path' => 'application#cors_preflight_check', :via => :options
 
     devise_scope :user do
+      resources :users, :only => [:index, :create, :show]
       resources :sessions, :only => [:index, :create, :destroy, :show]
       get "logout" => "sessions#destroy", :as => "logout"
       get "login" => "sessions#new", :as => "login"
@@ -22,7 +23,7 @@ VilioDAM::Application.routes.draw do
 
     resources :relationships
     resources :metadata_fields, :only => [:index, :show, :create, :update]
-    resources :metadata_values, :only => [:index, :show, :create]
+    resources :metadata_list_values, :only => [:index, :show, :create]
     resources :metadata_values_lists, :only => [:index, :show, :create]
 
     root :to => "application#index"    

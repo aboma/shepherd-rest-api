@@ -16,6 +16,8 @@
 module V1
   class MetadataValuesList < ActiveRecord::Base
     has_many :fields, :class_name => "V1::MetadataField", :inverse_of => :allowed_values_list
+    has_many :metadata_list_values, :class_name => "V1::MetadataListValue", :inverse_of => :metadata_values_list,
+      :dependent => :destroy
 
     attr_accessible :name, :description, :fields
 

@@ -62,6 +62,7 @@ describe V1::MetadataValuesListsController, :type => :controller do
     end
   end
 
+  ### post CREATE ========================================================
   describe "post CREATE" do
     it_should_behave_like "a protected action" do
       let(:data) { FactoryGirl.attributes_for(:v1_values_list) }
@@ -145,11 +146,129 @@ describe V1::MetadataValuesListsController, :type => :controller do
           it "responds with Location header" do
             response.header['Location'].should be_present
           end
+          context "with associated values" do
+            it "creates those values as well" do
+              expect {
+                values_list = FactoryGirl.attributes_for(:v1_values_list)
+                values = [{ :value => "list value #1"}, { :value => "list value #2" }]
+                values_list[:metadata_list_values] = values
+                post_list(values_list, :json)
+              }.to change(V1::MetadataListValue, :count).by(2)
+            end
+          end
         end
       end
     end
   end
 
+  ### PUT UPDATE ========================================================
+  describe "put UPDATE" do
+    it_should_behave_like "a protected action" do
+      let(:data) { { :name => :updated_name } }
+      let(:id) { list.id }
+      def action(args_hash)
+        put :update, :id => args_hash[:id], :metadata_values_list => args_hash[:data] , :format => args_hash[:format] 
+      end   
+    end
 
+    context "authorized user" do
+      def update_list(attrs, format)
+        request.env['X-AUTH-TOKEN'] = @auth_token
+        put :update, :id => list.id, :metadata_values_list => attrs , :format => format         
+      end
+      context "HTML or XML format" do
+        [:html, :xml].each do |format|
+          before :each do
+            update_list({ :description => :boom }, format )
+          end
+          it "returns 406 not acceptable code" do
+            response.status.should == 406
+          end
+        end
+      end
+      context "JSON format" do
+        context "valid input" do
+          before :each do
+            update_list( { :description => :boom }, :json )
+            @parsed = JSON.parse(response.body)
+          end
+          it_should_behave_like "an action that responds with JSON"
+          it "returns 200 success status code" do
+            response.status.should == 200
+          end
+          it "returns the updated metadata list" do
+            @parsed['metadata_values_list']['id'].should == list.id
+          end
+        end
+        context "invalid input" do
+          describe "invalid list id" do
+            it "returns status code 404 not found" do
+              list.id = '1111'   # change metadata_list_value id to one that does not exist
+              update_list( { :name => 'test' }, :json )
+              response.status.should == 404
+            end
+          end
+        end
+      end
+    end
+  end
 
+  ### DELETE =========================================================
+  describe "delete DELETE" do
+    # object must be created outside of the expects statement
+    let!(:list_to_delete) { list }
+    context "unauthorized user" do
+      it_should_behave_like "a protected action" do 
+        let(:id) { list.id }
+        def action(args_hash)
+          delete :destroy, :id => args_hash[:id] , :format => args_hash[:format] 
+        end   
+      end
+    end         
+    context "with valid authorization token" do
+      def delete_list(id, format)
+        request.env['X-AUTH-TOKEN'] = @auth_token
+        delete :destroy, :id => id, :format => format 
+      end
+      context "with XML or HTML format" do
+        [:xml, :html].each do |format|
+          it "does not change the number of lists" do   
+            expect { 
+              delete_list(list_to_delete.id, format)
+            }.to_not change(V1::MetadataValuesList, :count)
+          end
+          before :each do
+            delete_list(list.id, format)    
+          end
+          it_should_behave_like "an action that responds with JSON"       
+          it "should return 406 code for format #{format}" do
+            response.status.should == 406  
+          end
+        end          
+      end
+      context "with JSON format" do
+        it "decreases number of lists by 1" do   
+          expect { 
+            delete_list(list_to_delete.id, :json)
+          }.to change{V1::MetadataValuesList.count}.by(-1)
+        end
+        it "deletes associated list values as well" do
+          attrs = FactoryGirl.attributes_for(:v1_value)
+          attrs[:metadata_values_list_id] = list_to_delete.id
+          FactoryGirl.create(:v1_value, attrs)
+          expect {
+            delete_list(list_to_delete, :json)
+          }.to change(V1::MetadataListValue, :count).by(-1)
+        end
+        it "should respond with JSON" do
+          delete_list(list.id, :json)
+          response.header['Content-Type'].should include 'application/json'          
+        end
+        it "responds with success 200 status code" do
+          delete_list(list.id, :json)
+          response.status.should == 200       
+        end
+      end
+    end
+  end
 end

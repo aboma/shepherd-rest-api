@@ -63,7 +63,7 @@ module V1
         format.json do
           if @portfolio
             @portfolio.destroy
-            render :json => {}
+            render :json => :head, :status => :ok 
           else
             render :json => { :errors => { :id => 'no portfolio at this address' } }, :status => 404
           end

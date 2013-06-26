@@ -3,5 +3,6 @@ module V1
 
     attributes :id, :value, :description
 
+    has_one :metadata_values_list, :serializer => V1::MetadataValuesList, :embed => :id
   end
 end

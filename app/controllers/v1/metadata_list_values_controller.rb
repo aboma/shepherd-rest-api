@@ -49,7 +49,13 @@ module V1
     end
 
     def update_value(value)
-      value.attributes = params[:metadata_list_value]
+      attrs = params[:metadata_list_value]
+      list_id = attrs.delete(:metadata_values_list_id)
+      value.attributes = attrs
+      if list_id
+        list = V1::MetadataValuesList.find(list_id)
+        value.metadata_values_list = list
+      end
       add_audit_params(value)
       value.save
     end

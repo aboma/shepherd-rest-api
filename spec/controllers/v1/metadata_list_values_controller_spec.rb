@@ -25,6 +25,7 @@ describe V1::MetadataListValuesController, :type => :controller do
   end 
 
 
+  ### get INDEX ==============================
   describe "get INDEX" do
     it_should_behave_like "a protected action" do
       def action(args_hash)
@@ -37,11 +38,13 @@ describe V1::MetadataListValuesController, :type => :controller do
     end
   end
 
+  ### get SHOW ==============================
   describe "get SHOW" do
     pending
   end
 
 
+  ### POST CREATE ========================================================
   describe "post CREATE" do
     it_should_behave_like "a protected action" do
       let(:data) do
@@ -97,24 +100,41 @@ describe V1::MetadataListValuesController, :type => :controller do
           end
         end
         context "missing required attributes" do
-          let(:invalid_attrs) {
-            given_value_with_attrs({ :valid_value => true }) do |attrs|
-               attrs.delete(:value)
-               attrs
-             end
-          }
-          it "does not create an metadata value" do
-            expect{ 
+          context "missing value" do
+            let(:invalid_attrs) {
+              given_value_with_attrs({ :valid_value => true }) do |attrs|
+                 attrs.delete(:value)
+                 attrs
+               end
+            }
+            it "does not create an metadata value" do
+              expect{ 
+                post_value(invalid_attrs, :json)
+              }.to_not change(V1::MetadataListValue, :count)
+            end
+            it "responds with 422 unprocessable entity" do
               post_value(invalid_attrs, :json)
-            }.to_not change(V1::MetadataListValue, :count)
+              response.status.should == 422
+            end
           end
-          #subject {}
-          it "responds with 422 unprocessable entity" do
-            post_value(invalid_attrs, :json)
-            response.status.should == 422
+          context "missing metadata_value_list_id" do
+            let(:invalid_attrs) {
+              given_value_with_attrs({ :valid_value => true }) do |attrs|
+                 attrs.delete(:metadata_values_list_id)
+                 attrs
+               end
+            }
+            it "does not create an metadata value" do
+              expect{ 
+                post_value(invalid_attrs, :json)
+              }.to_not change(V1::MetadataListValue, :count)
+            end
+            it "responds with 422 unprocessable entity" do
+              post_value(invalid_attrs, :json)
+              response.status.should == 422
+            end
           end
         end
-
         context "with valid attributes" do
           it "creates one value" do   
             expect{ 

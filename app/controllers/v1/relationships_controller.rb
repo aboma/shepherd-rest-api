@@ -72,7 +72,7 @@ module V1
         format.json do
           if relation
             relation.destroy
-            render :json => {}
+            render :json => nil, :status => :ok 
           else
             render :json => { :errors => { :id => "relationship not found" } }, :status => 404
           end
@@ -137,13 +137,13 @@ module V1
     # create relationship; if asset not provided, try to create
     # one from params and then create relationship to portfolio
     def create_relation(relation, asset, portfolio)
+      return false unless asset && portfolio 
       V1::Relationship.transaction do  
         if asset.new_record?
           asset.attributes = params
           add_audit_params(asset) 
           asset.save!         
         end
-        #add_audit_params(relation)
         relate_asset_and_portfolio!(relation, asset, portfolio)
       end
       return true

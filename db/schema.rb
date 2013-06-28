@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130502154748) do
+ActiveRecord::Schema.define(:version => 20130628161053) do
 
   create_table "assets", :force => true do |t|
     t.string   "name",          :null => false
@@ -48,6 +48,29 @@ ActiveRecord::Schema.define(:version => 20130502154748) do
     t.integer  "deleted_by_id"
     t.datetime "created_at",              :null => false
     t.datetime "updated_at",              :null => false
+  end
+
+  create_table "metadata_template_field_settings", :force => true do |t|
+    t.integer  "field_id",      :null => false
+    t.boolean  "required",      :null => false
+    t.integer  "order",         :null => false
+    t.datetime "deleted_at"
+    t.integer  "created_by_id", :null => false
+    t.integer  "updated_by_id"
+    t.integer  "deleted_by_id"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  create_table "metadata_templates", :force => true do |t|
+    t.string   "name",          :null => false
+    t.text     "description"
+    t.datetime "deleted_at"
+    t.integer  "created_by_id", :null => false
+    t.integer  "updated_by_id"
+    t.integer  "deleted_by_id"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
   end
 
   create_table "metadata_values_lists", :force => true do |t|

@@ -83,20 +83,48 @@ describe V1::MetadataListValuesController, :type => :controller do
       end    
       context "with JSON format" do    
         context "with invalid attributes" do
-          let(:invalid_attrs) {
-            given_value_with_attrs({ :valid_value => true }) do |attrs|
-               attrs[:value] =  ' '
-               attrs
-             end
-          }
-          it "does not create an metadata value" do
-            expect{ 
+          context "with no value" do
+            let(:invalid_attrs) do 
+              given_value_with_attrs({ :valid_value => true }) do |attrs|
+                attrs[:value] =  ' '
+                attrs
+              end
+            end
+            it "does not create an metadata value" do
+              expect{ 
+                post_value(invalid_attrs, :json)
+            }.to_not change(V1::MetadataListValue, :count)
+            end
+            it "responds with 422 unprocessable entity" do
               post_value(invalid_attrs, :json)
-           }.to_not change(V1::MetadataListValue, :count)
+              response.status.should == 422
+            end
           end
-          it "responds with 422 unprocessable entity" do
-            post_value(invalid_attrs, :json)
-            response.status.should == 422
+          context "with invalid metadata list id" do
+            let(:invalid_attrs) do 
+              given_value_with_attrs({ :valid_value => true }) do |attrs|
+                attrs[:metadata_values_list_id] = 999999
+                attrs
+              end
+            end
+            it "does not create an metadata value" do
+              expect{ 
+                post_value(invalid_attrs, :json)
+            }.to_not change(V1::MetadataListValue, :count)
+            end
+            it "responds with 422 unprocessable entity" do
+              post_value(invalid_attrs, :json)
+              response.status.should == 422
+            end
+          end
+          context "with invalid metadata list id" do
+            let(:invalid_attrs) do 
+              given_value_with_attrs({ :valid_value => true }) do |attrs|
+                attrs[:metadata_values_list_id] = 999999
+                attrs
+              end
+            end
+
           end
         end
         context "missing required attributes" do

@@ -140,6 +140,7 @@ GEM
       polyglot
       polyglot (>= 0.3.1)
     tzinfo (0.3.37)
+    validates_existence (0.8.0)
     warden (1.2.1)
       rack (>= 1.0)
 
@@ -161,3 +162,4 @@ DEPENDENCIES
   rmagick (~> 2.13.1)
   rspec-rails (~> 2.13.0)
   shoulda (~> 3.4.0)
+  validates_existence (~> 0.8.0)

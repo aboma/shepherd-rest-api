@@ -8,6 +8,7 @@ gem 'rmagick', '~> 2.13.1'
 gem 'carrierwave', '~> 0.8.0'
 gem "active_model_serializers", "~> 0.7.0"
 gem "rails_config", "~> 0.3.2"
+gem "validates_existence", "~> 0.8.0"
 
 # Bundle edge Rails instead:
 # gem 'rails',     :git => 'git://github.com/rails/rails.git'

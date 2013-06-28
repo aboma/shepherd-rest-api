@@ -26,6 +26,7 @@ module V1
     validates :name, :presence => true, :uniqueness => { :case_sensitive => false }
     validates :type, :inclusion => { :in => Settings.field_types,
       message: "%{value} is not in list: #{Settings.field_types}" }
+    validates :allowed_values_list_id, :existence => { :allow_nil => true, :both => false }
     validates :created_by_id, :presence => true
     validates :updated_by_id, :presence => true
 

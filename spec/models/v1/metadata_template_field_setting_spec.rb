@@ -35,7 +35,7 @@ describe V1::MetadataTemplateFieldSetting do
     before { template_field_setting.required = nil }
     it { 
       should_not be_valid
-      should have(1).error_on(:required)
+      should have(2).error_on(:required)
     }
     specify { template_field_setting.save.should be false }
   end

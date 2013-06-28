@@ -91,22 +91,40 @@ describe V1::MetadataFieldsController, :type => :controller do
       context "with JSON format" do    
         context "with invalid attributes" do
           let(:valid_attrs) { FactoryGirl.attributes_for(:v1_metadata_field) }
-          let(:dup_attrs) {
-            attrs = FactoryGirl.attributes_for(:v1_metadata_field)
-            attrs[:name] = valid_attrs[:name]
-            attrs
-          }
-          before :each do
-            FactoryGirl.create(:v1_metadata_field, valid_attrs)
-          end
-          it "does not create an metadata field" do
-            expect{ 
+          context "with duplicate name" do
+            let(:dup_attrs) do
+              attrs = FactoryGirl.attributes_for(:v1_metadata_field)
+              attrs[:name] = valid_attrs[:name]
+              attrs
+            end
+            before :each do
+              FactoryGirl.create(:v1_metadata_field, valid_attrs)
+            end
+            it "does not create an metadata field" do
+              expect{ 
+                post_field(dup_attrs, :json)
+              }.to_not change(V1::MetadataField, :count)
+            end
+            it "responds with 409 conflict" do
               post_field(dup_attrs, :json)
-            }.to_not change(V1::MetadataField, :count)
+              response.status.should == 409
+            end
           end
-          it "responds with 409 conflict" do
-            post_field(dup_attrs, :json)
-            response.status.should == 409
+          context "invalid list id" do
+            let(:invalid_attrs) do
+              attrs = FactoryGirl.attributes_for(:v1_metadata_field)
+              attrs[:allowed_values_list_id] = 999999
+              attrs
+           end
+            it "does not create a metadata field" do
+              expect{ 
+                post_field(invalid_attrs, :json)
+              }.to_not change(V1::MetadataField, :count)
+            end
+            it "responds with 422 unprocessable entity" do
+              post_field(invalid_attrs, :json)
+              response.status.should == 422
+            end
           end
         end
         context "missing required attributes" do

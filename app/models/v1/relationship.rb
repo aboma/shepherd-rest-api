@@ -32,8 +32,8 @@ module V1
 
     attr_accessible :asset_id, :portfolio_id, :relationship_type
 
-    validates :asset, :presence => true
-    validates :portfolio, :presence => true
+    validates :asset, :existence => true
+    validates :portfolio, :existence => true
 
     validates :created_by_id, :presence => true
     validates :updated_by_id, :presence => true

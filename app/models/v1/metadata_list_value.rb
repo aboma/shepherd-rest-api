@@ -20,7 +20,7 @@ module V1
     attr_accessible :value, :metadata_values_list_id
 
     validates :value, :presence => true
-    validates :metadata_values_list_id, :presence => true
+    validates :metadata_values_list_id, :existence => true
     validates :created_by_id, :presence => true
     validates :updated_by_id, :presence => true
   end

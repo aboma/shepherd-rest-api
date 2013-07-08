@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe V1::MetadataTemplate do
-  let(:template) { FactoryGirl.build(:v1_template) }
+  let(:template) { FactoryGirl.build(:v1_metadata_template) }
 
   subject { template }
 
@@ -29,7 +29,7 @@ describe V1::MetadataTemplate do
 
   describe "name should be unique" do
     before do
-      dup_template = FactoryGirl.create(:v1_template)
+      dup_template = FactoryGirl.create(:v1_metadata_template)
       template.name = dup_template.name
     end   
     it { 

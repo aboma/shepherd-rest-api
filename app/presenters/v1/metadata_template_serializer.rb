@@ -1,9 +1,9 @@
 module V1
   class MetadataTemplateSerializer < ActiveModel::Serializer 
 
-    attributes :name, :created_at, :updated_at
+    attributes :id, :name, :description, :created_at, :updated_at
 
-    has_many :metadata_template_field_settings, :embed => :ids
+    has_many :metadata_template_field_settings, :embed => :objects
 
     def attributes
       hash = super

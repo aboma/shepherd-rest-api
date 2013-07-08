@@ -55,7 +55,7 @@ FactoryGirl.define do
     updated_by_id 1     
   end
 
-  factory :v1_template, :class => V1::MetadataTemplate do
+  factory :v1_metadata_template, :class => V1::MetadataTemplate do
     sequence(:name) { |n| "template#{n}" }
     description "template description"
     created_by_id 1

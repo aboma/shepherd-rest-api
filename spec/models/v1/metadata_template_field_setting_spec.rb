@@ -2,8 +2,10 @@ require 'spec_helper'
 
 describe V1::MetadataTemplateFieldSetting do
   let(:field) { FactoryGirl.create(:v1_metadata_field) }
-  let(:template_field_setting) do 
-    FactoryGirl.build(:v1_template_field_setting, { :field_id => field.id }) 
+  let(:template) { FactoryGirl.create(:v1_metadata_template) }
+  let(:template_field_setting) do
+    attrs = { :field_id => field.id, :metadata_template_id => template.id }
+    FactoryGirl.build(:v1_template_field_setting, attrs) 
   end
 
   subject { template_field_setting }
@@ -35,7 +37,7 @@ describe V1::MetadataTemplateFieldSetting do
     before { template_field_setting.required = nil }
     it { 
       should_not be_valid
-      should have(2).error_on(:required)
+      should have(1).error_on(:required)
     }
     specify { template_field_setting.save.should be false }
   end

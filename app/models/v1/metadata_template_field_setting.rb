@@ -1,8 +1,10 @@
 class V1::MetadataTemplateFieldSetting < ActiveRecord::Base
-  attr_accessible :field_id, :required, :order
+  belongs_to :metadata_template, :inverse_of => :metadata_template_field_settings 
+
+  attr_accessible :field_id, :required, :order, :metadata_template
 
   validates :field_id, :presence => true
-  validates :required, :presence => true, inclusion: { in: [true, false] }
+  validates_inclusion_of :required, in: [true, false]
   validates :order, :presence => true
 
   validates :created_by_id, :presence => true

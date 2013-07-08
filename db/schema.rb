@@ -51,15 +51,16 @@ ActiveRecord::Schema.define(:version => 20130628161053) do
   end
 
   create_table "metadata_template_field_settings", :force => true do |t|
-    t.integer  "field_id",      :null => false
-    t.boolean  "required",      :null => false
-    t.integer  "order",         :null => false
+    t.integer  "field_id",             :null => false
+    t.boolean  "required",             :null => false
+    t.integer  "order",                :null => false
+    t.integer  "metadata_template_id", :null => false
     t.datetime "deleted_at"
-    t.integer  "created_by_id", :null => false
+    t.integer  "created_by_id",        :null => false
     t.integer  "updated_by_id"
     t.integer  "deleted_by_id"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at",           :null => false
+    t.datetime "updated_at",           :null => false
   end
 
   create_table "metadata_templates", :force => true do |t|

@@ -1,7 +1,7 @@
 module V1
   class MetadataTemplateFieldSettingSerializer < ActiveModel::Serializer 
 
-    attributes :required, :order, :created_at, :updated_at
+    attributes :id, :required, :order, :created_at, :updated_at
 
     has_one :field, :embed => :ids
 

@@ -3,7 +3,7 @@ module V1
 
     attributes :id, :required, :order, :created_at, :updated_at
 
-    has_one :field, :embed => :ids
+    has_one :metadata_field, :embed => :ids
 
     def attributes
       hash = super

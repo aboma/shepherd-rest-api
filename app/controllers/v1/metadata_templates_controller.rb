@@ -2,7 +2,7 @@ module V1
   class MetadataTemplatesController < V1::ApplicationController
     include V1::Concerns::Auditable
     before_filter :allow_only_json_requests
-  # before_filter :find_template, :only => [:show, :update]
+    before_filter :find_template, :only => [:show, :update, :destroy]
 
     def index
       templates = V1::MetadataTemplate.all
@@ -13,10 +13,22 @@ module V1
       end
     end
 
+    def show 
+      respond_to do |format|
+        format.json do
+          if @template
+            render :json => @template, :each_serializer => V1::MetadataTemplateSerializer
+          else
+            render :json => nil, :status => :not_found
+          end
+        end
+      end
+    end
+
     def create
       respond_to do |format|
         format.json do
-          if exists?
+          if name_exists?
             render :json => { :errors => { :name => "template name already exists" } }, :status => :conflict
           else
             template = V1::MetadataTemplate.new
@@ -25,6 +37,42 @@ module V1
               render :json => template, :root => "metadata_template", :serializer => V1::MetadataTemplateSerializer
             else 
               render :json => { :errors => template.errors }, :status => :unprocessable_entity
+            end
+          end
+        end
+      end
+    end
+
+    def update
+      respond_to do |format|
+        format.json do
+          unless @template
+            render :json => :nil, :status => :not_found
+            return
+          end
+          if name_exists?
+            render :json => { :errors => { :name => "template name already exists" } }, :status => :conflict
+          else
+            if update_template(@template)
+              render :json => @template, :serializer => V1::MetadataTemplateSerializer
+            else
+              render :json => { :errors => @template.errors }, :status => :unprocessable_entity
+            end
+          end
+        end
+      end
+    end
+
+    def destroy
+      respond_to do |format|
+        format.json do
+          render :json => nil, :status => 404 unless @template
+          if @template
+            @template.destroy
+            if @template.destroyed?
+              render :json => nil, :status => :ok
+            else
+              render :json => { :error => @template.errors }, :status => 500
             end
           end
         end
@@ -40,29 +88,13 @@ module V1
       @error = { :id => "template not found" }
     end
 
+    # update template and field settings relation as part of a transaction
     def update_template(template)
       field_settings_params = params[:metadata_template].delete(:metadata_template_field_settings)
       V1::MetadataTemplate.transaction do
         template.attributes = params[:metadata_template]
         add_audit_params(template)
-        #update template field settings
-        if (field_settings_params)
-          specified_settings = []
-          field_settings_params.each do |fs_param|
-            if fs_param[:id]
-              field_setting = template.metadata_template_field_settings.find(fs_param[:id])
-              field_setting.assign_attributes(fs_param)
-            else
-              field_setting = template.metadata_template_field_settings.build(fs_param)
-            end
-            field_setting.required = ActiveRecord::ConnectionAdapters::Column.value_to_boolean(fs_param[:required])
-            add_audit_params(field_setting)
-            specified_settings << field_setting
-          end
-          template.metadata_template_field_settings.each do |existing_setting|
-            existing_setting.destroy unless specified_settings.include?(existing_setting)
-          end
-        end
+        update_field_settings(template, field_settings_params)
         template.save!
       end
       return true
@@ -70,11 +102,34 @@ module V1
       return false
     end
 
-    def exists?
+    # update field settings relation of template
+    def update_field_settings(template, fs_params)
+      if (fs_params)
+        specified_settings = []
+        fs_params.each do |fs_param|
+          if fs_param[:id]
+            field_setting = template.metadata_template_field_settings.find(fs_param[:id])
+            field_setting.assign_attributes(fs_param)
+          else
+            field_setting = template.metadata_template_field_settings.build(fs_param)
+          end
+          field_setting.required = ActiveRecord::ConnectionAdapters::Column.value_to_boolean(fs_param[:required])
+          add_audit_params(field_setting)
+          specified_settings << field_setting
+        end
+        template.metadata_template_field_settings.each do |existing_setting|
+          existing_setting.destroy unless specified_settings.include?(existing_setting)
+        end
+      end
+    end
+
+    # determine if template name is already used
+    def name_exists?
       name = params[:metadata_template][:name]
       return false unless name
-      result = V1::MetadataTemplate.find_by_name(name)
-      return result.nil? == false
+      id = @template ? @template.id : 0
+      result = V1::MetadataTemplate.where('lower(name) = ?', name.downcase).where("id != ?", id)
+      return result.any?() 
     end
   end
 end

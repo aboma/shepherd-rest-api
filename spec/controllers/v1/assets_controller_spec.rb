@@ -163,4 +163,12 @@ describe V1::AssetsController, :type => :controller do
       end
     end
   end
+
+  describe "put UPDATE" do
+    pending
+  end
+
+  describe "delete DELETE" do
+    pending
+  end
 end

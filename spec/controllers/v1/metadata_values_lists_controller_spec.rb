@@ -52,7 +52,6 @@ describe V1::MetadataValuesListsController, :type => :controller do
         before :each do
           request.env['X-AUTH-TOKEN'] = @auth_token
           get :show, :id => list.id + 111, :format => :json
-          @parsed = JSON.parse(response.body)
         end
         it_should_behave_like "an action that responds with JSON"
         it "responds with 404 not found" do
@@ -213,8 +212,8 @@ describe V1::MetadataValuesListsController, :type => :controller do
     end
   end
 
-  ### DELETE =========================================================
-  describe "delete DELETE" do
+  ### delete DESTROY =========================================================
+  describe "delete DESTROY" do
     # object must be created outside of the expects statement
     let!(:list_to_delete) { list }
     context "unauthorized user" do

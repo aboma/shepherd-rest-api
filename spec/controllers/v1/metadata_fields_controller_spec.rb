@@ -13,6 +13,7 @@ describe V1::MetadataFieldsController, :type => :controller do
 
   let(:field) { FactoryGirl.create(:v1_metadata_field) }
 
+  ### get INDEX =========================================================
   describe "get INDEX" do
     it_should_behave_like "a protected action" do
       def action(args_hash)
@@ -25,6 +26,7 @@ describe V1::MetadataFieldsController, :type => :controller do
     end
   end
 
+  ### get SHOW =========================================================
   describe "get SHOW" do
     context "unauthorized user" do
       it_should_behave_like "a protected action" do
@@ -60,6 +62,7 @@ describe V1::MetadataFieldsController, :type => :controller do
     end
   end
 
+  ### post CREATE =========================================================
   describe "post CREATE" do
     it_should_behave_like "a protected action" do
       let(:data) { FactoryGirl.attributes_for(:v1_metadata_field) }
@@ -166,7 +169,7 @@ describe V1::MetadataFieldsController, :type => :controller do
     end
   end
 
-  ### post UPDATE =========================================================
+  ### put UPDATE =========================================================
   describe "post UPDATE" do
     it_should_behave_like "a protected action" do
       let(:data) { FactoryGirl.attributes_for(:v1_metadata_field) }
@@ -212,6 +215,86 @@ describe V1::MetadataFieldsController, :type => :controller do
               post_update_field({ :name => 'new name' }, :json)
               response.status.should == 404
             end
+          end
+          describe "already existing field name" do
+            it "returns status 409 conflict" do
+              existing_field = FactoryGirl.create(:v1_metadata_field)
+              post_update_field( { :name => existing_field.name.upcase }, :json )
+              response.status.should == 409
+            end
+          end
+        end
+      end
+    end
+  end
+
+  ### delete DESTROY =========================================================
+  describe "delete DESTROY" do
+    # object must be created outside of the expects statement
+    let!(:field_to_delete) { field }
+    context "unauthorized user" do
+      it_should_behave_like "a protected action" do 
+        let(:id) { field_to_delete.id }
+        def action(args_hash)
+          delete :destroy, :id => args_hash[:id] , :format => args_hash[:format] 
+        end   
+      end
+    end         
+    context "with valid authorization token" do
+      def delete_field(id, format)
+        request.env['X-AUTH-TOKEN'] = @auth_token
+        delete :destroy, :id => id, :format => format
+      end
+      context "with XML or HTML format" do
+        [:xml, :html].each do |format|
+          it "does not change the number of fields" do   
+            expect { 
+              delete_field(field_to_delete.id, format)
+            }.to_not change(V1::MetadataField, :count)
+          end
+          before :each do
+            delete_field(field_to_delete.id, format)    
+          end
+          it_should_behave_like "an action that responds with JSON"       
+          it "should return 406 code for format #{format}" do
+            response.status.should == 406  
+          end
+        end          
+      end
+      context "with JSON format" do
+        context "with valid parameters" do
+          it "decreases number of fields by 1" do   
+            expect {
+              delete_field(field_to_delete.id, :json)
+            }.to change(V1::MetadataField, :count).by(-1)
+          end
+          it "should respond with JSON" do
+            delete_field(field_to_delete.id, :json)
+            response.header['Content-Type'].should include 'application/json'          
+          end
+          it "responds with success 200 status code" do
+            delete_field(field_to_delete.id, :json)
+            response.status.should == 200       
+          end
+        end
+        context "with field referenced by template" do
+          def setup_template_with_field
+            template = FactoryGirl.create(:v1_metadata_template)
+            attrs = FactoryGirl.attributes_for(:v1_template_field_setting)
+            attrs[:metadata_template_id] = template.id
+            attrs[:metadata_field_id] = field_to_delete.id
+            FactoryGirl.create(:v1_template_field_setting, attrs)
+          end
+          it "does not delete the field" do
+            expect {
+              setup_template_with_field
+              delete_field(field_to_delete.id, :json)
+           }.to_not change(V1::MetadataField, :count)
+          end
+          it "responds with unprocessable entity" do
+            setup_template_with_field
+            delete_field(field_to_delete.id, :json)
+            response.status.should == 422
           end
         end
       end

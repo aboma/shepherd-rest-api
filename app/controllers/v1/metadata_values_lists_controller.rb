@@ -19,7 +19,7 @@ module V1
           if @list
             render :json => @list, :root => "metadata_values_list", :serializer => V1::MetadataValuesListSerializer
           else
-            render :json => {}, :status => :not_found
+            render :json => nil, :status => :not_found
           end
         end
       end

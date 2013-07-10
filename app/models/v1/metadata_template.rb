@@ -1,5 +1,6 @@
 class V1::MetadataTemplate < ActiveRecord::Base
-  has_many :metadata_template_field_settings, :inverse_of => :metadata_template
+  has_many :metadata_template_field_settings, :inverse_of => :metadata_template,
+    :dependent => :destroy
 
   attr_accessible :description, :name, :metadata_template_field_settings
 

@@ -86,13 +86,14 @@ ActiveRecord::Schema.define(:version => 20130628161053) do
   end
 
   create_table "portfolios", :force => true do |t|
-    t.string   "name",          :null => false
+    t.string   "name",                 :null => false
     t.string   "description"
-    t.integer  "created_by_id", :null => false
+    t.integer  "metadata_template_id"
+    t.integer  "created_by_id",        :null => false
     t.integer  "updated_by_id"
     t.integer  "deleted_by_id"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at",           :null => false
+    t.datetime "updated_at",           :null => false
   end
 
   create_table "relationships", :force => true do |t|

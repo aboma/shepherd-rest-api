@@ -1,9 +1,9 @@
 module V1
-  class MetadataFieldSerializer < ActiveModel::Serializer 
+  class MetadataFieldSerializer < V1::VilioSerializer 
 
     attributes :id, :name, :description, :type, :created_at, :updated_at
 
-    has_one :allowed_values_list, :embed => :ids
+    has_one :allowed_values_list, :embed => :ids, :include => false
 
     def attributes
       hash = super

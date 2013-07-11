@@ -28,16 +28,13 @@ module V1
     def create
       respond_to do |format|
         format.json do
-          if name_exists?
-            render :json => { :errors => { :name => "field name already exists" } }, :status => :conflict
-          else
-            field = V1::MetadataField.new
-            if update_field(field)
-              response.headers['Location'] = metadata_field_path(field)
-              render :json => field, :serializer => V1::MetadataFieldSerializer
-            else 
-              render :json => { :errors => field.errors }, :status => :unprocessable_entity
-            end
+          @field = V1::MetadataField.new
+          if update_field(@field)
+            response.headers['Location'] = metadata_field_path(@field)
+            render :json => @field, :serializer => V1::MetadataFieldSerializer
+          else 
+            status = conflict? ? :conflict : :unprocessable_entity
+            render :json => { :errors => @field.errors }, :status => status
           end
         end
       end
@@ -50,15 +47,12 @@ module V1
             render :json => {}, :status => :not_found
             return
           end
-          if name_exists?
-            render :json => { :errors => { :name => "field name already exists" } }, :status => :conflict
-            return
-          end
           if update_field(@field)
             @field.reload
             render :json => @field, :serializer => V1::MetadataFieldSerializer
           else 
-            render :json => { :errors => @field.errors }, :status => :unprocessable_entity 
+            status = conflict? ? :conflict : :unprocessable_entity
+            render :json => { :errors => @field.errors }, :status => status 
           end
         end
       end
@@ -98,14 +92,9 @@ module V1
       field.save
     end
 
-    # determine if field name is already used
-    def name_exists?
-      name = params[:metadata_field][:name]
-      return false unless name
-      id = @field ? @field.id : 0
-      result = V1::MetadataField.where('lower(name) = ?', name.downcase).where("id != ?", id)
-      return result.any?() 
+    def conflict?
+       return @field.errors[:name] && 
+              @field.errors[:name].include?("has already been taken")
     end
-
   end
 end

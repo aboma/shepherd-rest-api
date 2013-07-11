@@ -9,7 +9,7 @@ describe V1::MetadataField do
     it { should respond_to(:name) }
     it { should respond_to(:description) }
     it { should respond_to(:type) }
-    it { should respond_to(:allowed_values_list_id) }
+    it { should respond_to(:allowed_values_list) }
     it { should respond_to(:created_by_id) }
     it { should respond_to(:updated_by_id) }
     it { should respond_to(:created_at) }
@@ -78,23 +78,29 @@ describe V1::MetadataField do
   end
 
   it_should_behave_like "an auditable model"
+  it_should_behave_like "a model with timestamps"
 
-  describe "timestamps" do
-    describe "save a created by date" do
+  describe "deleting a field" do
+    describe "without assocatiated template field setting" do
       before { field.save }
-      specify { field.created_at.should be_present }
+      it "removes an field from the field table" do
+        expect { field.destroy }.to change(V1::MetadataField, :count).by(-1)
+      end
     end
-
-    describe "save an updated by date" do
-      before { field.save }
-      specify { field.updated_at.should be_present }
+    describe "with associated template field setting" do
+      before :each do
+        field.save
+        # create template and field setting associated with this field
+        template = FactoryGirl.create(:v1_metadata_template)
+        attrs = FactoryGirl.attributes_for(:v1_template_field_setting)
+        attrs[:metadata_template_id] = template.id
+        attrs[:metadata_field_id] = field.id
+        FactoryGirl.create(:v1_template_field_setting, attrs)
+      end
+      it "raises exception" do
+        expect { field.destroy }.to raise_error(ActiveRecord::DeleteRestrictionError)
+      end
     end
   end
 
-  describe "deleting an field" do
-    before { field.save }
-    it "removes an field from the field table" do
-      expect { field.destroy }.to change(V1::MetadataField, :count).by(-1)
-    end
-  end
 end

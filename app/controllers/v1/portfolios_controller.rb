@@ -18,12 +18,13 @@ module V1
     def create
       respond_to do |format|
         format.json do
-          portfolio = V1::Portfolio.new
-          if update_portfolio(portfolio)
-            response.headers['Location'] = portfolio_path(portfolio)
-            render :json => portfolio, :serializer => V1::PortfolioSerializer
+          @portfolio = V1::Portfolio.new
+          if update_portfolio(@portfolio)
+            response.headers['Location'] = portfolio_path(@portfolio)
+            render :json => @portfolio, :serializer => V1::PortfolioSerializer
           else 
-            render :json => { :errors => portfolio.errors }, :status => :unprocessable_entity
+            status = conflict? ? :conflict : :unprocessable_entity
+            render :json => { :errors => @portfolio.errors }, :status => status
           end
         end
       end
@@ -65,7 +66,7 @@ module V1
             @portfolio.destroy
             render :json => :head, :status => :ok 
           else
-            render :json => { :errors => { :id => 'no portfolio at this address' } }, :status => 404
+            render :json => { :errors => @error }, :status => 404
           end
         end
       end
@@ -76,7 +77,7 @@ module V1
     def find_portfolio
       @portfolio = Portfolio.find(params[:id])
     rescue ActiveRecord::RecordNotFound
-      @error = "portfolio not found"
+      @error = { :id => "portfolio not found" }
     end
 
     def update_portfolio(portfolio)
@@ -84,5 +85,11 @@ module V1
       add_audit_params(portfolio)
       portfolio.save
     end
+
+    def conflict?
+       return @portfolio.errors[:name] && 
+              @portfolio.errors[:name].include?("has already been taken")
+    end
+
   end
 end

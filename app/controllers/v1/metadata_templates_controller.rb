@@ -28,16 +28,13 @@ module V1
     def create
       respond_to do |format|
         format.json do
-          if name_exists?
-            render :json => { :errors => { :name => "template name already exists" } }, :status => :conflict
-          else
-            template = V1::MetadataTemplate.new
-            if update_template(template)
-              response.headers['Location'] = metadata_template_path(template)
-              render :json => template, :root => "metadata_template", :serializer => V1::MetadataTemplateSerializer
-            else 
-              render :json => { :errors => template.errors }, :status => :unprocessable_entity
-            end
+          @template = V1::MetadataTemplate.new
+          if update_template(@template)
+            response.headers['Location'] = metadata_template_path(@template)
+            render :json => @template, :root => "metadata_template", :serializer => V1::MetadataTemplateSerializer
+          else 
+            status = conflict? ? :conflict : :unprocessable_entity
+            render :json => { :errors => @template.errors }, :status => status 
           end
         end
       end
@@ -50,14 +47,11 @@ module V1
             render :json => :nil, :status => :not_found
             return
           end
-          if name_exists?
-            render :json => { :errors => { :name => "template name already exists" } }, :status => :conflict
+          if update_template(@template)
+            render :json => @template, :serializer => V1::MetadataTemplateSerializer
           else
-            if update_template(@template)
-              render :json => @template, :serializer => V1::MetadataTemplateSerializer
-            else
-              render :json => { :errors => @template.errors }, :status => :unprocessable_entity
-            end
+            status = conflict? ? :conflict : :unprocessable_entity
+            render :json => { :errors => @template.errors }, :status => status
           end
         end
       end
@@ -123,13 +117,10 @@ module V1
       end
     end
 
-    # determine if template name is already used
-    def name_exists?
-      name = params[:metadata_template][:name]
-      return false unless name
-      id = @template ? @template.id : 0
-      result = V1::MetadataTemplate.where('lower(name) = ?', name.downcase).where("id != ?", id)
-      return result.any?() 
+    def conflict?
+       return @template.errors[:name] && 
+              @template.errors[:name].include?("has already been taken")
     end
+
   end
 end

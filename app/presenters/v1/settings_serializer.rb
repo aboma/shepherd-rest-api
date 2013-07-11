@@ -1,5 +1,5 @@
 module V1
-  class SettingsSerializer < ActiveModel::Serializer
+  class SettingsSerializer < V1::VilioSerializer
 
     attributes :field_types
     def field_types

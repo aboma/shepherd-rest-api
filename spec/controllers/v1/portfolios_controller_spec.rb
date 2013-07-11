@@ -14,10 +14,7 @@ describe V1::PortfoliosController, :type => :controller do
     destroy_test_user
   end
 
-  # global helper methods
-  def create_portfolio 
-    FactoryGirl.create(:v1_portfolio) 
-  end
+  let(:port) { FactoryGirl.create(:v1_portfolio) }
 
   ### GET INDEX ==================================================
   describe "get INDEX" do   
@@ -29,18 +26,11 @@ describe V1::PortfoliosController, :type => :controller do
 
     context "with valid authorization token" do
       it_should_behave_like "JSON controller index action"
-#      it "should return list of portfolios in json format" do
-#       create_portfolio
-#        get_index :json, @auth_token
-#        parsed = JSON.parse(response.body)
-#        #TODO parsed.should have_json_path("portfolios")
-#      end   
-    end 
+    end
   end
 
   ### GET SHOW ==========================================================
   describe "get SHOW" do
-    let(:port) { create_portfolio }
     context "unauthorized user" do
       it_should_behave_like "a protected action" do
         let(:data) { { :id => port.id } }
@@ -69,7 +59,6 @@ describe V1::PortfoliosController, :type => :controller do
         end
       end
       context "invalid portfolio id" do
-        let(:port) { create_portfolio }
         before :each do
           port.id += 5
           request.env['X-AUTH-TOKEN'] = @auth_token
@@ -116,9 +105,24 @@ describe V1::PortfoliosController, :type => :controller do
           end
         end
         context "with invalid attributes" do
-          pending
+          let!(:existing_port) { port }
+          let!(:attrs) do
+            attrs = FactoryGirl.attributes_for(:v1_portfolio)
+            attrs[:name] = existing_port.name
+            attrs
+          end
+          context "with duplicate name" do
+            it "does not create the portfolio" do
+              expect{
+                post_portfolio(attrs, :json)
+              }.to_not change(V1::Portfolio, :count)
+            end
+            it "responds with 409 conflict" do
+              post_portfolio(attrs, :json)
+              response.status.should == 409 
+            end
+          end
         end
-
         context "with valid attributes" do
           it "increases number of portfolios by 1" do   
             expect{ 
@@ -144,7 +148,6 @@ describe V1::PortfoliosController, :type => :controller do
 
   ### PUT UPDATE ========================================================
   describe "put UPDATE" do
-    let(:port) { create_portfolio }
     it_should_behave_like "a protected action" do
       let(:data) { { :name => :update_name } }
       let(:id) { port.id }
@@ -197,10 +200,10 @@ describe V1::PortfoliosController, :type => :controller do
 
   ### DELETE ========================================================
   describe "DELETE" do
-    let!(:port) { create_portfolio }
+    let!(:existing_port) { port }
     context "unauthorized user" do
       it_should_behave_like "a protected action" do 
-        let(:id) { port.id }
+        let(:id) { existing_port.id }
         def action(args_hash)
           delete :destroy, :id => args_hash[:id] , :format => args_hash[:format] 
         end   
@@ -215,12 +218,12 @@ describe V1::PortfoliosController, :type => :controller do
       context "with XML or HTML format" do
         [:xml, :html].each do |format| 
           it "should return 406 not acceptable for #{format}" do
-            delete_portfolio(port.id, format)
+            delete_portfolio(existing_port.id, format)
             response.status.should == 406
           end
           it "does not delete a portfolio" do
             expect {
-              delete_portfolio(port.id, format)
+              delete_portfolio(existing_port.id, format)
             }.to_not change(V1::Portfolio, :count)
           end
         end
@@ -229,16 +232,16 @@ describe V1::PortfoliosController, :type => :controller do
         context "valid portfolio number specified" do
           it "decreases number of portfolios by 1" do   
             expect { 
-              delete_portfolio(port.id, :json)
+              delete_portfolio(existing_port.id, :json)
             }.to change(V1::Portfolio, :count).by(-1)
           end
           it "returns status code 200 success" do
-            delete_portfolio(port.id, :json)
+            delete_portfolio(existing_port.id, :json)
             response.status.should == 200
           end
         end
         context "invalid portfolio number specified" do
-          let(:invalid_id) { port.id + 555 }
+          let(:invalid_id) { existing_port.id + 555 }
           it "does not delete a portfolio" do
             expect {
               delete_portfolio(invalid_id, :json)

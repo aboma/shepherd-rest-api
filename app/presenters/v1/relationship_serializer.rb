@@ -1,11 +1,11 @@
 module V1
-  class RelationshipSerializer < ActiveModel::Serializer
+  class RelationshipSerializer < V1::VilioSerializer
     #include Rails.application.routes.url_helpers
-    
-    attributes :id, :relationship_type, :portfolio_id, :created_at, :updated_at #, :asset_id
-    
+
+    attributes :id, :relationship_type, :created_at, :updated_at
+
     # include the asset definition in the relationship
     has_one :asset, :key => :asset, :serializer => V1::AssetSerializer, :embed => :objects
-    
+    has_one :portfolio, :embed => :ids
   end
 end

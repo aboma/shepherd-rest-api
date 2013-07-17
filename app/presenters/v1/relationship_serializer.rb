@@ -6,6 +6,6 @@ module V1
 
     # include the asset definition in the relationship
     has_one :asset, :key => :asset, :serializer => V1::AssetSerializer, :embed => :objects
-    has_one :portfolio, :embed => :ids
+    has_one :portfolio, :embed => :ids, :include => false
   end
 end

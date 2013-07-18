@@ -1,4 +1,5 @@
 # credit: https://gist.github.com/1332577 wufltone
+require 'fileutils'
 
 namespace :db do
   desc 'Drop, create, migrate, and seed a database'
@@ -19,6 +20,10 @@ namespace :db do
     puts "Seeding db"
     Rake::Task['db:seed'].reenable
     Rake::Task['db:seed'].invoke
+
+    # delete files
+    Rake::Task["files:clear"].reenable
+    Rake::Task["files:clear"].invoke
   end
 
   desc 'Drop, create, migrate, and seed development and test databases'
@@ -32,5 +37,17 @@ namespace :db do
         puts "=== Finishing #{Rails.env} reload ===\n\n"
       end
     end
+  end
+
+end
+
+namespace :files do
+  desc "Delete asset files directory"
+  task :clear => :environment do
+    puts "Deleting files directory"
+
+    dir = "public/" + V1::AssetUploader::BASE_DIR
+    FileUtils.rm_r dir 
+
   end
 end

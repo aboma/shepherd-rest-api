@@ -64,7 +64,7 @@ module V1
         format.json do
           if @portfolio
             @portfolio.destroy
-            render :json => :head, :status => :ok 
+            render :json => nil, :status => :ok 
           else
             render :json => { :errors => @error }, :status => 404
           end

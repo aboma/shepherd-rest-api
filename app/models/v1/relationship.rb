@@ -3,7 +3,6 @@
 # Table name: relationships
 #
 #  id                :integer          not null, primary key
-#  relationship_type :string(255)
 #  asset_id          :integer
 #  portfolio_id      :integer
 #  deleted_at        :datetime
@@ -14,23 +13,12 @@
 #  updated_at        :datetime         not null
 #
 
-# == Schema Information
-#
-# Table name: relationships
-#
-#  id                :integer         not null, primary key
-#  relationship_id   :integer
-#  relationship_type :string(255)
-#  asset_id          :integer
-#  created_at        :datetime        not null
-#  updated_at        :datetime        not null
-#
 module V1
   class Relationship < ActiveRecord::Base
     belongs_to :portfolio
     belongs_to :asset  #, :class_name => "Asset", :foreign_key => :relationship_id
 
-    attr_accessible :asset_id, :portfolio_id, :relationship_type
+    attr_accessible :asset_id, :portfolio_id 
 
     validates :asset, :existence => true
     validates :portfolio, :existence => true

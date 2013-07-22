@@ -68,4 +68,10 @@ FactoryGirl.define do
     created_by_id 1
     updated_by_id 1
   end
+
+  factory :v1_metadatum_value, :class => V1::MetadatumValue do
+    value "this is a metadatum value"
+    created_by_id 1
+    updated_by_id 1
+  end
 end

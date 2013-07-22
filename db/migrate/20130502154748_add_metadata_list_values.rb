@@ -11,9 +11,11 @@ class AddMetadataListValues < ActiveRecord::Migration
 
       t.timestamps
     end
+    add_index :metadata_list_values, :metadata_values_list_id, :unique => false
   end
 
   def down
+    remove_index :metadata_list_values, :metadata_values_lis_id
     drop_table :metadata_list_values
   end
 end

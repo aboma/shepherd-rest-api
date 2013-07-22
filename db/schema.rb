@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130628161053) do
+ActiveRecord::Schema.define(:version => 20130722154222) do
 
   create_table "assets", :force => true do |t|
     t.string   "name",          :null => false
@@ -38,6 +38,8 @@ ActiveRecord::Schema.define(:version => 20130628161053) do
     t.datetime "updated_at",             :null => false
   end
 
+  add_index "metadata_fields", ["allowed_values_list_id"], :name => "index_metadata_fields_on_allowed_values_list_id"
+
   create_table "metadata_list_values", :force => true do |t|
     t.string   "value",                   :null => false
     t.string   "description"
@@ -49,6 +51,8 @@ ActiveRecord::Schema.define(:version => 20130628161053) do
     t.datetime "created_at",              :null => false
     t.datetime "updated_at",              :null => false
   end
+
+  add_index "metadata_list_values", ["metadata_values_list_id"], :name => "index_metadata_list_values_on_metadata_values_list_id"
 
   create_table "metadata_template_field_settings", :force => true do |t|
     t.integer  "metadata_field_id",    :null => false
@@ -62,6 +66,9 @@ ActiveRecord::Schema.define(:version => 20130628161053) do
     t.datetime "created_at",           :null => false
     t.datetime "updated_at",           :null => false
   end
+
+  add_index "metadata_template_field_settings", ["metadata_field_id"], :name => "index_metadata_template_field_settings_on_metadata_field_id"
+  add_index "metadata_template_field_settings", ["metadata_template_id"], :name => "index_metadata_template_field_settings_on_metadata_template_id"
 
   create_table "metadata_templates", :force => true do |t|
     t.string   "name",          :null => false
@@ -85,6 +92,20 @@ ActiveRecord::Schema.define(:version => 20130628161053) do
     t.datetime "updated_at",    :null => false
   end
 
+  create_table "metadatum_values", :force => true do |t|
+    t.integer  "asset_id",          :null => false
+    t.integer  "metadata_field_id", :null => false
+    t.string   "value",             :null => false
+    t.integer  "created_by_id",     :null => false
+    t.integer  "updated_by_id"
+    t.integer  "deleted_by_id"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
+  end
+
+  add_index "metadatum_values", ["asset_id"], :name => "index_metadatum_values_on_asset_id"
+  add_index "metadatum_values", ["metadata_field_id"], :name => "index_metadatum_values_on_metadata_field_id"
+
   create_table "portfolios", :force => true do |t|
     t.string   "name",                 :null => false
     t.string   "description"
@@ -97,16 +118,18 @@ ActiveRecord::Schema.define(:version => 20130628161053) do
   end
 
   create_table "relationships", :force => true do |t|
-    t.string   "relationship_type"
-    t.integer  "asset_id"
-    t.integer  "portfolio_id"
+    t.integer  "asset_id",      :null => false
+    t.integer  "portfolio_id",  :null => false
     t.datetime "deleted_at"
-    t.integer  "created_by_id",     :null => false
+    t.integer  "created_by_id", :null => false
     t.integer  "updated_by_id"
     t.integer  "deleted_by_id"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
   end
+
+  add_index "relationships", ["asset_id"], :name => "index_relationships_on_asset_id"
+  add_index "relationships", ["portfolio_id"], :name => "index_relationships_on_portfolio_id"
 
   create_table "users", :force => true do |t|
     t.string   "last_name"

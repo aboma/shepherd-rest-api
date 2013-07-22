@@ -48,7 +48,6 @@ namespace :files do
   task :clear => :environment do
     dir = "public/" + V1::AssetUploader::BASE_DIR
     puts "Deleting files directory #{dir}"
-    FileUtils.rm_r dir 
-
+    FileUtils.rm_r dir if File.exists?(dir) 
   end
 end

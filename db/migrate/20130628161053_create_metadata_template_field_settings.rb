@@ -12,9 +12,13 @@ class CreateMetadataTemplateFieldSettings < ActiveRecord::Migration
 
       t.timestamps
     end
+    add_index :metadata_template_field_settings, :metadata_field_id, :unique => false
+    add_index :metadata_template_field_settings, :metadata_template_id, :unique => false
   end
 
   def down
+    remove_index :metadata_template_field_settings, :metadata_field_id
+    remove_index :metadata_template_field_settings, :metadata_template_id
     drop_table :metadata_template_field_settings
   end
 end

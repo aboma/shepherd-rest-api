@@ -1,16 +1,17 @@
 # == Schema Information
 #
-# Table name: metadata_values
+# Table name: metadata_list_values
 #
-#  id            :integer          not null, primary key
-#  value         :string(255)      not null
-#  description   :string(255)
-#  deleted_at    :datetime
-#  created_by_id :integer          not null
-#  updated_by_id :integer
-#  deleted_by_id :integer
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
+#  id                      :integer          not null, primary key
+#  value                   :string(255)      not null
+#  description             :string(255)
+#  metadata_values_list_id :integer
+#  deleted_at              :datetime
+#  created_by_id           :integer          not null
+#  updated_by_id           :integer
+#  deleted_by_id           :integer
+#  created_at              :datetime         not null
+#  updated_at              :datetime         not null
 #
 
 module V1

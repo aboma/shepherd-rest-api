@@ -2,14 +2,15 @@
 #
 # Table name: portfolios
 #
-#  id            :integer          not null, primary key
-#  name          :string(255)      not null
-#  description   :string(255)
-#  created_by_id :integer          not null
-#  updated_by_id :integer
-#  deleted_by_id :integer
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
+#  id                   :integer          not null, primary key
+#  name                 :string(255)      not null
+#  description          :string(255)
+#  metadata_template_id :integer
+#  created_by_id        :integer          not null
+#  updated_by_id        :integer
+#  deleted_by_id        :integer
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
 #
 
 # == Schema Information

@@ -1,6 +1,6 @@
-# credit: https://gist.github.com/1332577 wufltone
 require 'fileutils'
 
+# credit: https://gist.github.com/1332577 wufltone
 namespace :db do
   desc 'Drop, create, migrate, and seed a database'
   task :reload => :environment do
@@ -41,12 +41,13 @@ namespace :db do
 
 end
 
+# delete uploaded files and their derivatives;
+# should only be done when deleting the database
 namespace :files do
   desc "Delete asset files directory"
   task :clear => :environment do
-    puts "Deleting files directory"
-
     dir = "public/" + V1::AssetUploader::BASE_DIR
+    puts "Deleting files directory #{dir}"
     FileUtils.rm_r dir 
 
   end

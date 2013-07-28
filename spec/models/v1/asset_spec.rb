@@ -2,13 +2,14 @@ require 'spec_helper'
 
 describe V1::Asset do
   let(:asset) { FactoryGirl.build(:v1_asset) }
-   
+
   subject { asset } 
-    
+
   describe "creates instance given valid attributes" do
     it { should respond_to(:name) }
     it { should respond_to(:file) }
     it { should respond_to(:relationships) }
+    it { should respond_to(:metadata) }
     it { should respond_to(:portfolios) }
     it { should respond_to(:created_by_id) }
     it { should respond_to(:updated_by_id) }
@@ -20,7 +21,7 @@ describe V1::Asset do
     end
     it { should be_valid }
   end
-  
+
   describe "requires a name" do
     before { asset.name = ' ' }
     it { 
@@ -29,7 +30,7 @@ describe V1::Asset do
     }
     specify { asset.save.should be false }
   end
-  
+
   describe "name should be unique" do
     before do
       dup_asset = FactoryGirl.create(:v1_asset)
@@ -41,27 +42,22 @@ describe V1::Asset do
     }      
     specify { asset.save.should be false }
   end
-  
+
   describe "does not require a description" do
     before { asset.description = '' }
     it { should be_valid }   
     specify { asset.save.should be true } 
   end
-  
-  it_should_behave_like "an auditable model"
-  
-  describe "timestamps" do
-    describe "save a created by date" do
-      before { asset.save }
-      specify { asset.created_at.should be_present }
-    end
-    
-    describe "save an updated by date" do
-      before { asset.save }
-      specify { asset.updated_at.should be_present }
-    end
+
+  describe "does not require metadata" do
+    before { asset.metadata = [] }
+    it { should be_valid }
+    specify { asset.save.should be true }
   end
-  
+
+  it_should_behave_like "an auditable model"
+  it_should_behave_like "a model with timestamps" 
+
   describe "deleting an asset" do
     before { asset.save }
     it "removes an asset from the asset table" do

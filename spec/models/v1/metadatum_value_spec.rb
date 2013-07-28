@@ -1,18 +1,3 @@
-# == Schema Information
-#
-# Table name: metadatum_values
-#
-#  id                :integer          not null, primary key
-#  asset_id          :integer          not null
-#  metadata_field_id :integer          not null
-#  value             :string(255)      not null
-#  created_by_id     :integer          not null
-#  updated_by_id     :integer
-#  deleted_by_id     :integer
-#  created_at        :datetime         not null
-#  updated_at        :datetime         not null
-#
-
 require 'spec_helper'
 
 describe V1::MetadatumValue do
@@ -85,5 +70,8 @@ describe V1::MetadatumValue do
     }
     specify { value.save.should be false }
   end
+
+  it_should_behave_like "an auditable model"
+  it_should_behave_like "a model with timestamps" 
 
 end

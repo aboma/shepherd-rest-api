@@ -15,7 +15,7 @@
 
 module V1
   class MetadatumValue < ActiveRecord::Base
-    belongs_to :asset, :class_name => "V1::Asset"
+    belongs_to :asset, :class_name => "V1::Asset", :inverse_of => :metadata
     belongs_to :metadata_field, :class_name => "V1::MetadataField"
 
     attr_accessible :asset_id, :metadata_field_id, :value

@@ -2,7 +2,9 @@ module V1
   class AssetSerializer < V1::VilioSerializer
     include Rails.application.routes.url_helpers
 
-    attributes :id, :name, :description, :filename
+    attributes :id, :name, :description, :filename, :metadata
+
+    has_many :metadata, :serializer => V1::MetadatumSerializer, :embed => :objects
 
     def attributes
       hash = super

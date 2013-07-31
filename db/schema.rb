@@ -93,18 +93,18 @@ ActiveRecord::Schema.define(:version => 20130722154222) do
   end
 
   create_table "metadatum_values", :force => true do |t|
-    t.integer  "asset_id",          :null => false
-    t.integer  "metadata_field_id", :null => false
-    t.string   "value",             :null => false
-    t.integer  "created_by_id",     :null => false
+    t.integer  "asset_id",           :null => false
+    t.integer  "metadatum_field_id", :null => false
+    t.string   "metadatum_value",    :null => false
+    t.integer  "created_by_id",      :null => false
     t.integer  "updated_by_id"
     t.integer  "deleted_by_id"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
   end
 
   add_index "metadatum_values", ["asset_id"], :name => "index_metadatum_values_on_asset_id"
-  add_index "metadatum_values", ["metadata_field_id"], :name => "index_metadatum_values_on_metadata_field_id"
+  add_index "metadatum_values", ["metadatum_field_id"], :name => "index_metadatum_values_on_metadatum_field_id"
 
   create_table "portfolios", :force => true do |t|
     t.string   "name",                 :null => false

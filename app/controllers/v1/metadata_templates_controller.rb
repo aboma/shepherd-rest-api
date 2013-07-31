@@ -31,7 +31,7 @@ module V1
           @template = V1::MetadataTemplate.new
           if update_template(@template)
             response.headers['Location'] = metadata_template_path(@template)
-            render :json => @template, :root => "metadata_template", :serializer => V1::MetadataTemplateSerializer
+            render :json => @template, :serializer => V1::MetadataTemplateSerializer
           else 
             status = conflict? ? :conflict : :unprocessable_entity
             render :json => { :errors => @template.errors }, :status => status 
@@ -44,7 +44,7 @@ module V1
       respond_to do |format|
         format.json do
           unless @template
-            render :json => :nil, :status => :not_found
+            render :json => nil, :status => :not_found
             return
           end
           if update_template(@template)

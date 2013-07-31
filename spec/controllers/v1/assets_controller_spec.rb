@@ -17,12 +17,39 @@ describe V1::AssetsController, :type => :controller do
   let(:asset) { FactoryGirl.create(:v1_asset) }
   let(:relationship) { create_relationship }
 
-  def create_relationship
+  def relationship_attrs
     attrs = FactoryGirl.attributes_for(:v1_relationship)
     attrs[:asset_id] = asset.id 
     attrs[:portfolio_id] = portfolio.id
-    FactoryGirl.create(:v1_relationship, attrs)
+    FactoryGirl.attributes_for(:v1_relationship, attrs)
   end 
+
+  def create_relationship
+    attrs = relationship_attrs
+    FactoryGirl.create(:v1_relationship, attrs)
+  end
+
+  def given_metadata_attrs
+    metadata = FactoryGirl.attributes_for(:v1_metadatum_value)
+    field = FactoryGirl.create(:v1_metadata_field)
+    metadata[:metadatum_field_id] = field.id
+    attrs = { :metadata => [ metadata ] }
+    yield attrs
+  end
+
+  def given_asset_attrs_with(options)
+    attrs = []
+    if (options[:invalid_field]) 
+      metadatum = FactoryGirl.attributes_for(:v1_metadatum_value)
+      metadatum[:metadatum_field_id] = 9999
+      attrs = { :metadata => [ metadatum ] }
+    end
+    if (options[:valid_metadata])
+      metadatum = FactoryGirl.attributes_for(:v1_metadatum_value)
+      attrs = { :metadata => [ metadatum ] }
+    end
+    yield FactoryGirl.attributes_for(:v1_asset, attrs)
+  end
 
 
   ### GET INDEX ==================================================
@@ -92,7 +119,7 @@ describe V1::AssetsController, :type => :controller do
     end
   end
 
-    ### POST CREATE ========================================================
+  ### POST CREATE ========================================================
   describe "post CREATE" do
     it_should_behave_like "a protected action" do
       let(:data) { FactoryGirl.attributes_for(:v1_asset) }
@@ -123,7 +150,39 @@ describe V1::AssetsController, :type => :controller do
       end    
       context "with JSON format" do    
         context "with invalid attributes" do
-          pending
+          context "duplicate name" do
+            let!(:existing_asset) { FactoryGirl.create(:v1_asset) }
+            let(:invalid_attrs) do
+              attrs = FactoryGirl.attributes_for(:v1_asset)
+              attrs[:name] = existing_asset.name
+              attrs
+            end
+            it "does not create the asset" do
+              expect{ 
+                post_asset(invalid_attrs, :json)
+              }.to_not change(V1::Asset, :count)
+            end
+            it "return 409 conflict" do
+              post_asset(invalid_attrs, :json)
+              response.status.should == 409
+            end
+          end
+          context "invalid metadata field" do
+            it "does not create the asset" do
+              expect{
+                given_asset_attrs_with({ :invalid_field => :true }) do |invalid_attrs|
+                  post_asset(invalid_attrs, :json)
+                end
+              }.to_not change(V1::Asset, :count)
+            end
+            it "gives error messages" do
+              given_asset_attrs_with({ :invalid_field => :true }) do |invalid_attrs|
+                post_asset(invalid_attrs, :json)
+              end
+              parsed = JSON.parse(response.body)
+              parsed['errors']['metadata'].should == ["is invalid"]
+            end
+          end
         end
         context "missing required attributes" do
           let(:valid_attrs) { FactoryGirl.attributes_for(:v1_asset) }
@@ -136,7 +195,6 @@ describe V1::AssetsController, :type => :controller do
               post_asset(invalid_attrs, :json)
             }.to_not change(V1::Asset, :count)
           end
-          #subject {}
           it "responds with 422 unprocessable entity" do
             post_asset(invalid_attrs, :json)
             response.status.should == 422
@@ -148,7 +206,15 @@ describe V1::AssetsController, :type => :controller do
             expect{ 
               post_asset(FactoryGirl.attributes_for(:v1_asset), :json)
             }.to change(V1::Asset, :count).by(1)
-          end 
+          end
+          it "creates associated metadata values" do
+            pending
+            #expect{
+            #  given_asset_attrs_with({ :valid_metadata => true }) do |attrs|
+            #    post_asset(attrs, :json)
+            #  end
+            #}.to change(V1::Asset, :count).by(1)
+          end
           before :each do
             post_asset(FactoryGirl.attributes_for(:v1_asset), :json)
           end
@@ -164,8 +230,72 @@ describe V1::AssetsController, :type => :controller do
     end
   end
 
+  ### PUT UPDATE ========================================================
   describe "put UPDATE" do
-    pending
+    it_should_behave_like "a protected action" do
+      let(:data) { FactoryGirl.attributes_for(:v1_asset) }
+      def action(args_hash)
+        put :update, :id => asset.id, :relationship => args_hash[:data], :format => args_hash[:format] 
+      end   
+    end
+
+    context "authorized user" do
+      let!(:existing_asset) { asset } 
+      let!(:existing_asset_with_metadata) do
+        new_asset = FactoryGirl.create(:v1_asset)
+        given_metadata_attrs do |attrs|
+          metadatum = FactoryGirl.build(:v1_metadatum_value, attrs[:metadata][0])
+          new_asset.metadata << metadatum
+          new_asset.save!
+        end
+        new_asset
+      end
+      def update_asset(id, attrs, format)
+        request.env['X-AUTH-TOKEN'] = @auth_token
+        put :update, :id => id, :asset => attrs, :format => format 
+      end
+      context "HTML or XML format" do
+        [:html, :xml].each do |format|
+          before :each do
+            update_asset(existing_asset.id, { :description => :boom }, format )
+          end
+          it "returns 406 not acceptable code" do
+            response.status.should == 406
+          end
+        end
+      end
+      context "with JSON format" do
+        context "with invalid attributes" do
+          pending
+        end
+        context "with valid attributes" do
+          it "does not creates an asset" do   
+            expect{ 
+              update_asset(existing_asset.id, { :name => "newname" }, :json)
+            }.to_not change(V1::Asset, :count)
+          end
+          it "creates new associated metadata values if specified" do
+            expect{
+              given_metadata_attrs do |attrs|
+                update_asset(existing_asset.id, attrs, :json)
+              end
+            }.to change(V1::MetadatumValue, :count).by(1)
+          end
+          it "removes existing metadata values if specified" do
+            expect{
+              update_asset(existing_asset_with_metadata.id, { :metadata => [] }, :json)
+            }.to change(V1::MetadatumValue, :count).by(-1)
+          end
+          before :each do
+            update_asset(existing_asset.id, { :name => "newname" }, :json)
+          end
+          it_should_behave_like "an action that responds with JSON"       
+          it "responds with success 200 status code" do
+            response.status.should == 200       
+          end
+        end
+      end
+    end
   end
 
   describe "delete DELETE" do

@@ -2,15 +2,15 @@
 #
 # Table name: relationships
 #
-#  id                :integer          not null, primary key
-#  asset_id          :integer
-#  portfolio_id      :integer
-#  deleted_at        :datetime
-#  created_by_id     :integer          not null
-#  updated_by_id     :integer
-#  deleted_by_id     :integer
-#  created_at        :datetime         not null
-#  updated_at        :datetime         not null
+#  id            :integer          not null, primary key
+#  asset_id      :integer          not null
+#  portfolio_id  :integer          not null
+#  deleted_at    :datetime
+#  created_by_id :integer          not null
+#  updated_by_id :integer
+#  deleted_by_id :integer
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
 #
 
 module V1

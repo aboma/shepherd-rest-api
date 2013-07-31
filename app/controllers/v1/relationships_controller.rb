@@ -141,7 +141,6 @@ module V1
       V1::Relationship.transaction do  
         if asset.new_record?
           asset.attributes = params
-          #asset.attributes[:file] = Base64.decode64(params[:asset][:file]).force_encoding('UTF-8') 
           add_audit_params(asset) 
           asset.save!         
         end
@@ -153,18 +152,5 @@ module V1
       return false  
     end
 
-
-    def decode_file(base64_param)
-      tempfile = Tempfile.new("fileupload")
-      tempfile.binmode
-      #get the file and decode it with base64 then write it to the tempfile
-      tempfile.write(Base64.decode64(picture_path_params["file"]))
-
-      #create a new uploaded file
-      #uploaded_file = ActionDispatch::Http::UploadedFile.new(:tempfile => tempfile) 
-
-      #replace picture_path with the new uploaded file
-      #params[:picture][:picture_path] =  uploaded_file
-    end
   end
 end

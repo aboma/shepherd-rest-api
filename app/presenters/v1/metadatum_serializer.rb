@@ -1,10 +1,10 @@
 module V1
   class MetadatumSerializer < V1::VilioSerializer
 
-    attributes :id, :value
+    attributes :id, :metadatum_value
 
-    has_one :asset, :embed => :id
-    has_one :field, :embed => :id
+    has_one :asset, :embed => :ids, :include => false
+    has_one :metadatum_field, :embed => :ids, :include => false
 
   end
 end

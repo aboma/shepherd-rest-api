@@ -241,16 +241,16 @@ describe V1::RelationshipsController, :type => :controller do
   end
 
   ### post UPDATE =========================================================
-  describe "post UPDATE" do
+  describe "put UPDATE" do
     it_should_behave_like "a protected action" do
       let(:data) { FactoryGirl.attributes_for(:v1_relationship) }
       def action(args_hash)
-        post :update, :id => relation.id, :relationship => args_hash[:data], :format => args_hash[:format] 
+        put :update, :id => relation.id, :relationship => args_hash[:data], :format => args_hash[:format] 
       end   
     end
 
     context "with valid authorization token" do
-      def post_update_relation id, attrs, format
+      def update_relation id, attrs, format
         request.env['X-AUTH-TOKEN'] = @auth_token
         post :update, :id => id, :relationship => attrs, :format => format 
       end  
@@ -258,7 +258,7 @@ describe V1::RelationshipsController, :type => :controller do
         [:xml, :html].each do |format|
           before :each do
              given_relation_attrs_with({ :valid_asset => true, :valid_portfolio => true}) do |attrs|
-               post_update_relation(relation.id, attrs, format)
+               update_relation(relation.id, attrs, format)
              end        
           end
           it_should_behave_like "an action that responds with JSON"       
@@ -267,10 +267,11 @@ describe V1::RelationshipsController, :type => :controller do
           end
         end          
       end
+      # Updating a relationship should not be possible: only create and delete
       context "with JSON format" do
         before :each do
           given_relation_attrs_with({ :valid_asset => true, :valid_portfolio => true}) do |attrs|
-            post_update_relation(relation.id, attrs, :json)
+            update_relation(relation.id, attrs, :json)
           end
         end
         it_should_behave_like "an action that responds with JSON"

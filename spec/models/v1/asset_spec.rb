@@ -64,6 +64,11 @@ describe V1::Asset do
       expect { asset.destroy }.to change(V1::Asset, :count).by(-1)
     end
     before :each do
+      field = FactoryGirl.create(:v1_metadata_field)
+      asset.metadata = []
+      metadatum_value = FactoryGirl.build(:v1_metadatum_value)
+      metadatum_value.metadatum_field = field
+      asset.metadata << metadatum_value
       asset.save
       portfolio = FactoryGirl.create(:v1_portfolio)
       relation = FactoryGirl.build(:v1_relationship)
@@ -77,5 +82,9 @@ describe V1::Asset do
     it "does not remove associated portfolios" do
       expect { asset.destroy }.to_not change(V1::Portfolio, :count)
     end
+    it "removes associated metadata values" do
+      expect { asset.destroy }.to change(V1::MetadatumValue, :count).by(-1)      
+    end
+
   end
 end

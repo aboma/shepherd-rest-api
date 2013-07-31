@@ -2,7 +2,7 @@ include ActionDispatch::TestProcess
 
 FactoryGirl.define do
 
-  factory :v1_user, :class => V1::User do
+   factory :v1_user, :class => V1::User do
     sequence(:email) { |n| "email#{n}@factory.com" }
     first_name "Factory"
     last_name "User"
@@ -70,7 +70,8 @@ FactoryGirl.define do
   end
 
   factory :v1_metadatum_value, :class => V1::MetadatumValue do
-    value "this is a metadatum value"
+    metadatum_value "this is a metadatum value"
+    association :metadatum_field, :factory => :v1_metadata_field
     created_by_id 1
     updated_by_id 1
   end

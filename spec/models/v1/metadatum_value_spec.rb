@@ -4,7 +4,7 @@ describe V1::MetadatumValue do
   let(:value) do 
     attrs = FactoryGirl.attributes_for(:v1_metadatum_value)
     attrs[:asset] = FactoryGirl.create(:v1_asset) 
-    attrs[:metadata_field] = FactoryGirl.create(:v1_metadata_field)
+    attrs[:metadatum_field] = FactoryGirl.create(:v1_metadata_field)
     FactoryGirl.build(:v1_metadatum_value, attrs)
   end
 
@@ -12,8 +12,8 @@ describe V1::MetadatumValue do
 
   describe "creates instance given valid attributes" do
     it { should respond_to(:asset_id) }
-    it { should respond_to(:metadata_field_id) }
-    it { should respond_to(:value) }
+    it { should respond_to(:metadatum_field_id) }
+    it { should respond_to(:metadatum_value) }
     it { should respond_to(:created_by_id) }
     it { should respond_to(:updated_by_id) }
     it { should respond_to(:created_at) }
@@ -44,29 +44,29 @@ describe V1::MetadatumValue do
 
 
   describe "requires a field" do
-    before { value.metadata_field = nil }
+    before { value.metadatum_field = nil }
     it {
       should_not be_valid 
-      should have(1).error_on(:metadata_field)
+      should have(1).error_on(:metadatum_field)
     }
     specify { value.save.should be false }
   end
 
   describe "requires a valid field id" do
-    before { value.metadata_field_id = 99999 }
+    before { value.metadatum_field_id = 99999 }
     it {
       should_not be_valid 
-      should have(1).error_on(:metadata_field)
+      should have(1).error_on(:metadatum_field)
     }
     specify { value.save.should be false }
   end
 
 
   describe "requires a value" do
-    before { value.value = nil }
+    before { value.metadatum_value = nil }
     it {
       should_not be_valid 
-      should have(1).error_on(:value)
+      should have(1).error_on(:metadatum_value)
     }
     specify { value.save.should be false }
   end

@@ -23,7 +23,7 @@ module V1
     validates :asset_id, :existence => true
     validates :metadatum_field_id, :existence => true
 
-    validates :metadatum_value, :presence => true
+    validates :metadatum_value, :presence => true, :valid_metadatum_value => true
     validates :created_by_id, :presence => true
     validates :updated_by_id, :presence => true
 

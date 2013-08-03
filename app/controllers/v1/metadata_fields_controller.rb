@@ -87,7 +87,7 @@ module V1
     end
 
     def update_field(field)
-      field.attributes = params[:metadata_field]
+      field.assign_attributes(params[:metadata_field])
       add_audit_params(field)
       field.save
     end

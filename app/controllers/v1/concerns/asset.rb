@@ -22,7 +22,7 @@ module V1::Concerns::Asset
 
   def set_attrs(asset)
     raise ArgumentError, 'no asset fields provided' unless params[:asset]
-    asset.attributes = params[:asset]
+    asset.assign_attributes(params[:asset])
     add_audit_params(asset)
   end
 
@@ -31,7 +31,7 @@ module V1::Concerns::Asset
     metadata_params.each do |m_param|
       if m_param[:id]
         metadatum_value = asset.metadata.find(m_param[:id])
-        metadatum_value.assign_attributes(m_param)
+        metadatum_value.update_attributes(m_param)
       else
         metadatum_value = asset.metadata.build(m_param)
       end

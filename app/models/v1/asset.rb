@@ -45,5 +45,15 @@ module V1
 
     # mount Carrierwave uploader for file uploads
     mount_uploader :file, V1::AssetUploader
+
+    # merge child error messages
+    validate do |asset|
+      asset.errors.delete(:metadata)
+      asset.metadata.each do |metadatum|
+        next if metadatum.valid?
+        asset.errors.add(:metadata, metadatum.errors)
+      end
+    end
+
   end
 end

@@ -31,5 +31,8 @@ module V1
     validates :created_by_id, :presence => true
     validates :updated_by_id, :presence => true
 
+    before_validation do
+      self.type = self.type.to_s if attribute_present?('type')
+    end
   end
 end

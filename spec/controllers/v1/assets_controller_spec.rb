@@ -29,11 +29,20 @@ describe V1::AssetsController, :type => :controller do
     FactoryGirl.create(:v1_relationship, attrs)
   end
 
-  def given_metadata_attrs
-    metadata = FactoryGirl.attributes_for(:v1_metadatum_value)
+  def given_metadata_attrs_with(state)
+    metadatum = FactoryGirl.attributes_for(:v1_metadatum_value)
     field = FactoryGirl.create(:v1_metadata_field)
-    metadata[:metadatum_field_id] = field.id
-    attrs = { :metadata => [ metadata ] }
+    metadatum[:metadatum_field_id] = field.id
+    if (state) 
+      metadatum[:metadatum_field_id] = 99999 if state == :invalid_field
+      metadatum[:metadatum_value] = nil if state == :blank_value
+      if (state == :invalid_boolean_value)
+        field.type = 'boolean'
+        field.save!
+        metadatum[:metadatum_value] = 'not boolean'
+      end
+    end
+    attrs = { :metadata => [ metadatum ] }
     yield attrs
   end
 
@@ -46,6 +55,16 @@ describe V1::AssetsController, :type => :controller do
     end
     if (options[:valid_metadata])
       metadatum = FactoryGirl.attributes_for(:v1_metadatum_value)
+      attrs = { :metadata => [ metadatum ] }
+    end
+    if (options[:blank_metadatum])
+      metadatum = FactoryGirl.attributes_for(:v1_metadatum_value)
+      metadatum[:metadatum_value] = nil
+      attrs = { :metadata => [ metadatum ] }
+    end
+    if (options[:invalid_metadata_value])
+      metadatum = FactoryGirl.attributes_for(:v1_metadatum_value, { :type => :boolean })
+      metadatum[:metadatum_value] = "notaboolean"
       attrs = { :metadata => [ metadatum ] }
     end
     yield FactoryGirl.attributes_for(:v1_asset, attrs)
@@ -180,7 +199,7 @@ describe V1::AssetsController, :type => :controller do
                 post_asset(invalid_attrs, :json)
               end
               parsed = JSON.parse(response.body)
-              parsed['errors']['metadata'].should == ["is invalid"]
+              parsed['errors']['metadata'][0]['metadatum_field_id'].should == ["does not exist"]
             end
           end
         end
@@ -243,7 +262,7 @@ describe V1::AssetsController, :type => :controller do
       let!(:existing_asset) { asset } 
       let!(:existing_asset_with_metadata) do
         new_asset = FactoryGirl.create(:v1_asset)
-        given_metadata_attrs do |attrs|
+        given_metadata_attrs_with(:valid) do |attrs|
           metadatum = FactoryGirl.build(:v1_metadatum_value, attrs[:metadata][0])
           new_asset.metadata << metadatum
           new_asset.save!
@@ -266,7 +285,65 @@ describe V1::AssetsController, :type => :controller do
       end
       context "with JSON format" do
         context "with invalid attributes" do
-          pending
+          context "blank metadatum value" do
+            it "does not create metadatum" do
+              expect{
+                given_metadata_attrs_with(:blank_value) do |attrs|
+                  update_asset(existing_asset.id, attrs, :json)
+                end
+              }.to_not change(V1::MetadatumValue, :count)
+            end
+            it "returns unprocessable entity" do
+              given_metadata_attrs_with(:blank_value) do |attrs|
+                update_asset(existing_asset.id, attrs, :json)
+              end
+              response.status.should == 422
+            end
+            it "returns metadata can't be blank message" do
+              given_metadata_attrs_with(:blank_value) do |attrs|
+                update_asset(existing_asset.id, attrs, :json)
+              end
+              msg = JSON.parse(response.body)
+              msg['errors']['metadata'][0]['metadatum_value'].should == ['can\'t be blank']
+            end
+          end
+          context "invalid boolean metadata value" do
+            it "returns unprocessable entity" do
+              given_metadata_attrs_with(:invalid_boolean_value) do |attrs|
+                update_asset(existing_asset.id, attrs, :json)
+              end
+              response.status.should == 422
+            end
+            it "returns invalid metadatum value message" do
+              given_metadata_attrs_with(:invalid_boolean_value) do |attrs|
+                update_asset(existing_asset.id, attrs, :json)
+              end
+              msg = JSON.parse(response.body)
+              msg["errors"]["metadata"][0]["metadatum_value"][0].should =~ /invalid boolean value.*/
+            end
+          end
+          context "invalid metadata field" do
+            it "does not create the metadatum value" do
+              expect{
+                given_metadata_attrs_with(:invalid_field) do |invalid_attrs|
+                  update_asset(existing_asset.id, invalid_attrs, :json)
+                end
+              }.to_not change(V1::MetadatumValue, :count)
+            end
+            it "returns unprocessable entity" do
+              given_metadata_attrs_with(:invalid_field) do |attrs|
+                update_asset(existing_asset.id, attrs, :json)
+              end
+              response.status.should == 422
+            end
+            it "gives error messages" do
+              given_metadata_attrs_with(:invalid_field) do |attrs|
+                update_asset(existing_asset.id, attrs, :json)
+              end
+              parsed = JSON.parse(response.body)
+              parsed['errors']['metadata'][0]['metadatum_field_id'].should == ["does not exist"]
+            end
+          end
         end
         context "with valid attributes" do
           it "does not creates an asset" do   
@@ -276,7 +353,7 @@ describe V1::AssetsController, :type => :controller do
           end
           it "creates new associated metadata values if specified" do
             expect{
-              given_metadata_attrs do |attrs|
+              given_metadata_attrs_with(:valid) do |attrs|
                 update_asset(existing_asset.id, attrs, :json)
               end
             }.to change(V1::MetadatumValue, :count).by(1)
@@ -285,6 +362,15 @@ describe V1::AssetsController, :type => :controller do
             expect{
               update_asset(existing_asset_with_metadata.id, { :metadata => [] }, :json)
             }.to change(V1::MetadatumValue, :count).by(-1)
+          end
+          it "updates existing metadata values if specified" do
+            new_value = "this is the new md value"
+            attrs = existing_asset_with_metadata.attributes
+            attrs[:metadata] =  [ existing_asset_with_metadata.metadata[0].attributes ]
+            attrs[:metadata][0][:metadatum_value] = new_value
+            update_asset(existing_asset_with_metadata.id, attrs, :json)
+            json = JSON.parse(response.body)
+            json['asset']['metadata'][0]['metadatum_value'].should == new_value
           end
           before :each do
             update_asset(existing_asset.id, { :name => "newname" }, :json)

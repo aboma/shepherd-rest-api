@@ -103,7 +103,7 @@ module V1
         fs_params.each do |fs_param|
           if fs_param[:id]
             field_setting = template.metadata_template_field_settings.find(fs_param[:id])
-            field_setting.assign_attributes(fs_param)
+            field_setting.update_attributes(fs_param)
           else
             field_setting = template.metadata_template_field_settings.build(fs_param)
           end

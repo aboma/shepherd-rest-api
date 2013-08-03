@@ -1,6 +1,14 @@
 require 'spec_helper'
 
 describe V1::MetadatumValue do
+  def metadatum_of_type(type)   
+    attrs = FactoryGirl.attributes_for(:v1_metadatum_value)
+    attrs[:asset] = FactoryGirl.create(:v1_asset) 
+    type = :text if !type 
+    attrs[:metadatum_field] = FactoryGirl.create(:v1_metadata_field, { :type => type })
+    return FactoryGirl.build(:v1_metadatum_value, attrs)
+  end
+
   let(:value) do 
     attrs = FactoryGirl.attributes_for(:v1_metadatum_value)
     attrs[:asset] = FactoryGirl.create(:v1_asset) 
@@ -62,13 +70,60 @@ describe V1::MetadatumValue do
   end
 
 
-  describe "requires a value" do
+  describe "requires a metadatum value" do
     before { value.metadatum_value = nil }
     it {
       should_not be_valid 
       should have(1).error_on(:metadatum_value)
     }
     specify { value.save.should be false }
+  end
+
+  describe "validates metadatum value" do
+    context "boolean field" do
+      let(:metadatum) { metadatum_of_type(:boolean) }
+      context "valid boolean" do
+        it "will save" do
+          valid_booleans = [ "f", "0", "1", "true", "TRUE", "false", "FALSE" ]
+          valid_booleans.each do |valid_bool|
+            metadatum.metadatum_value = valid_bool
+            metadatum.save.should be true
+          end
+        end
+      end
+      context "invalid boolean" do
+        it "will not save" do
+          invalid_booleans = [ "nil", "falsey", "tru", '2' ]
+          invalid_booleans.each do |invalid_bool|
+            metadatum.metadatum_value = invalid_bool
+            metadatum.save.should be false
+            metadatum.should have(1).error_on(:metadatum_value)
+          end
+        end
+      end
+    end
+    context "integer field" do
+      let(:metadatum) { metadatum_of_type(:integer) }
+      context "valid integer" do
+        it "will save" do
+          valid_integers = [ "0", "1", "-1", "89192" ]
+          valid_integers.each do |valid_int|
+            metadatum.metadatum_value = valid_int
+            metadatum.save.should be true
+          end
+        end
+      end
+      context "invalid integer" do
+        it "will not save" do
+          invalid_integers = [ 'notint', '1.1', '0.1', 'true' ]
+          invalid_integers.each do |invalid_int|
+            metadatum.metadatum_value = invalid_int
+            metadatum.save.should be false
+            metadatum.should have(1).error_on(:metadatum_value)
+          end
+        end
+      end
+    end
   end
 
   it_should_behave_like "an auditable model"

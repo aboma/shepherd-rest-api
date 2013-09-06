@@ -168,5 +168,65 @@ describe V1::UsersController, :type => :controller do
     end
   end
 
+  ### put UPDATE =========================================================
+  describe "put UPDATE" do
+    it_should_behave_like "a protected action" do
+      let(:data) { FactoryGirl.attributes_for(:v1_user) }
+      def action(args_hash)
+        post :update, :id => user.id, :user => args_hash[:data], :format => args_hash[:format] 
+      end   
+    end
+
+    context "with valid authorization token" do
+      def update_user attrs, format
+        request.env['X-AUTH-TOKEN'] = @auth_token
+        post :update, :id => user.id, :user => attrs, :format => format 
+      end  
+      context "with XML or HTML format" do
+        [:xml, :html].each do |format|
+          before :each do
+            update_user( { :name => 'new name' } , format)
+          end
+          it_should_behave_like "an action that responds with JSON"       
+          it "returns 406 code for format #{format}" do
+            response.status.should == 406  
+          end
+        end          
+      end
+      context "JSON format" do
+        context "valid input" do
+          before :each do
+            update_user({ :name => 'new name' }, :json)
+            @parsed = JSON.parse(response.body)
+          end
+          it_should_behave_like "an action that responds with JSON"
+          it "returns 200 success status code" do
+            response.status.should == 200
+          end
+          it "returns the updated field" do
+            @parsed['user']['id'].should == user.id
+          end
+        end
+        context "invalid input" do
+          describe "invalid user id" do
+            it "returns status code 404 not found" do
+              user.id = '111111'   # change user id to one that does not exist
+              update_user({ :name => 'new name' }, :json)
+              response.status.should == 404
+            end
+          end
+          describe "already existing user email" do
+            it "returns status 409 conflict" do
+              existing_user = FactoryGirl.create(:v1_user)
+              update_user( { :email => existing_user.email.upcase }, :json )
+              response.status.should == 409
+            end
+          end
+        end
+      end
+    end
+  end
+
+
 
 end

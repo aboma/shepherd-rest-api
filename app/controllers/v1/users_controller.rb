@@ -2,7 +2,7 @@ module V1
   class UsersController < V1::ApplicationController
     include V1::Concerns::Auditable
     before_filter :allow_only_json_requests
-    before_filter :find_user, :only => [:show, :create]
+    before_filter :find_user, :only => [:show, :create, :update]
 
     def index
       users = User.all
@@ -41,6 +41,24 @@ module V1
       end
     end
 
+    def update
+      respond_to do |format|
+        format.json do
+          unless @user 
+            render :json => {}, :status => :not_found
+            return
+          end
+          if update_user(@user)
+            @user.reload
+            render :json => @user, :serializer => V1::UserSerializer
+          else 
+            status = conflict? ? :conflict : :unprocessable_entity
+            render :json => { :errors => @user.errors }, :status => status 
+          end
+        end
+      end
+    end
+
   private
 
     def find_user
@@ -53,9 +71,19 @@ module V1
     end
 
     def update_user(user)
-      user.attributes = params[:user]
+      if params[:user] && params[:user][:password].blank? 
+        params[:user].delete(:password)
+        params[:user].delete(:password_confirmation)
+      end
+      user.assign_attributes(params[:user])
       add_audit_params(user)
       user.save
     end
+
+    def conflict?
+       return @user.errors[:email] && 
+              @user.errors[:email].include?("has already been taken")
+    end
+
   end
 end

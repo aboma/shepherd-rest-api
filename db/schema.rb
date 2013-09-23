@@ -16,6 +16,8 @@ ActiveRecord::Schema.define(:version => 20130722154222) do
   create_table "assets", :force => true do |t|
     t.string   "name",          :null => false
     t.string   "file",          :null => false
+    t.string   "content_type",  :null => false
+    t.string   "size",          :null => false
     t.string   "description"
     t.datetime "deleted_at"
     t.integer  "created_by_id", :null => false

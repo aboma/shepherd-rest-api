@@ -31,6 +31,7 @@
 #
 module V1
   class Asset < ActiveRecord::Base
+    before_save :update_asset_attributes
 
     has_many :relationships, :dependent => :destroy
     has_many :portfolios, :through => :relationships
@@ -55,5 +56,14 @@ module V1
       end
     end
 
+  private 
+
+    # set mime type and file size attributes on file field
+    def update_asset_attributes
+      if file.present? && file_changed?
+        self.content_type = file.file.content_type if file.file.content_type
+        self.size = file.file.size if file.file.size
+      end
+    end
   end
 end

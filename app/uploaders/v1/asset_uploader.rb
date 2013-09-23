@@ -1,8 +1,11 @@
 module V1
   class AssetUploader < CarrierWave::Uploader::Base
     include CarrierWave::RMagick
+    include CarrierWave::MimeTypes
 
     storage :file
+
+    process :set_content_type
 
     BASE_DIR = "files"
 

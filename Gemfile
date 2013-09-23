@@ -1,6 +1,7 @@
 source 'http://rubygems.org'
 
-gem 'rails', '~> 3.2.13'
+gem 'rails', '~> 3.2.14'
+gem 'thin', '1.5.1'
 #gem 'sqlite3'
 gem 'pg', '~> 0.14.1'
 gem 'devise', '~> 2.2.3'
@@ -41,6 +42,8 @@ group :development, :test do
   gem 'factory_girl_rails', '~> 3.0.0'
   gem 'annotate', "~> 2.5.0"
   gem 'json_spec', '~> 1.1.0'
+  gem "better_errors"
+  gem "binding_of_caller"
 end
 
 group :test do

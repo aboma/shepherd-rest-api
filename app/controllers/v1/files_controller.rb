@@ -6,8 +6,8 @@ module V1
       respond_to do |format| 
         format.html do
           if @asset
-            mime = MIME::Types.type_for(@asset.file.file).first.content_type
-            send_file file, :type => mime, :disposition => 'attachment'
+            logger.info "sending file from location #{@asset.file.path} as attachment"
+            send_file @asset.file.path, :type => @asset.content_type, :disposition => 'attachment'
           else
             render :html, :status => :not_found
           end

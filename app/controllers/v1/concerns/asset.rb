@@ -5,7 +5,8 @@ module V1::Concerns::Asset
   def update_asset(asset)
     update_asset!(asset)
     return true
-  rescue
+  rescue => e
+    logger.error "error updating asset: #{e}"
     return false
   end
 

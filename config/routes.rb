@@ -1,7 +1,7 @@
 VilioDAM::Application.routes.draw do
 
   current_api_routes = lambda do
-    match '/*path' => 'application#cors_preflight_check', :via => :options
+    match '*all' => 'application#cors_preflight_check', :via => :options
 
     devise_scope :user do
       resources :users, :only => [:index, :create, :show, :update]
@@ -16,8 +16,9 @@ VilioDAM::Application.routes.draw do
     # serve assets under root directory or portfolio directory
     scope '(portfolios/:portfolio_id)' do 
       resources :assets do
-        get "file" => "assets#file", :as => "file", :format => 'html'
-        get "thumbnail" => "assets#thumbnail", :as => "thumbnail", :format => 'html'
+        #resources :files, :only => [:show], :format => "html"
+        get "file" => "files#show", :as => "file", :format => 'html'
+        #get "thumbnail" => "assets#thumbnail", :as => "thumbnail", :format => 'html'
       end
     end
 

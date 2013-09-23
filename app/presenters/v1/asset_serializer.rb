@@ -14,7 +14,8 @@ module V1
       hash[:links] = [
         { :rel => 'self', :href => asset_url(:id => aid) },
         { :rel => 'thumbnail', :href => "#{thumbnail_url}" },
-        { :rel => "image", :href => "#{image_url}" }
+        { :rel => "image", :href => "#{image_url}" },
+        { :rel => "file", :href => asset_file_url(aid, 1) }
       ]
       hash
     end

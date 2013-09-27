@@ -7,7 +7,9 @@ module V1
 
     process :set_content_type
 
-    BASE_DIR = "files"
+    # this directory is set in the config/settings.yml file: default is
+    # /srv/www/vilio-files
+    BASE_DIR = Settings.file_path
 
     def cache_dir
       "#{Rails.root}/tmp/uploads/#{Rails.env}/files"

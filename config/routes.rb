@@ -16,9 +16,7 @@ VilioDAM::Application.routes.draw do
     # serve assets under root directory or portfolio directory
     scope '(portfolios/:portfolio_id)' do 
       resources :assets do
-        #resources :files, :only => [:show], :format => "html"
-        get "file" => "files#show", :as => "file", :format => 'html'
-        #get "thumbnail" => "assets#thumbnail", :as => "thumbnail", :format => 'html'
+        resources :files, :only => [:show], :format => "html"
       end
     end
 

@@ -20,5 +20,9 @@ module V1
     version :thumb do
       process :resize_to_limit => [120, 120]
     end
+
+    version :image do
+      process :resize_to_limit => [400, 400]
+    end
   end
 end

@@ -8,14 +8,12 @@ module V1
 
     def attributes
       hash = super
-      thumbnail_url = File.join(root_url, object.file.thumb.url)
-      image_url = File.join(root_url, object.file.url)
-      aid = id || object.id
+      asset_id = id || object.id
       hash[:links] = [
-        { :rel => 'self', :href => asset_url(:id => aid) },
-        { :rel => 'thumbnail', :href => "#{thumbnail_url}" },
-        { :rel => "image", :href => "#{image_url}" },
-        { :rel => "file", :href => asset_file_url(aid, 1) }
+        { :rel => 'self', :href => asset_url(:id => asset_id) },
+        { :rel => "thumbnail", :href => asset_file_url({ :asset_id => asset_id, :id => 'thumb', :format => nil }) },
+        { :rel => "image", :href => asset_file_url({ :asset_id => asset_id, :id => 'image', :format => nil }) },
+        { :rel => "file", :href => asset_file_url({ :asset_id => asset_id, :id => 'file', :format => nil, :download => true }) }
       ]
       hash
     end

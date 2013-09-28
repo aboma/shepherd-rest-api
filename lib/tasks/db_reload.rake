@@ -42,12 +42,19 @@ namespace :db do
 end
 
 # delete uploaded files and their derivatives;
-# should only be done when deleting the database
+# should only be done when deleting the database; does
+# not work on production environment
 namespace :files do
   desc "Delete asset files directory"
   task :clear => :environment do
-    dir = "public/" + V1::AssetUploader::BASE_DIR
-    puts "Deleting files directory #{dir}"
+    return if Rails.env.production?
+    Settings.reload_from_files(
+      Rails.root.join("config", "settings.yml").to_s,
+      Rails.root.join("config", "settings", "#{Rails.env}.yml").to_s,
+      Rails.root.join("config", "environments", "#{Rails.env}.yml").to_s
+    )
+    dir = Settings.files_path
+    puts "Deleting files from directory #{dir}"
     FileUtils.rm_r dir if File.exists?(dir) 
   end
 end

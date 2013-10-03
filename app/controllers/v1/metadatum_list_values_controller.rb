@@ -1,14 +1,14 @@
 module V1
-  class MetadataListValuesController < V1::ApplicationController
+  class MetadatumListValuesController < V1::ApplicationController
     include V1::Concerns::Auditable
     before_filter :allow_only_json_requests
     before_filter :find_value, :only => [:show]
 
     def index
-      values = MetadataListValue.all
+      values = MetadatumListValue.all
       respond_to do |format|
         format.json do
-          render :json => values, :root => "metadata_list_values", :each_serializer => V1::MetadataListValueSerializer
+          render :json => values, :root => "metadatum_list_values", :each_serializer => V1::MetadatumListValueSerializer
         end        
       end
     end
@@ -17,7 +17,7 @@ module V1
       respond_to do |format|
         format.json do
           if @value
-            render :json => @value, :root => "metadata_list_value", :serializer => V1::MetadataListValueSerializer
+            render :json => @value, :root => "metadatum_list_value", :serializer => V1::MetadatumListValueSerializer
           else
             render :json => {}, :status => 404
           end
@@ -29,10 +29,10 @@ module V1
     def create 
       respond_to do |format|
         format.json do
-          value = V1::MetadataListValue.new
+          value = V1::MetadatumListValue.new
           if update_value(value)
-            response.headers["Location"] = metadata_list_value_path(value)
-            render :json => value, :root => "metadata_list_value", :serializer => V1::MetadataListValueSerializer
+            response.headers["Location"] = metadatum_list_value_path(value)
+            render :json => value, :root => "metadatum_list_value", :serializer => V1::MetadatumListValueSerializer
           else
             render :json => { :errors => value.errors }, :status => :unprocessable_entity
           end
@@ -43,13 +43,13 @@ module V1
   private
 
     def find_field
-      @value = V1::MetadataListValue.find(params[:id])
+      @value = V1::MetadatumListValue.find(params[:id])
     rescue ActiveRecord::RecordNotFound
       @error = { :id => "value not found" }
     end
 
     def update_value(value)
-      value.attributes = params[:metadata_list_value]
+      value.attributes = params[:metadatum_list_value]
       add_audit_params(value)
       value.save
     end

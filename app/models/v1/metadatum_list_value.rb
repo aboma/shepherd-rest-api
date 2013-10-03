@@ -1,11 +1,11 @@
 # == Schema Information
 #
-# Table name: metadata_list_values
+# Table name: metadatum_list_values
 #
 #  id                      :integer          not null, primary key
 #  value                   :string(255)      not null
 #  description             :string(255)
-#  metadata_values_list_id :integer
+#  metadatum_values_list_id :integer
 #  deleted_at              :datetime
 #  created_by_id           :integer          not null
 #  updated_by_id           :integer
@@ -15,13 +15,13 @@
 #
 
 module V1
-  class MetadataListValue < ActiveRecord::Base
-    belongs_to :metadata_values_list
+  class MetadatumListValue < ActiveRecord::Base
+    belongs_to :metadatum_values_list
 
-    attr_accessible :value, :metadata_values_list_id
+    attr_accessible :value, :metadatum_values_list_id
 
     validates :value, :presence => true
-    validates :metadata_values_list_id, :existence => true
+    validates :metadatum_values_list_id, :existence => true
     validates :created_by_id, :presence => true
     validates :updated_by_id, :presence => true
   end

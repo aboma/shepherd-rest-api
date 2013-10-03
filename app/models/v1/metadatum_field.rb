@@ -20,7 +20,7 @@ module V1
     self.inheritance_column = nil
     has_many :metadata_template_field_settings, :class_name => "V1::MetadataTemplateFieldSetting",
       :dependent => :restrict
-    belongs_to :allowed_values_list, :class_name => "V1::MetadataValuesList", :inverse_of => :fields
+    belongs_to :allowed_values_list, :class_name => "V1::MetadatumValuesList", :inverse_of => :fields
 
     attr_accessible :name, :description, :type, :allowed_values_list_id
 

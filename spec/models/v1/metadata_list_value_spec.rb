@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe V1::MetadataListValue do
+describe V1::MetadatumListValue do
   let(:list)  { FactoryGirl.create(:v1_values_list) }
-  let(:value) { FactoryGirl.build(:v1_value, { :metadata_values_list_id => list.id }) }
+  let(:value) { FactoryGirl.build(:v1_value, { :metadatum_values_list_id => list.id }) }
 
   subject { value }
 
@@ -15,7 +15,7 @@ describe V1::MetadataListValue do
     it { should respond_to(:updated_at) }
   end
   it "adds an entry to the metadata list values table upon save" do
-    expect { value.save }.to change(V1::MetadataListValue, :count).by(1)
+    expect { value.save }.to change(V1::MetadatumListValue, :count).by(1)
   end
   it { should be_valid }
 
@@ -35,7 +35,7 @@ describe V1::MetadataListValue do
   end
 
   describe "requires a metadata list id" do
-    before { value.metadata_values_list_id = nil }
+    before { value.metadatum_values_list_id = nil }
     it { should_not be_valid }
     specify { value.save.should be false }
   end

@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe V1::MetadataValuesListsController, :type => :controller do
+describe V1::MetadatumValuesListsController, :type => :controller do
   include LoginHelper
 
   before :all do 
@@ -45,7 +45,7 @@ describe V1::MetadataValuesListsController, :type => :controller do
         end
         it_should_behave_like "an action that responds with JSON"
         it "responds with the asked for values list" do
-          @parsed['metadata_values_list']['id'].should == list.id
+          @parsed['metadatum_values_list']['id'].should == list.id
         end
       end
       context "invalid values list id" do
@@ -66,14 +66,14 @@ describe V1::MetadataValuesListsController, :type => :controller do
     it_should_behave_like "a protected action" do
       let(:data) { FactoryGirl.attributes_for(:v1_values_list) }
       def action(args_hash)
-        post :create, :metadata_values_list => args_hash[:data], :format => args_hash[:format] 
+        post :create, :metadatum_values_list => args_hash[:data], :format => args_hash[:format] 
       end   
     end
 
     context "with valid authorization token" do 
       def post_list attrs, format
         request.env['X-AUTH-TOKEN'] = @auth_token
-        post :create, :metadata_values_list => attrs, :format => format
+        post :create, :metadatum_values_list => attrs, :format => format
       end  
       context "with XML or HTML format" do
         [:xml, :html].each do |format|
@@ -86,7 +86,7 @@ describe V1::MetadataValuesListsController, :type => :controller do
           it "does not create the values list" do
             expect{ 
               post_list(FactoryGirl.attributes_for(:v1_values_list), format)
-            }.to_not change(V1::MetadataValuesList, :count)
+            }.to_not change(V1::MetadatumValuesList, :count)
           end
         end          
       end    
@@ -104,7 +104,7 @@ describe V1::MetadataValuesListsController, :type => :controller do
           it "does not create an metadata values list" do
             expect{ 
               post_list(dup_attrs, :json)
-            }.to_not change(V1::MetadataValuesList, :count)
+            }.to_not change(V1::MetadatumValuesList, :count)
           end
           it "responds with 409 conflict" do
             post_list(dup_attrs, :json)
@@ -120,7 +120,7 @@ describe V1::MetadataValuesListsController, :type => :controller do
           it "does not create an metadata values list" do
             expect{ 
               post_list(invalid_attrs, :json)
-            }.to_not change(V1::MetadataValuesList, :count)
+            }.to_not change(V1::MetadatumValuesList, :count)
           end
           #subject {}
           it "responds with 422 unprocessable entity" do
@@ -133,7 +133,7 @@ describe V1::MetadataValuesListsController, :type => :controller do
           it "creates one values list" do   
             expect{ 
               post_list(FactoryGirl.attributes_for(:v1_values_list), :json)
-            }.to change(V1::MetadataValuesList, :count).by(1)
+            }.to change(V1::MetadatumValuesList, :count).by(1)
           end 
           before :each do
             post_list(FactoryGirl.attributes_for(:v1_values_list), :json)
@@ -150,9 +150,9 @@ describe V1::MetadataValuesListsController, :type => :controller do
               expect {
                 values_list = FactoryGirl.attributes_for(:v1_values_list)
                 values = [{ :value => "list value #1"}, { :value => "list value #2" }]
-                values_list[:metadata_list_values] = values
+                values_list[:metadatum_list_values] = values
                 post_list(values_list, :json)
-              }.to change(V1::MetadataListValue, :count).by(2)
+              }.to change(V1::MetadatumListValue, :count).by(2)
             end
           end
         end
@@ -166,14 +166,14 @@ describe V1::MetadataValuesListsController, :type => :controller do
       let(:data) { { :name => :updated_name } }
       let(:id) { list.id }
       def action(args_hash)
-        put :update, :id => args_hash[:id], :metadata_values_list => args_hash[:data] , :format => args_hash[:format] 
+        put :update, :id => args_hash[:id], :metadatum_values_list => args_hash[:data] , :format => args_hash[:format] 
       end   
     end
 
     context "authorized user" do
       def update_list(attrs, format)
         request.env['X-AUTH-TOKEN'] = @auth_token
-        put :update, :id => list.id, :metadata_values_list => attrs , :format => format         
+        put :update, :id => list.id, :metadatum_values_list => attrs , :format => format         
       end
       context "HTML or XML format" do
         [:html, :xml].each do |format|
@@ -196,13 +196,13 @@ describe V1::MetadataValuesListsController, :type => :controller do
             response.status.should == 200
           end
           it "returns the updated metadata list" do
-            @parsed['metadata_values_list']['id'].should == list.id
+            @parsed['metadatum_values_list']['id'].should == list.id
           end
         end
         context "invalid input" do
           describe "invalid list id" do
             it "returns status code 404 not found" do
-              list.id = '1111'   # change metadata_list_value id to one that does not exist
+              list.id = '1111'   # change metadatum_list_value id to one that does not exist
               update_list( { :name => 'test' }, :json )
               response.status.should == 404
             end
@@ -234,7 +234,7 @@ describe V1::MetadataValuesListsController, :type => :controller do
           it "does not change the number of lists" do   
             expect { 
               delete_list(list_to_delete.id, format)
-            }.to_not change(V1::MetadataValuesList, :count)
+            }.to_not change(V1::MetadatumValuesList, :count)
           end
           before :each do
             delete_list(list.id, format)    
@@ -249,15 +249,15 @@ describe V1::MetadataValuesListsController, :type => :controller do
         it "decreases number of lists by 1" do   
           expect { 
             delete_list(list_to_delete.id, :json)
-          }.to change{V1::MetadataValuesList.count}.by(-1)
+          }.to change{V1::MetadatumValuesList.count}.by(-1)
         end
         it "deletes associated list values as well" do
           attrs = FactoryGirl.attributes_for(:v1_value)
-          attrs[:metadata_values_list_id] = list_to_delete.id
+          attrs[:metadatum_values_list_id] = list_to_delete.id
           FactoryGirl.create(:v1_value, attrs)
           expect {
             delete_list(list_to_delete, :json)
-          }.to change(V1::MetadataListValue, :count).by(-1)
+          }.to change(V1::MetadatumListValue, :count).by(-1)
         end
         it "should respond with JSON" do
           delete_list(list.id, :json)

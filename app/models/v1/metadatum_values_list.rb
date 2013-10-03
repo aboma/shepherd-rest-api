@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: metadata_values_lists
+# Table name: metadatum_values_lists
 #
 #  id            :integer          not null, primary key
 #  name          :string(255)      not null
@@ -14,9 +14,9 @@
 #
 
 module V1
-  class MetadataValuesList < ActiveRecord::Base
+  class MetadatumValuesList < ActiveRecord::Base
     has_many :fields, :class_name => "V1::MetadatumField", :inverse_of => :allowed_values_list
-    has_many :metadata_list_values, :class_name => "V1::MetadataListValue", :inverse_of => :metadata_values_list,
+    has_many :metadatum_list_values, :class_name => "V1::MetadatumListValue", :inverse_of => :metadatum_values_list,
       :dependent => :destroy
 
     attr_accessible :name, :description, :fields

@@ -41,14 +41,14 @@ FactoryGirl.define do
     updated_by_id 1    
   end
 
-  factory :v1_values_list, :class => V1::MetadataValuesList do
+  factory :v1_values_list, :class => V1::MetadatumValuesList do
     sequence(:name) { |n| "values list#{n}" }
     description "values list"
     created_by_id 1
     updated_by_id 1    
   end
 
-  factory :v1_value, :class => V1::MetadataListValue do
+  factory :v1_value, :class => V1::MetadatumListValue do
     sequence(:value) { |v| "value#{v}" }
     description "metadata value"
     created_by_id 1

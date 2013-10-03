@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe V1::MetadataListValuesController, :type => :controller do
+describe V1::MetadatumListValuesController, :type => :controller do
   include LoginHelper
 
   before :all do 
@@ -13,8 +13,8 @@ describe V1::MetadataListValuesController, :type => :controller do
 
   def given_value_with_attrs(options)
     attrs = FactoryGirl.attributes_for(:v1_value)
-    attrs[:metadata_values_list_id] = FactoryGirl.create(:v1_values_list).id if options[:valid_value]
-    attrs[:metadata_values_list_id] = "12345" unless options[:valid_value]
+    attrs[:metadatum_values_list_id] = FactoryGirl.create(:v1_values_list).id if options[:valid_value]
+    attrs[:metadatum_values_list_id] = "12345" unless options[:valid_value]
     yield attrs
   end
 
@@ -53,14 +53,14 @@ describe V1::MetadataListValuesController, :type => :controller do
         end
       end
       def action(args_hash)
-        post :create, :metadata_list_value => args_hash[:data], :format => args_hash[:format] 
+        post :create, :metadatum_list_value => args_hash[:data], :format => args_hash[:format] 
       end   
     end
 
     context "with valid authorization token" do 
       def post_value attrs, format
         request.env['X-AUTH-TOKEN'] = @auth_token
-        post :create, :metadata_list_value => attrs, :format => format 
+        post :create, :metadatum_list_value => attrs, :format => format 
       end  
       context "with XML or HTML format" do
         [:xml, :html].each do |format|
@@ -77,7 +77,7 @@ describe V1::MetadataListValuesController, :type => :controller do
               given_value_with_attrs({ :valid_value => true }) do |attrs|
                 post_value(attrs, format)
               end
-            }.to_not change(V1::MetadataListValue, :count)
+            }.to_not change(V1::MetadatumListValue, :count)
           end
         end          
       end    
@@ -93,7 +93,7 @@ describe V1::MetadataListValuesController, :type => :controller do
             it "does not create an metadata value" do
               expect{ 
                 post_value(invalid_attrs, :json)
-            }.to_not change(V1::MetadataListValue, :count)
+            }.to_not change(V1::MetadatumListValue, :count)
             end
             it "responds with 422 unprocessable entity" do
               post_value(invalid_attrs, :json)
@@ -103,14 +103,14 @@ describe V1::MetadataListValuesController, :type => :controller do
           context "with invalid metadata list id" do
             let(:invalid_attrs) do 
               given_value_with_attrs({ :valid_value => true }) do |attrs|
-                attrs[:metadata_values_list_id] = 999999
+                attrs[:metadatum_values_list_id] = 999999
                 attrs
               end
             end
             it "does not create an metadata value" do
               expect{ 
                 post_value(invalid_attrs, :json)
-            }.to_not change(V1::MetadataListValue, :count)
+            }.to_not change(V1::MetadatumListValue, :count)
             end
             it "responds with 422 unprocessable entity" do
               post_value(invalid_attrs, :json)
@@ -120,7 +120,7 @@ describe V1::MetadataListValuesController, :type => :controller do
           context "with invalid metadata list id" do
             let(:invalid_attrs) do 
               given_value_with_attrs({ :valid_value => true }) do |attrs|
-                attrs[:metadata_values_list_id] = 999999
+                attrs[:metadatum_values_list_id] = 999999
                 attrs
               end
             end
@@ -138,7 +138,7 @@ describe V1::MetadataListValuesController, :type => :controller do
             it "does not create an metadata value" do
               expect{ 
                 post_value(invalid_attrs, :json)
-              }.to_not change(V1::MetadataListValue, :count)
+              }.to_not change(V1::MetadatumListValue, :count)
             end
             it "responds with 422 unprocessable entity" do
               post_value(invalid_attrs, :json)
@@ -148,14 +148,14 @@ describe V1::MetadataListValuesController, :type => :controller do
           context "missing metadata_value_list_id" do
             let(:invalid_attrs) {
               given_value_with_attrs({ :valid_value => true }) do |attrs|
-                 attrs.delete(:metadata_values_list_id)
+                 attrs.delete(:metadatum_values_list_id)
                  attrs
                end
             }
             it "does not create an metadata value" do
               expect{ 
                 post_value(invalid_attrs, :json)
-              }.to_not change(V1::MetadataListValue, :count)
+              }.to_not change(V1::MetadatumListValue, :count)
             end
             it "responds with 422 unprocessable entity" do
               post_value(invalid_attrs, :json)
@@ -169,7 +169,7 @@ describe V1::MetadataListValuesController, :type => :controller do
               given_value_with_attrs({ :valid_value => true }) do |attrs|
                 post_value(attrs, :json)
               end
-            }.to change(V1::MetadataListValue, :count).by(1)
+            }.to change(V1::MetadatumListValue, :count).by(1)
           end 
           before :each do
             given_value_with_attrs({ :valid_value => true }) do |attrs|

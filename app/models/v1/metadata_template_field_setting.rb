@@ -3,7 +3,7 @@
 # Table name: metadata_template_field_settings
 #
 #  id                   :integer          not null, primary key
-#  metadata_field_id    :integer          not null
+#  metadatum_field_id    :integer          not null
 #  metadata_template_id :integer          not null
 #  required             :boolean          not null
 #  order                :integer          not null
@@ -17,11 +17,11 @@
 
 class V1::MetadataTemplateFieldSetting < ActiveRecord::Base
   belongs_to :metadata_template, :inverse_of => :metadata_template_field_settings 
-  belongs_to :metadata_field
+  belongs_to :metadatum_field
 
-  attr_accessible :metadata_field_id, :required, :order, :metadata_template
+  attr_accessible :metadatum_field_id, :required, :order, :metadata_template
 
-  validates :metadata_field_id, :presence => true
+  validates :metadatum_field_id, :presence => true
   validates_inclusion_of :required, in: [true, false]
   validates :order, :presence => true
 

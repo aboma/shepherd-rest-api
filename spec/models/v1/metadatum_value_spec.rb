@@ -5,14 +5,14 @@ describe V1::MetadatumValue do
     attrs = FactoryGirl.attributes_for(:v1_metadatum_value)
     attrs[:asset] = FactoryGirl.create(:v1_asset) 
     type = :text if !type 
-    attrs[:metadatum_field] = FactoryGirl.create(:v1_metadata_field, { :type => type })
+    attrs[:metadatum_field] = FactoryGirl.create(:v1_metadatum_field, { :type => type })
     return FactoryGirl.build(:v1_metadatum_value, attrs)
   end
 
   let(:value) do 
     attrs = FactoryGirl.attributes_for(:v1_metadatum_value)
     attrs[:asset] = FactoryGirl.create(:v1_asset) 
-    attrs[:metadatum_field] = FactoryGirl.create(:v1_metadata_field)
+    attrs[:metadatum_field] = FactoryGirl.create(:v1_metadatum_field)
     FactoryGirl.build(:v1_metadatum_value, attrs)
   end
 

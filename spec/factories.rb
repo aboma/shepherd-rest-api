@@ -33,7 +33,7 @@ FactoryGirl.define do
     updated_by_id 1
   end
 
-  factory :v1_metadata_field, :class => V1::MetadataField do
+  factory :v1_metadatum_field, :class => V1::MetadatumField do
     sequence(:name) { |n| "field#{n}" }
     description "test field"
     type "text"
@@ -71,7 +71,7 @@ FactoryGirl.define do
 
   factory :v1_metadatum_value, :class => V1::MetadatumValue do
     metadatum_value "this is a metadatum value"
-    association :metadatum_field, :factory => :v1_metadata_field
+    association :metadatum_field, :factory => :v1_metadatum_field
     created_by_id 1
     updated_by_id 1
   end

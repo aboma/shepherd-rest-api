@@ -1,5 +1,5 @@
 module V1
-  class MetadataFieldSerializer < V1::VilioSerializer 
+  class MetadatumFieldSerializer < V1::VilioSerializer 
 
     attributes :id, :name, :description, :type, :created_at, :updated_at
 
@@ -8,7 +8,7 @@ module V1
     def attributes
       hash = super
       hash[:links] = [
-        { :rel => 'self', :href => metadata_field_url(id) }
+        { :rel => 'self', :href => metadatum_field_url(id) }
       ]
       hash
     end

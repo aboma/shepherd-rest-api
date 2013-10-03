@@ -1,6 +1,6 @@
-class AddMetadataFields < ActiveRecord::Migration
+class AddMetadatumFields < ActiveRecord::Migration
   def up
-    create_table :metadata_fields do |t|
+    create_table :metadatum_fields do |t|
       t.string    :name,                    :null => :false
       t.string    :description,             :null => :false
       t.string    :type,                    :null => :false
@@ -13,11 +13,11 @@ class AddMetadataFields < ActiveRecord::Migration
       t.timestamps
     end
 
-    add_index :metadata_fields, :allowed_values_list_id, :unique => false
+    add_index :metadatum_fields, :allowed_values_list_id, :unique => false
   end
 
   def down
-    remove_index :metadata_fields, :allowed_values_list_id
-    drop_table :metadata_fields
+    remove_index :metadatum_fields, :allowed_values_list_id
+    drop_table :metadatum_fields
   end
 end

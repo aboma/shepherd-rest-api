@@ -31,7 +31,7 @@ describe V1::AssetsController, :type => :controller do
 
   def given_metadata_attrs_with(state)
     metadatum = FactoryGirl.attributes_for(:v1_metadatum_value)
-    field = FactoryGirl.create(:v1_metadata_field)
+    field = FactoryGirl.create(:v1_metadatum_field)
     metadatum[:metadatum_field_id] = field.id
     if (state) 
       metadatum[:metadatum_field_id] = 99999 if state == :invalid_field

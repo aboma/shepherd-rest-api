@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe V1::MetadataField do
-  let(:field) { FactoryGirl.build(:v1_metadata_field) }
+describe V1::MetadatumField do
+  let(:field) { FactoryGirl.build(:v1_metadatum_field) }
 
   subject { field }
 
@@ -16,7 +16,7 @@ describe V1::MetadataField do
     it { should respond_to(:updated_at) }
   end
   it "adds an entry to the metadata fields table upon save" do
-    expect { field.save }.to change(V1::MetadataField, :count).by(1)
+    expect { field.save }.to change(V1::MetadatumField, :count).by(1)
   end
   it { should be_valid }
 
@@ -31,7 +31,7 @@ describe V1::MetadataField do
 
   describe "name should be unique" do
     before do
-      dup_field = FactoryGirl.create(:v1_metadata_field)
+      dup_field = FactoryGirl.create(:v1_metadatum_field)
       field.name = dup_field.name
     end   
     it { 
@@ -84,7 +84,7 @@ describe V1::MetadataField do
     describe "without assocatiated template field setting" do
       before { field.save }
       it "removes an field from the field table" do
-        expect { field.destroy }.to change(V1::MetadataField, :count).by(-1)
+        expect { field.destroy }.to change(V1::MetadatumField, :count).by(-1)
       end
     end
     describe "with associated template field setting" do
@@ -94,7 +94,7 @@ describe V1::MetadataField do
         template = FactoryGirl.create(:v1_metadata_template)
         attrs = FactoryGirl.attributes_for(:v1_template_field_setting)
         attrs[:metadata_template_id] = template.id
-        attrs[:metadata_field_id] = field.id
+        attrs[:metadatum_field_id] = field.id
         FactoryGirl.create(:v1_template_field_setting, attrs)
       end
       it "raises exception" do

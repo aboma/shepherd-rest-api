@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe V1::MetadataFieldsController, :type => :controller do
+describe V1::MetadatumFieldsController, :type => :controller do
   include LoginHelper
 
   before :all do 
@@ -11,7 +11,7 @@ describe V1::MetadataFieldsController, :type => :controller do
     destroy_test_user
   end
 
-  let(:field) { FactoryGirl.create(:v1_metadata_field) }
+  let(:field) { FactoryGirl.create(:v1_metadatum_field) }
 
   ### get INDEX =========================================================
   describe "get INDEX" do
@@ -45,7 +45,7 @@ describe V1::MetadataFieldsController, :type => :controller do
         end
         it_should_behave_like "an action that responds with JSON"
         it "responds with the asked for field" do
-          @parsed['metadata_field']['id'].should == field.id
+          @parsed['metadatum_field']['id'].should == field.id
         end
       end
       context "invalid field id" do
@@ -65,48 +65,48 @@ describe V1::MetadataFieldsController, :type => :controller do
   ### post CREATE =========================================================
   describe "post CREATE" do
     it_should_behave_like "a protected action" do
-      let(:data) { FactoryGirl.attributes_for(:v1_metadata_field) }
+      let(:data) { FactoryGirl.attributes_for(:v1_metadatum_field) }
       def action(args_hash)
-        post :create, :metadata_field => args_hash[:data], :format => args_hash[:format] 
+        post :create, :metadatum_field => args_hash[:data], :format => args_hash[:format] 
       end   
     end
 
     context "with valid authorization token" do 
       def post_field attrs, format
         request.env['X-AUTH-TOKEN'] = @auth_token
-        post :create, :metadata_field => attrs, :format => format 
+        post :create, :metadatum_field => attrs, :format => format 
       end  
       context "with XML or HTML format" do
         [:xml, :html].each do |format|
           before :each do
-            post_field(FactoryGirl.attributes_for(:v1_metadata_field), format)        
+            post_field(FactoryGirl.attributes_for(:v1_metadatum_field), format)        
           end
           it "should return 406 code for format #{format}" do
             response.status.should == 406  
           end
           it "does not create the field" do
             expect{ 
-              post_field(FactoryGirl.attributes_for(:v1_metadata_field), format)
-            }.to_not change(V1::MetadataField, :count)
+              post_field(FactoryGirl.attributes_for(:v1_metadatum_field), format)
+            }.to_not change(V1::MetadatumField, :count)
           end
         end          
       end    
       context "with JSON format" do    
         context "with invalid attributes" do
-          let(:valid_attrs) { FactoryGirl.attributes_for(:v1_metadata_field) }
+          let(:valid_attrs) { FactoryGirl.attributes_for(:v1_metadatum_field) }
           context "with duplicate name" do
             let(:dup_attrs) do
-              attrs = FactoryGirl.attributes_for(:v1_metadata_field)
+              attrs = FactoryGirl.attributes_for(:v1_metadatum_field)
               attrs[:name] = valid_attrs[:name]
               attrs
             end
             before :each do
-              FactoryGirl.create(:v1_metadata_field, valid_attrs)
+              FactoryGirl.create(:v1_metadatum_field, valid_attrs)
             end
             it "does not create an metadata field" do
               expect{ 
                 post_field(dup_attrs, :json)
-              }.to_not change(V1::MetadataField, :count)
+              }.to_not change(V1::MetadatumField, :count)
             end
             it "responds with 409 conflict" do
               post_field(dup_attrs, :json)
@@ -115,14 +115,14 @@ describe V1::MetadataFieldsController, :type => :controller do
           end
           context "invalid list id" do
             let(:invalid_attrs) do
-              attrs = FactoryGirl.attributes_for(:v1_metadata_field)
+              attrs = FactoryGirl.attributes_for(:v1_metadatum_field)
               attrs[:allowed_values_list_id] = 999999
               attrs
            end
             it "does not create a metadata field" do
               expect{ 
                 post_field(invalid_attrs, :json)
-              }.to_not change(V1::MetadataField, :count)
+              }.to_not change(V1::MetadatumField, :count)
             end
             it "responds with 422 unprocessable entity" do
               post_field(invalid_attrs, :json)
@@ -131,7 +131,7 @@ describe V1::MetadataFieldsController, :type => :controller do
           end
         end
         context "missing required attributes" do
-          let(:valid_attrs) { FactoryGirl.attributes_for(:v1_metadata_field) }
+          let(:valid_attrs) { FactoryGirl.attributes_for(:v1_metadatum_field) }
           let(:invalid_attrs) { 
             valid_attrs.delete(:name)
             valid_attrs
@@ -139,7 +139,7 @@ describe V1::MetadataFieldsController, :type => :controller do
           it "does not create an metadata field" do
             expect{ 
               post_field(invalid_attrs, :json)
-            }.to_not change(V1::MetadataField, :count)
+            }.to_not change(V1::MetadatumField, :count)
           end
           #subject {}
           it "responds with 422 unprocessable entity" do
@@ -151,11 +151,11 @@ describe V1::MetadataFieldsController, :type => :controller do
         context "with valid attributes" do
           it "creates one field" do   
             expect{ 
-              post_field(FactoryGirl.attributes_for(:v1_metadata_field), :json)
-            }.to change(V1::MetadataField, :count).by(1)
+              post_field(FactoryGirl.attributes_for(:v1_metadatum_field), :json)
+            }.to change(V1::MetadatumField, :count).by(1)
           end 
           before :each do
-            post_field(FactoryGirl.attributes_for(:v1_metadata_field), :json)
+            post_field(FactoryGirl.attributes_for(:v1_metadatum_field), :json)
           end
           it_should_behave_like "an action that responds with JSON"       
           it "responds with success 200 status code" do
@@ -172,16 +172,16 @@ describe V1::MetadataFieldsController, :type => :controller do
   ### put UPDATE =========================================================
   describe "post UPDATE" do
     it_should_behave_like "a protected action" do
-      let(:data) { FactoryGirl.attributes_for(:v1_metadata_field) }
+      let(:data) { FactoryGirl.attributes_for(:v1_metadatum_field) }
       def action(args_hash)
-        post :update, :id => field.id, :metadata_field => args_hash[:data], :format => args_hash[:format] 
+        post :update, :id => field.id, :metadatum_field => args_hash[:data], :format => args_hash[:format] 
       end   
     end
 
     context "with valid authorization token" do
       def post_update_field attrs, format
         request.env['X-AUTH-TOKEN'] = @auth_token
-        post :update, :id => field.id, :metadata_field => attrs, :format => format 
+        post :update, :id => field.id, :metadatum_field => attrs, :format => format 
       end  
       context "with XML or HTML format" do
         [:xml, :html].each do |format|
@@ -205,7 +205,7 @@ describe V1::MetadataFieldsController, :type => :controller do
             response.status.should == 200
           end
           it "returns the updated field" do
-            @parsed['metadata_field']['id'].should == field.id
+            @parsed['metadatum_field']['id'].should == field.id
           end
         end
         context "invalid input" do
@@ -218,7 +218,7 @@ describe V1::MetadataFieldsController, :type => :controller do
           end
           describe "already existing field name" do
             it "returns status 409 conflict" do
-              existing_field = FactoryGirl.create(:v1_metadata_field)
+              existing_field = FactoryGirl.create(:v1_metadatum_field)
               post_update_field( { :name => existing_field.name.upcase }, :json )
               response.status.should == 409
             end
@@ -250,7 +250,7 @@ describe V1::MetadataFieldsController, :type => :controller do
           it "does not change the number of fields" do   
             expect { 
               delete_field(field_to_delete.id, format)
-            }.to_not change(V1::MetadataField, :count)
+            }.to_not change(V1::MetadatumField, :count)
           end
           before :each do
             delete_field(field_to_delete.id, format)    
@@ -266,7 +266,7 @@ describe V1::MetadataFieldsController, :type => :controller do
           it "decreases number of fields by 1" do   
             expect {
               delete_field(field_to_delete.id, :json)
-            }.to change(V1::MetadataField, :count).by(-1)
+            }.to change(V1::MetadatumField, :count).by(-1)
           end
           it "should respond with JSON" do
             delete_field(field_to_delete.id, :json)
@@ -282,14 +282,14 @@ describe V1::MetadataFieldsController, :type => :controller do
             template = FactoryGirl.create(:v1_metadata_template)
             attrs = FactoryGirl.attributes_for(:v1_template_field_setting)
             attrs[:metadata_template_id] = template.id
-            attrs[:metadata_field_id] = field_to_delete.id
+            attrs[:metadatum_field_id] = field_to_delete.id
             FactoryGirl.create(:v1_template_field_setting, attrs)
           end
           it "does not delete the field" do
             expect {
               setup_template_with_field
               delete_field(field_to_delete.id, :json)
-           }.to_not change(V1::MetadataField, :count)
+           }.to_not change(V1::MetadatumField, :count)
           end
           it "responds with unprocessable entity" do
             setup_template_with_field

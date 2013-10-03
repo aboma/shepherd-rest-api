@@ -14,9 +14,9 @@ describe V1::MetadataTemplatesController, :type => :controller do
   def given_template(options)
     template = FactoryGirl.create(:v1_metadata_template)
     if options && options[:field_settings]
-      field = FactoryGirl.create(:v1_metadata_field)     
+      field = FactoryGirl.create(:v1_metadatum_field)     
       FactoryGirl.create(:v1_template_field_setting, 
-                         { :metadata_field_id => field.id, :required => true, :order => 1, 
+                         { :metadatum_field_id => field.id, :required => true, :order => 1, 
                            :metadata_template_id => template.id })
     end
     template.reload
@@ -162,8 +162,8 @@ describe V1::MetadataTemplatesController, :type => :controller do
             it "creates the field settings as well" do
               expect {
                 template = FactoryGirl.attributes_for(:v1_metadata_template)
-                field = FactoryGirl.create(:v1_metadata_field)
-                settings_hash = [{ :metadata_field_id => field.id, :required => false, :order => 1}]
+                field = FactoryGirl.create(:v1_metadatum_field)
+                settings_hash = [{ :metadatum_field_id => field.id, :required => false, :order => 1}]
                 template[:metadata_template_field_settings] = settings_hash
                 post_template(template, :json)
               }.to change(V1::MetadataTemplateFieldSetting, :count).by(1)

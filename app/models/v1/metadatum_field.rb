@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: metadata_fields
+# Table name: metadatum_fields
 #
 #  id                     :integer          not null, primary key
 #  name                   :string(255)
@@ -16,7 +16,7 @@
 #
 
 module V1
-  class MetadataField < ActiveRecord::Base
+  class MetadatumField < ActiveRecord::Base
     self.inheritance_column = nil
     has_many :metadata_template_field_settings, :class_name => "V1::MetadataTemplateFieldSetting",
       :dependent => :restrict

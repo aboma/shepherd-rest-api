@@ -21,7 +21,7 @@ VilioDAM::Application.routes.draw do
     end
 
     resources :relationships, :only => [:index, :show, :create, :update, :destroy]
-    resources :metadata_fields, :only => [:index, :show, :create, :update, :destroy]
+    resources :metadatum_fields, :only => [:index, :show, :create, :update, :destroy]
     resources :metadata_list_values, :only => [:index, :show, :create]
     resources :metadata_values_lists, :only => [:index, :show, :create, :update, :destroy]
     resources :metadata_template_field_settings, :only => [:index, :show, :create, :update, :destroy]

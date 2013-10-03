@@ -1,14 +1,14 @@
 module V1
-  class MetadataFieldsController < V1::ApplicationController
+  class MetadatumFieldsController < V1::ApplicationController
     include V1::Concerns::Auditable
     before_filter :allow_only_json_requests
     before_filter :find_field, :only => [:show, :update, :destroy]
 
     def index
-      fields = V1::MetadataField.all
+      fields = V1::MetadatumField.all
       respond_to do |format|
         format.json do
-          render :json => fields, :each_serializer => V1::MetadataFieldSerializer
+          render :json => fields, :each_serializer => V1::MetadatumFieldSerializer
         end
       end
     end
@@ -17,7 +17,7 @@ module V1
       respond_to do |format|
         format.json do
           if @field
-            render :json => @field, :serializer => V1::MetadataFieldSerializer
+            render :json => @field, :serializer => V1::MetadatumFieldSerializer
           else 
             render :json => {}, :status => 404
           end
@@ -28,10 +28,10 @@ module V1
     def create
       respond_to do |format|
         format.json do
-          @field = V1::MetadataField.new
+          @field = V1::MetadatumField.new
           if update_field(@field)
-            response.headers['Location'] = metadata_field_path(@field)
-            render :json => @field, :serializer => V1::MetadataFieldSerializer
+            response.headers['Location'] = metadatum_field_path(@field)
+            render :json => @field, :serializer => V1::MetadatumFieldSerializer
           else 
             status = conflict? ? :conflict : :unprocessable_entity
             render :json => { :errors => @field.errors }, :status => status
@@ -49,7 +49,7 @@ module V1
           end
           if update_field(@field)
             @field.reload
-            render :json => @field, :serializer => V1::MetadataFieldSerializer
+            render :json => @field, :serializer => V1::MetadatumFieldSerializer
           else 
             status = conflict? ? :conflict : :unprocessable_entity
             render :json => { :errors => @field.errors }, :status => status 
@@ -81,13 +81,13 @@ module V1
   private 
 
     def find_field
-      @field = MetadataField.find(params[:id])
+      @field = V1::MetadatumField.find(params[:id])
     rescue ActiveRecord::RecordNotFound
       @error = "field not found"
     end
 
     def update_field(field)
-      field.assign_attributes(params[:metadata_field])
+      field.assign_attributes(params[:metadatum_field])
       add_audit_params(field)
       field.save
     end

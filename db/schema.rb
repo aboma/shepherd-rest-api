@@ -27,21 +27,6 @@ ActiveRecord::Schema.define(:version => 20130722154222) do
     t.datetime "updated_at",    :null => false
   end
 
-  create_table "metadata_fields", :force => true do |t|
-    t.string   "name"
-    t.string   "description"
-    t.string   "type"
-    t.integer  "allowed_values_list_id"
-    t.datetime "deleted_at"
-    t.integer  "created_by_id",          :null => false
-    t.integer  "updated_by_id"
-    t.integer  "deleted_by_id"
-    t.datetime "created_at",             :null => false
-    t.datetime "updated_at",             :null => false
-  end
-
-  add_index "metadata_fields", ["allowed_values_list_id"], :name => "index_metadata_fields_on_allowed_values_list_id"
-
   create_table "metadata_list_values", :force => true do |t|
     t.string   "value",                   :null => false
     t.string   "description"
@@ -57,7 +42,7 @@ ActiveRecord::Schema.define(:version => 20130722154222) do
   add_index "metadata_list_values", ["metadata_values_list_id"], :name => "index_metadata_list_values_on_metadata_values_list_id"
 
   create_table "metadata_template_field_settings", :force => true do |t|
-    t.integer  "metadata_field_id",    :null => false
+    t.integer  "metadatum_field_id",   :null => false
     t.integer  "metadata_template_id", :null => false
     t.boolean  "required",             :null => false
     t.integer  "order",                :null => false
@@ -69,8 +54,8 @@ ActiveRecord::Schema.define(:version => 20130722154222) do
     t.datetime "updated_at",           :null => false
   end
 
-  add_index "metadata_template_field_settings", ["metadata_field_id"], :name => "index_metadata_template_field_settings_on_metadata_field_id"
   add_index "metadata_template_field_settings", ["metadata_template_id"], :name => "index_metadata_template_field_settings_on_metadata_template_id"
+  add_index "metadata_template_field_settings", ["metadatum_field_id"], :name => "index_metadata_template_field_settings_on_metadatum_field_id"
 
   create_table "metadata_templates", :force => true do |t|
     t.string   "name",          :null => false
@@ -93,6 +78,21 @@ ActiveRecord::Schema.define(:version => 20130722154222) do
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
   end
+
+  create_table "metadatum_fields", :force => true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.string   "type"
+    t.integer  "allowed_values_list_id"
+    t.datetime "deleted_at"
+    t.integer  "created_by_id",          :null => false
+    t.integer  "updated_by_id"
+    t.integer  "deleted_by_id"
+    t.datetime "created_at",             :null => false
+    t.datetime "updated_at",             :null => false
+  end
+
+  add_index "metadatum_fields", ["allowed_values_list_id"], :name => "index_metadatum_fields_on_allowed_values_list_id"
 
   create_table "metadatum_values", :force => true do |t|
     t.integer  "asset_id",           :null => false

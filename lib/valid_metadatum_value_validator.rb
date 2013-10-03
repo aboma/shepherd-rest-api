@@ -4,7 +4,7 @@ class ValidMetadatumValueValidator < ActiveModel::EachValidator
 
   def validate_each(record, attribute, value)
     value = record.metadatum_value
-    field = V1::MetadataField.find_by_id(record.metadatum_field_id)
+    field = V1::MetadatumField.find_by_id(record.metadatum_field_id)
     type = field.type if field
     return unless type
     if ((type == 'boolean') && !is_boolean_value?(value))

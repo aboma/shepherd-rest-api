@@ -64,7 +64,7 @@ describe V1::Asset do
       expect { asset.destroy }.to change(V1::Asset, :count).by(-1)
     end
     before :each do
-      field = FactoryGirl.create(:v1_metadata_field)
+      field = FactoryGirl.create(:v1_metadatum_field)
       asset.metadata = []
       metadatum_value = FactoryGirl.build(:v1_metadatum_value)
       metadatum_value.metadatum_field = field

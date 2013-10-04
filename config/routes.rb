@@ -17,6 +17,7 @@ VilioDAM::Application.routes.draw do
     scope '(portfolios/:portfolio_id)' do 
       resources :assets do
         resources :files, :only => [:show], :format => "html"
+        resources :relationships, :only => [:index, :show, :create, :destroy]
       end
     end
 

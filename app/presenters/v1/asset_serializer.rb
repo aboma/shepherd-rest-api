@@ -5,6 +5,8 @@ module V1
     attributes :id, :name, :description, :filename, :size, :content_type, :metadata
 
     has_many :metadata, :serializer => V1::MetadatumSerializer, :embed => :objects
+    #has_many :relationships, :serializer => V1::RelationshipSerializer, :embed => :ids
+    has_many :portfolios, :serializer => V1::PortfolioSerializer, :embed => :ids, :include => false
 
     def attributes
       hash = super

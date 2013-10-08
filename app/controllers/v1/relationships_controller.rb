@@ -126,11 +126,13 @@ module V1
 
     def portfolio_id
       return params[:relationship][:portfolio_id] if params[:relationship] && params[:relationship][:portfolio_id]
+      return params[:relationship][:portfolio][:id] if params[:relationship] && params[:relationship][:portfolio]
       return params[:portfolio_id]
     end
 
     def asset_id
       return params[:relationship][:asset_id] if params[:relationship] && params[:relationship][:asset_id]
+      return params[:relationship][:asset][:id] if params[:relationship] && params[:relationship][:asset]
       return params[:asset_id]
     end
 

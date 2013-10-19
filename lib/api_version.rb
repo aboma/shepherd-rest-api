@@ -5,6 +5,6 @@ class ApiVersion
   end
   
   def matches?(req)
-    @default || req.headers['Accept'].include?("application\vilio.v#{@version}")
+    @default || req.headers['Accept'].include?("application\shepherd.v#{@version}")
   end
 end

@@ -1,5 +1,5 @@
 module V1
-  class AssetSerializer < V1::VilioSerializer
+  class AssetSerializer < V1::ShepherdSerializer
     include Rails.application.routes.url_helpers
 
     attributes :id, :name, :description, :filename, :size, :content_type, :metadata

@@ -1,5 +1,5 @@
 module V1
-  class MetadatumValuesListSerializer < V1::VilioSerializer
+  class MetadatumValuesListSerializer < V1::ShepherdSerializer
 
     attributes :id, :name, :description, :created_at, :created_by_id, :updated_at, :updated_by_id
 

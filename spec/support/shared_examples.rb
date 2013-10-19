@@ -1,4 +1,4 @@
-module VilioSharedExamples
+module ShepherdSharedExamples
 
   # This shared example requires an action parameter
   # that passes a function that calls the controller 

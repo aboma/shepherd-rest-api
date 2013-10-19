@@ -1,5 +1,5 @@
 module V1
-  class MetadatumSerializer < V1::VilioSerializer
+  class MetadatumSerializer < V1::ShepherdSerializer
 
     attributes :id, :metadatum_value
 

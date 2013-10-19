@@ -1,4 +1,4 @@
-VilioDAM::Application.routes.draw do
+ShepherdDAM::Application.routes.draw do
 
   current_api_routes = lambda do
     match '*all' => 'application#cors_preflight_check', :via => :options

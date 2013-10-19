@@ -6,7 +6,7 @@ include V1::Concerns::Auditable
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
-user = V1::User.new(:email => 'admin@vilio.com', :password => 'letme1nb', :first_name => 'Vilio', 
+user = V1::User.new(:email => 'admin@shepherd.com', :password => 'letme1nb', :first_name => 'Shepherd', 
                           :last_name => 'Admin')
 user[:updated_by_id] = 1
 user[:created_by_id] = 1

@@ -1,4 +1,4 @@
 # Path on local file system to store uploaded files and
 # all derivatives. The user account running rails must
 # have write rights to this directory
-files_path: '/srv/www/vilio-files-dev/'
+files_path: '/srv/www/shepherd-files-dev/'

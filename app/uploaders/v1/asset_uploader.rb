@@ -8,7 +8,7 @@ module V1
     process :set_content_type
 
     # this directory is set in the config/settings.yml file: default is
-    # /srv/www/vilio-files
+    # /srv/www/shepherd-files
     BASE_DIR = Settings.files_path
 
     def cache_dir

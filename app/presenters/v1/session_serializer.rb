@@ -1,5 +1,5 @@
 module V1
-  class SessionSerializer < V1::VilioSerializer
+  class SessionSerializer < V1::ShepherdSerializer
     attributes :email
 
     def attributes

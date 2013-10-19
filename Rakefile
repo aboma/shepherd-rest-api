@@ -6,4 +6,4 @@ require File.expand_path('../config/application', __FILE__)
 require 'rake'
 require 'rspec/core/rake_task'
 
-VilioDAM::Application.load_tasks
+ShepherdDAM::Application.load_tasks

@@ -1,8 +1,8 @@
 # Be sure to restart your server when you modify this file.
 
-VilioDAM::Application.config.session_store :cookie_store, :key => '_VilioDAM_session'
+ShepherdDAM::Application.config.session_store :cookie_store, :key => '_ShepherdDAM_session'
 
 # Use the database for sessions instead of the cookie-based default,
 # which shouldn't be used to store highly confidential information
 # (create the session table with "rails generate session_migration")
-# VilioDAM::Application.config.session_store :active_record_store
+# ShepherdDAM::Application.config.session_store :active_record_store

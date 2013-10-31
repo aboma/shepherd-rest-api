@@ -11,7 +11,7 @@ set :repository, "git@github.com:aboma/shepherd-rest-api.git"
 ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
 #
 #server "162.243.11.113", :app, :web, :db, :primary => true
-set :user, "aboma" # The server's user for deploys
+set :user, "deploy" # The server's user for deploys
 set :deploy_to, '/var/www/shepherd-rest-api'
 set :use_sudo, false
 

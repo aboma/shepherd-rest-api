@@ -11,7 +11,7 @@ module V1
           render :status => 401, :json => { :message => "email or password incorrect" } unless user
           if user 
             sign_in(resource_name, user) 
-            user.reset_authentication_token!
+            user.reset_authentication_token! unless Settings.demo_version || user.authentication_token.nil?
             set_auth_token_cookie
             render :status => 200, :json => { :session => { :success => true, :auth_token => current_user.authentication_token } }
           end
@@ -34,7 +34,7 @@ module V1
       respond_to do |format|
         format.json do
           current_user = warden.authenticate!(:scope => resource_name)
-          current_user.reset_authentication_token!
+          current_user.reset_authentication_token! unless Settings.demo_version
           render :status => 200, :json => {}
         end
       end

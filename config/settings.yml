@@ -6,3 +6,8 @@ files_path: '/srv/www/shepherd-files/'
 # Field types for metadata fields; add additonal types
 # if desired
 field_types: ['text', 'boolean', 'integer', 'date']
+
+# Demo version: if this is a demo version, logout will
+# not reset the key, so multiple people can be logged in
+# at the same time to one account
+demo_version: false

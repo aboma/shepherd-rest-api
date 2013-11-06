@@ -1,7 +1,5 @@
 # Capistrano v3
-
 set :stage, :production
-set :puma_application, 'shepherd-rest-api'
 
 # Simple Role Syntax
 # ==================
@@ -65,7 +63,7 @@ namespace :puma do
   desc "Register Puma application"
   task :add do
     on roles(:app) do
-      execute "grep -w '^/var/www/shepherd-rest-api/current$' /etc/puma.conf || printf '%s\n' '/var/www/shepherd-rest-api/current' >> /etc/puma.conf"
+      execute "grep -w '#{release_path}' /etc/puma.conf || printf \"#{release_path}\\n\" >> /etc/puma.conf"
     end
   end
 
@@ -77,28 +75,28 @@ namespace :puma do
   desc "Start puma instance for this application"
   task :start do
     on roles(:app) do 
-      execute "start puma app=#{fetch(:deploy_to)}/current"
+      execute "start puma app=#{release_path}"
     end
   end
 
   desc "Stop puma instance for this application"
   task :stop do
     on roles(:app) do
-      execute "stop puma app=#{fetch(:deploy_to)}/current"
+      execute "stop puma app=#{release_path}"
     end
   end
 
   desc "Restart puma instance for this application"
   task :restart do
     on roles(:app) do
-      execute "restart puma app=#{fetch(:deploy_to)}/current"
+      execute "restart puma app=#{release_path}"
     end
   end
 
   desc "Show status of puma for this application"
   task :status do
     on roles(:app) do
-      execute "status puma app=#{fetch(:deploy_to)}/current"
+      execute "status puma app=#{release_path}"
     end
   end
 end

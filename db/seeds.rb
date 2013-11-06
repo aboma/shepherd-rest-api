@@ -4,12 +4,10 @@ include V1::Concerns::Auditable
 #
 # Examples:
 #
-#   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
-#   Mayor.create(name: 'Emanuel', city: cities.first)
-user = V1::User.new(:email => 'admin@shepherd.com', :password => 'letme1nb', :first_name => 'Shepherd', 
-                          :last_name => 'Admin')
-user[:updated_by_id] = 1
-user[:created_by_id] = 1
-user.save
-puts "Created seed users" if user.valid?
-puts user.errors.full_messages.to_sentence unless user.valid?
+# user = V1::User.new(:email => 'admin@shepherd.com', :password => '', :first_name => 'Shepherd', 
+#                          :last_name => 'Admin')
+# user[:updated_by_id] = 1
+# user[:created_by_id] = 1
+# user.save
+# puts "Created seed users" if user.valid?
+# puts user.errors.full_messages.to_sentence unless user.valid?

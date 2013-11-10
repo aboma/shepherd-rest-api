@@ -49,62 +49,6 @@ set :stage, :production
 #  end
 #end
 
-# These Puma tasks rely on the puma Ubuntu Upstart tools, part of 
-# the Puma jungle tool, found in the puma distribution tool directory. The Upstart
-# config file must be edited to allow user sudo-less ability to start and stop jobs
-namespace :puma do
-  desc "Start Puma Manager"
-  task :start_manager do
-    on roles(:app) do
-      execute "start puma-manager"
-    end
-  end
-
-  desc "Register Puma application"
-  task :add do
-    on roles(:app) do
-      execute "grep -w '#{release_path}' /etc/puma.conf || printf \"#{release_path}\\n\" >> /etc/puma.conf"
-    end
-  end
-
-  task :remove do
-    on roles(:app) do
-    end
-  end
-
-  desc "Start puma instance for this application"
-  task :start do
-    on roles(:app) do 
-      execute "start puma app=#{release_path}"
-    end
-  end
-
-  desc "Stop puma instance for this application"
-  task :stop do
-    on roles(:app) do
-      execute "stop puma app=#{release_path}"
-    end
-  end
-
-  desc "Restart puma instance for this application"
-  task :restart do
-    on roles(:app) do
-      execute "restart puma app=#{release_path}"
-    end
-  end
-
-  desc "Show status of puma for this application"
-  task :status do
-    on roles(:app) do
-      execute "status puma app=#{release_path}"
-    end
-  end
-end
-
-after "deploy:starting", "puma:stop"
-after "deploy:finished", "puma:start"
-#after "deploy:symlink:shared", "puma:after_symlink"
-
 # setting per server overrides global ssh_options
 
 # fetch(:default_env).merge!(rails_env: :production)

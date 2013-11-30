@@ -2,9 +2,9 @@ module V1
   class AssetsController < V1::ApplicationController
     include V1::Concerns::Asset
 
-    before_filter :allow_only_json_requests
     before_filter :find_asset, :only => [:show, :update]
     before_filter :find_portfolio, :only => [:index, :create]
+    respond_to :json
 
     def index
       @assets = @portfolio.assets if @portfolio

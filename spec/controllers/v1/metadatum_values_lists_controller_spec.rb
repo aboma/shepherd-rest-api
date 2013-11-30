@@ -239,7 +239,6 @@ describe V1::MetadatumValuesListsController, :type => :controller do
           before :each do
             delete_list(list.id, format)    
           end
-          it_should_behave_like "an action that responds with JSON"       
           it "should return 406 code for format #{format}" do
             response.status.should == 406  
           end

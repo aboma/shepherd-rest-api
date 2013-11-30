@@ -11,18 +11,6 @@ class V1::ApplicationController < ApplicationController
     head :ok , :content_type => 'text/plain'
   end
 
-
-  protected
-
-  # Respond with HTTP code 406 if not JSON format; do not do
-  # any other processing
-  def allow_only_json_requests
-    if request.format != Mime::JSON
-      render :json => {}, :status => :not_acceptable
-    end
-  end
-
-
   private
 
   # get authorization token from HTTP header if it is not in the URL parameters

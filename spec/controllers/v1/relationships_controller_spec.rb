@@ -77,7 +77,6 @@ describe V1::RelationshipsController, :type => :controller do
       def get_relation(format)
         request.env['X-AUTH-TOKEN'] = @auth_token
         get :show, :id => relation.id, :format => format
-        @parsed = JSON.parse(response.body)
       end
       context "with XML or HTML format" do
         [:xml, :html].each do |format|
@@ -99,6 +98,7 @@ describe V1::RelationshipsController, :type => :controller do
             response.status.should == 200       
           end
           it "responds with the asked for portfolio" do
+            @parsed = JSON.parse(response.body)
             @parsed['relationship']['id'].should == relation.id
           end
         end
@@ -261,7 +261,6 @@ describe V1::RelationshipsController, :type => :controller do
                update_relation(relation.id, attrs, format)
              end        
           end
-          it_should_behave_like "an action that responds with JSON"       
           it "returns 406 code for format #{format}" do
             response.status.should == 406  
           end
@@ -308,7 +307,6 @@ describe V1::RelationshipsController, :type => :controller do
           before :each do
             delete_relation(rel.id, format)    
           end
-          it_should_behave_like "an action that responds with JSON"       
           it "should return 406 code for format #{format}" do
             response.status.should == 406  
           end

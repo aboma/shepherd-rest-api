@@ -3,7 +3,7 @@ module V1
     include V1::Concerns::Relate
     include V1::Concerns::Auditable
 
-    before_filter :allow_only_json_requests, :except => [:create]
+    respond_to :json, :except => [:create]
     before_filter :find_portfolio, :only => [:index, :create]
     before_filter :find_asset, :only => [:index, :create]
 

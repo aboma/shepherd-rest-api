@@ -52,7 +52,6 @@ describe V1::SettingsController, :type => :controller do
       def get_setting(format)
         request.env['X-AUTH-TOKEN'] = @auth_token
         get :show, :id => 1, :format => format
-        @parsed = JSON.parse(response.body)
       end
       context "with XML or HTML format" do
         [:xml, :html].each do |format|
@@ -129,7 +128,6 @@ describe V1::SettingsController, :type => :controller do
           before :each do
             post_update_setting(1, {}, format)
           end
-          it_should_behave_like "an action that responds with JSON"       
           it "returns 406 code for format #{format}" do
             response.status.should == 406  
           end
@@ -167,7 +165,6 @@ describe V1::SettingsController, :type => :controller do
           before :each do
             delete_setting(1, format)    
           end
-          it_should_behave_like "an action that responds with JSON"       
           it "should return 406 code for format #{format}" do
             response.status.should == 406  
           end

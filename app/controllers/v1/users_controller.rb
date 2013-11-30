@@ -1,7 +1,7 @@
 module V1
   class UsersController < V1::ApplicationController
     include V1::Concerns::Auditable
-    before_filter :allow_only_json_requests
+    respond_to :json
     before_filter :find_user, :only => [:show, :create, :update]
 
     def index

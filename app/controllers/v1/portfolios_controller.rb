@@ -1,7 +1,7 @@
 module V1
   class PortfoliosController < V1::ApplicationController
     include V1::Concerns::Auditable
-    before_filter :allow_only_json_requests
+    respond_to :json
     before_filter :find_portfolio, :only => [:show, :update, :destroy]
 
     # list all portfolios

@@ -260,7 +260,6 @@ describe V1::MetadataTemplatesController, :type => :controller do
           before :each do
             delete_template(template_to_delete.id, format)    
           end
-          it_should_behave_like "an action that responds with JSON"       
           it "should return 406 code for format #{format}" do
             response.status.should == 406  
           end

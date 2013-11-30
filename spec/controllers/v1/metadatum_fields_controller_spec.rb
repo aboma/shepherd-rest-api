@@ -188,7 +188,6 @@ describe V1::MetadatumFieldsController, :type => :controller do
           before :each do
             post_update_field( { :name => 'new name' } , format)
           end
-          it_should_behave_like "an action that responds with JSON"       
           it "returns 406 code for format #{format}" do
             response.status.should == 406  
           end
@@ -255,7 +254,6 @@ describe V1::MetadatumFieldsController, :type => :controller do
           before :each do
             delete_field(field_to_delete.id, format)    
           end
-          it_should_behave_like "an action that responds with JSON"       
           it "should return 406 code for format #{format}" do
             response.status.should == 406  
           end

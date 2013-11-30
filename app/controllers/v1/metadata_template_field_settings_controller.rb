@@ -1,7 +1,7 @@
 module V1
   class MetadataTemplateFieldSettingsController < V1::ApplicationController
     include V1::Concerns::Auditable
-    before_filter :allow_only_json_requests
+    respond_to :json
   # before_filter :find_setting, :only => [:show, :update]
 
     def index

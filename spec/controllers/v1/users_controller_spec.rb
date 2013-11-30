@@ -187,7 +187,6 @@ describe V1::UsersController, :type => :controller do
           before :each do
             update_user( { :name => 'new name' } , format)
           end
-          it_should_behave_like "an action that responds with JSON"       
           it "returns 406 code for format #{format}" do
             response.status.should == 406  
           end
@@ -226,7 +225,4 @@ describe V1::UsersController, :type => :controller do
       end
     end
   end
-
-
-
 end

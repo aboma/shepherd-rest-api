@@ -1,6 +1,6 @@
 module V1
   class SettingsController < V1::ApplicationController
-    before_filter :allow_only_json_requests, :except => [:create]
+    respond_to :json, :except => [:create]
 
     def index
       respond_to do |format|

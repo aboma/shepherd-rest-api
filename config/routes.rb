@@ -4,31 +4,32 @@ ShepherdDAM::Application.routes.draw do
     match '*all' => 'application#cors_preflight_check', :via => :options
 
     devise_scope :user do
-      resources :users, :only => [:index, :create, :show, :update]
+      resources :users, :only => [:index, :create, :show, :update], :defaults => { :format => :json }
       resources :sessions, :only => [:index, :create, :destroy, :show]
       get "logout" => "sessions#destroy", :as => "logout"
       get "login" => "sessions#new", :as => "login"
     end
 
-    resources :settings
+    resources :settings, :defaults => { :format => :json }
+    resources :portfolios, :defaults => { :format => :json }
 
-    resources :portfolios      
     # serve assets under root directory or portfolio directory
     scope '(portfolios/:portfolio_id)' do 
-      resources :assets do
+      resources :assets, :defaults => { :format => :json } do
         resources :files, :only => [:show], :format => "html"
-        resources :relationships, :only => [:index, :show, :create, :destroy]
+        resources :relationships, :only => [:index, :show, :create, :destroy], :defaults => { :format => :json }
       end
     end
 
-    resources :relationships, :only => [:index, :show, :create, :update, :destroy]
-    resources :metadatum_fields, :only => [:index, :show, :create, :update, :destroy]
-    resources :metadatum_list_values, :only => [:index, :show, :create]
-    resources :metadatum_values_lists, :only => [:index, :show, :create, :update, :destroy]
-    resources :metadata_template_field_settings, :only => [:index, :show, :create, :update, :destroy]
-    resources :metadata_templates, :only => [:index, :show, :create, :update, :destroy]
+    resources :relationships, :only => [:index, :show, :create, :update, :destroy], :defaults => { :format => :json }
+    resources :metadatum_fields, :only => [:index, :show, :create, :update, :destroy], :defaults => { :format => :json }
+    resources :metadatum_list_values, :only => [:index, :show, :create], :defaults => { :format => :json }
+    resources :metadatum_values_lists, :only => [:index, :show, :create, :update, :destroy], :defaults => { :format => :json }
+    resources :metadata_template_field_settings, :only => [:index, :show, :create, :update, :destroy], :defaults => { :format => :json }
+    resources :metadata_templates, :only => [:index, :show, :create, :update, :destroy], :defaults => { :format => :json }
 
-    root :to => "application#index"    
+    root :to => "application#index", :defaults => { :format => :json }
+
   end
 
   constraints ApiVersion.new(:version => 1, :default => true) do

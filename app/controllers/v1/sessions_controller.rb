@@ -7,13 +7,13 @@ module V1
     def create
       respond_to do |format|
         format.json do
-          user = warden.authenticate!(:scope => resource_name)
-          render :status => 401, :json => { :message => "email or password incorrect" } unless user
+          user = warden.authenticate!(scope: resource_name)
+          render status: 401, json: { message: 'email or password incorrect' } unless user
           if user 
             sign_in(resource_name, user) 
             user.reset_authentication_token! unless Settings.demo_version || user.authentication_token.nil?
             set_auth_token_cookie
-            render :status => 200, :json => { :session => { :success => true, :auth_token => current_user.authentication_token } }
+            render status: 200, json: { session: { success: true, auth_token: current_user.authentication_token } }
           end
         end
       end
@@ -23,9 +23,9 @@ module V1
     def show
       respond_to do |format|
         format.json do
-          warden.authenticate!(:scope => resource_name)
+          warden.authenticate!(scope: resource_name)
           set_auth_token_cookie
-          render :json => current_user, :serializer => V1::SessionSerializer
+          render json: current_user, serializer: V1::SessionSerializer
         end      
       end
     end
@@ -33,9 +33,9 @@ module V1
     def destroy
       respond_to do |format|
         format.json do
-          current_user = warden.authenticate!(:scope => resource_name)
+          current_user = warden.authenticate!(scope: resource_name)
           current_user.reset_authentication_token! unless Settings.demo_version
-          render :status => 200, :json => {}
+          render status: 200, json: {}
         end
       end
     end
@@ -43,13 +43,13 @@ module V1
     # authentication failure
     def failure
       warden.custom_failure!
-      render :status => 401, :json => { :session => { :success => false, :message => "Email or password invalid"}} 
+      render status: 401, json: { session: { success: false, :message => 'Email or password invalid'}}
     end
 
     protected 
 
     def get_auth_token
-      params[:auth_token] = request.headers["X-AUTH-TOKEN"]
+      params[:auth_token] = request.headers['X-AUTH-TOKEN']
     end
 
     # For all responses in this controller, return the CORS access control headers. 
@@ -58,12 +58,12 @@ module V1
       headers['Access-Control-Allow-Credentials'] = 'true' 
       headers['Access-Control-Allow-Headers'] = 'X-AUTH-TOKEN, X-API-VERSION, X-Requested-With, Content-Type, Accept, *'
       headers['Access-Control-Allow-Methods'] = 'POST, GET, PUT, DELETE, OPTIONS'
-      headers['Access-Control-Max-Age'] = "1728000"
+      headers['Access-Control-Max-Age'] = '1728000'
     end
 
     def set_auth_token_cookie
       cookies.permanent[:auth_token] = {
-        :value => current_user.authentication_token
+        value: current_user.authentication_token
       }
     end
 

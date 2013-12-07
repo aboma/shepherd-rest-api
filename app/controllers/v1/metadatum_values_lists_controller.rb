@@ -1,14 +1,14 @@
 module V1
   class MetadatumValuesListsController < V1::ApplicationController
     include V1::Concerns::Auditable
-    respond_to :json
     before_filter :find_list, :only => [:show, :update, :destroy]
+    respond_to :json
 
     def index
       lists = V1::MetadatumValuesList.all
       respond_to do |format|
         format.json do
-          render :json => lists, :root => "metadatum_values_lists", :each_serializer => V1::MetadatumValuesListSerializer
+          render json: lists, root: 'metadatum_values_lists', :each_serializer => V1::MetadatumValuesListSerializer
         end
       end
     end
@@ -17,9 +17,9 @@ module V1
       respond_to do |format|
         format.json do
           if @list
-            render :json => @list, :root => "metadatum_values_list", :serializer => V1::MetadatumValuesListSerializer
+            render json: @list, root: 'metadatum_values_list', serializer: V1::MetadatumValuesListSerializer
           else
-            render :json => nil, :status => :not_found
+            render json: nil, status: :not_found
           end
         end
       end
@@ -29,14 +29,14 @@ module V1
       respond_to do |format|
         format.json do
           if exists?
-            render :json => { :errors => { :name => "list already exists with that name" } }, :status => :conflict
+            render json: { errors: { name: 'list already exists with that name' } }, status: :conflict
           else
             list = V1::MetadatumValuesList.new
             if update_list(list)
-              response.headers["Location"] = metadatum_values_list_path(list)
-              render :json => list, :root => "metadatum_values_list", :serializer => V1::MetadatumValuesListSerializer
+              response.headers['Location'] = metadatum_values_list_path(list)
+              render json: list, root: 'metadatum_values_list', serializer: V1::MetadatumValuesListSerializer
             else
-              render :json => { :errors => list.errors }, :status => :unprocessable_entity
+              render json: { errors: list.errors }, status: :unprocessable_entity
             end
           end
         end
@@ -47,10 +47,10 @@ module V1
       respond_to do |format|
         format.json do
           if @list && update_list(@list)
-            render :json => @list, :root => "metadatum_values_list", :serializer => V1::MetadatumValuesListSerializer
+            render json: @list, root: 'metadatum_values_list', serializer: V1::MetadatumValuesListSerializer
           else
-            render :json => { :errors => { :id => 'metadata values list not found' } }, :status => 404 unless @list
-            render :json => { :errors => @list.errors }, :status => :unprocessable_entity if @list
+            render json: { errors: { id: 'metadata values list not found' } }, status: 404 unless @list
+            render json: { errors: @list.errors }, status: :unprocessable_entity if @list
           end
         end
       end
@@ -59,13 +59,13 @@ module V1
     def destroy
       respond_to do |format|
         format.json do
-          render :json => { :errors => { :id => "metadata values list not found" } }, :status => 404 unless @list
+          render json: { errors: { id: 'metadata values list not found' } }, status: 404 unless @list
           if @list
             @list.destroy
             if @list.destroyed?
-              render :json => nil, :status => :ok
+              render json: nil, status: :ok
             else
-              render :json => { :error => @list.errors }, :status => :unprocessable_entity
+              render json: { error: @list.errors }, status: :unprocessable_entity
             end
           end
         end        
@@ -78,14 +78,14 @@ module V1
     def exists?
       name = params[:metadatum_values_list][:name]
       return false unless name
-      result = V1::MetadatumValuesList.find_by_name(name, :conditions => ["lower(name) = ?", name.downcase])
+      result = V1::MetadatumValuesList.find_by_name(name, :conditions => ['lower(name) = ?', name.downcase])
       return result.nil? == false
     end
 
     def find_list
       @list = V1::MetadatumValuesList.find(params[:id])
     rescue ActiveRecord::RecordNotFound
-      @error = "list not found"
+      @error = 'list not found'
     end
 
     # update list and any list values included as part of a transaction

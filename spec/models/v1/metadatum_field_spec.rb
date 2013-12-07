@@ -22,10 +22,8 @@ describe V1::MetadatumField do
 
   describe "requires a name" do
     before { field.name = ' ' }
-    it { 
-      should_not be_valid 
-      should have(1).error_on(:name)
-    }
+    it { should_not be_valid }
+    it { should have(1).error_on(:name) }
     specify { field.save.should be false }
   end
 
@@ -34,19 +32,15 @@ describe V1::MetadatumField do
       dup_field = FactoryGirl.create(:v1_metadatum_field)
       field.name = dup_field.name
     end   
-    it { 
-      should_not be_valid 
-      should have(1).error_on(:name)
-    }      
+    it { should_not be_valid }
+    it { should have(1).error_on(:name) }   
     specify { field.save.should be false }
   end
 
   describe "requires a type" do
     before { field.type = ' ' }
-    it { 
-      should_not be_valid 
-      should have(1).error_on(:type)
-    }
+    it { should_not be_valid }
+    it { should have(1).error_on(:type) }
     specify { field.save.should be false }
   end
 

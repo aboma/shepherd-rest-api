@@ -2,13 +2,13 @@ module V1
   class MetadataTemplatesController < V1::ApplicationController
     include V1::Concerns::Auditable
     respond_to :json
-    before_filter :find_template, :only => [:show, :update, :destroy]
+    before_filter :find_template, only: [:show, :update, :destroy]
 
     def index
       templates = V1::MetadataTemplate.all
       respond_to do |format|
         format.json do
-          render :json => templates, :each_serializer => V1::MetadataTemplateSerializer
+          render json: templates, each_serializer: V1::MetadataTemplateSerializer
         end
       end
     end
@@ -17,24 +17,24 @@ module V1
       respond_to do |format|
         format.json do
           if @template
-            render :json => @template, :each_serializer => V1::MetadataTemplateSerializer
+            render json: @template, each_serializer: V1::MetadataTemplateSerializer
           else
-            render :json => nil, :status => :not_found
+            render json: nil, status: :not_found
           end
         end
       end
     end
 
     def create
+      @template = V1::MetadataTemplate.new
       respond_to do |format|
         format.json do
-          @template = V1::MetadataTemplate.new
           if update_template(@template)
             response.headers['Location'] = metadata_template_path(@template)
-            render :json => @template, :serializer => V1::MetadataTemplateSerializer
+            render json: @template, serializer: V1::MetadataTemplateSerializer
           else 
             status = conflict? ? :conflict : :unprocessable_entity
-            render :json => { :errors => @template.errors }, :status => status 
+            render json: { errors: @template.errors }, status: status 
           end
         end
       end
@@ -44,14 +44,14 @@ module V1
       respond_to do |format|
         format.json do
           unless @template
-            render :json => nil, :status => :not_found
+            render json: nil, status: :not_found
             return
           end
           if update_template(@template)
-            render :json => @template, :serializer => V1::MetadataTemplateSerializer
+            render json: @template, serializer: V1::MetadataTemplateSerializer
           else
             status = conflict? ? :conflict : :unprocessable_entity
-            render :json => { :errors => @template.errors }, :status => status
+            render json: { errors: @template.errors }, status: status
           end
         end
       end
@@ -60,13 +60,13 @@ module V1
     def destroy
       respond_to do |format|
         format.json do
-          render :json => nil, :status => 404 unless @template
+          render json: nil, status: 404 unless @template
           if @template
             @template.destroy
             if @template.destroyed?
-              render :json => nil, :status => :ok
+              render json: nil, status: :ok
             else
-              render :json => { :error => @template.errors }, :status => 500
+              render json: { error: @template.errors }, status: 500
             end
           end
         end

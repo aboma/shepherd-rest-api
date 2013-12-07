@@ -16,14 +16,14 @@
 module V1
   class Relationship < ActiveRecord::Base
     belongs_to :portfolio
-    belongs_to :asset  #, :class_name => "Asset", :foreign_key => :relationship_id
+    belongs_to :asset
 
     attr_accessible :asset_id, :portfolio_id 
 
-    validates :asset, :existence => true
-    validates :portfolio, :existence => true
+    validates :asset, existence: true
+    validates :portfolio, existence: true
 
-    validates :created_by_id, :presence => true
-    validates :updated_by_id, :presence => true
+    validates :created_by_id, presence: true
+    validates :updated_by_id, presence: true
   end
 end

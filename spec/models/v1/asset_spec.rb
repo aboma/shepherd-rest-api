@@ -24,10 +24,10 @@ describe V1::Asset do
 
   describe "requires a name" do
     before { asset.name = ' ' }
-    it { 
+    it do 
       should_not be_valid 
       should have(1).error_on(:name)
-    }
+    end
     specify { asset.save.should be false }
   end
 
@@ -36,10 +36,10 @@ describe V1::Asset do
       dup_asset = FactoryGirl.create(:v1_asset)
       asset.name = dup_asset.name
     end   
-    it { 
+    it do 
       should_not be_valid 
       should have(1).error_on(:name)
-    }      
+    end      
     specify { asset.save.should be false }
   end
 

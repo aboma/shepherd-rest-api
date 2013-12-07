@@ -2,13 +2,13 @@ module V1
   class UsersController < V1::ApplicationController
     include V1::Concerns::Auditable
     respond_to :json
-    before_filter :find_user, :only => [:show, :create, :update]
+    before_filter :find_user, only:  [:show, :create, :update]
 
     def index
       users = User.all
       respond_to do |format|
         format.json do
-          render :json => users, :each_serializer => V1::UserSerializer
+          render json: users, :each_serializer => V1::UserSerializer
         end
       end
     end
@@ -16,8 +16,8 @@ module V1
     def show
       respond_to do |format|
         format.json do
-          render :json => {}, :status => 404 unless @user
-          render :json => @user, :serializer => V1::UserSerializer if @user
+          render json: {}, status: 404 unless @user
+          render json: @user, serializer: V1::UserSerializer if @user
         end
       end
     end
@@ -27,14 +27,14 @@ module V1
         format.json do
           if @user 
             path = user_path(@user)
-            render :json => { :errors => { :email => "value already exists at #{path}" } }, :status => :conflict
+            render json: { errors: { email: "value already exists at #{path}" } }, status: :conflict
           else
             user = V1::User.new
             if update_user(user)
-              response.headers["Location"] = user_path(user)
-              render :json => user, :serializer => V1::UserSerializer
+              response.headers['Location'] = user_path(user)
+              render json: user, serializer: V1::UserSerializer
             else
-              render :json => { :errors => user.errors }, :status => :unprocessable_entity
+              render json: { errors: user.errors }, status: :unprocessable_entity
             end
           end
         end
@@ -45,15 +45,15 @@ module V1
       respond_to do |format|
         format.json do
           unless @user 
-            render :json => {}, :status => :not_found
+            render json: {}, status: :not_found
             return
           end
           if update_user(@user)
             @user.reload
-            render :json => @user, :serializer => V1::UserSerializer
+            render json: @user, serializer: V1::UserSerializer
           else 
             status = conflict? ? :conflict : :unprocessable_entity
-            render :json => { :errors => @user.errors }, :status => status 
+            render json: { errors: @user.errors }, status: status 
           end
         end
       end
@@ -82,7 +82,7 @@ module V1
 
     def conflict?
        return @user.errors[:email] && 
-              @user.errors[:email].include?("has already been taken")
+              @user.errors[:email].include?('has already been taken')
     end
 
   end

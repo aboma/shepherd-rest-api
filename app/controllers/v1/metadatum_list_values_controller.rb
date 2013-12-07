@@ -8,7 +8,7 @@ module V1
       values = MetadatumListValue.all
       respond_to do |format|
         format.json do
-          render :json => values, :root => "metadatum_list_values", :each_serializer => V1::MetadatumListValueSerializer
+          render json: values, root: 'metadatum_list_values', :each_serializer => V1::MetadatumListValueSerializer
         end        
       end
     end
@@ -17,9 +17,9 @@ module V1
       respond_to do |format|
         format.json do
           if @value
-            render :json => @value, :root => "metadatum_list_value", :serializer => V1::MetadatumListValueSerializer
+            render json: @value, root: 'metadatum_list_value', serializer: V1::MetadatumListValueSerializer
           else
-            render :json => {}, :status => 404
+            render json: {}, status: 404
           end
         end
       end
@@ -31,12 +31,24 @@ module V1
         format.json do
           value = V1::MetadatumListValue.new
           if update_value(value)
-            response.headers["Location"] = metadatum_list_value_path(value)
-            render :json => value, :root => "metadatum_list_value", :serializer => V1::MetadatumListValueSerializer
+            response.headers['Location'] = metadatum_list_value_path(value)
+            render json: value, root: 'metadatum_list_value', serializer: V1::MetadatumListValueSerializer
           else
-            render :json => { :errors => value.errors }, :status => :unprocessable_entity
+            render json: { errors: value.errors }, status: :unprocessable_entity
           end
         end
+      end
+    end
+
+    def update
+      respond_to do |format|
+        format.json { render :json, status: 405 }
+      end
+    end
+
+    def destroy
+      respond_to do |format|
+        format.json { render :json, status: 405 }
       end
     end
 
@@ -45,7 +57,7 @@ module V1
     def find_field
       @value = V1::MetadatumListValue.find(params[:id])
     rescue ActiveRecord::RecordNotFound
-      @error = { :id => "value not found" }
+      @error = { id: 'value not found' }
     end
 
     def update_value(value)

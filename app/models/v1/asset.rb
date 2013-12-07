@@ -35,7 +35,7 @@ module V1
 
     has_many :relationships, :dependent => :destroy
     has_many :portfolios, :through => :relationships
-    has_many :metadata, :class_name => "V1::MetadatumValue", :dependent => :destroy
+    has_many :metadata, :class_name => 'V1::MetadatumValue', :dependent => :destroy
 
     attr_accessible :name, :file, :description, :metadata, :deleted_by_id, :deleted_at  
 

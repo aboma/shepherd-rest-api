@@ -40,12 +40,12 @@ module V1
 
     before_save { |user| user.email = email.downcase }
 
-    validates :password, :presence => true, :confirmation => true, :length => { :minimum => 8 }, :on => :create
-    validates :last_name, :presence => true
-    validates :first_name, :presence => true
+    validates :password, presence: true, confirmation: true, length: { minimum: 8 }, on: :create
+    validates :last_name, presence: true
+    validates :first_name, presence: true
     VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
-    validates :email, :presence => true, :format => { :with => VALID_EMAIL_REGEX }, :uniqueness => { :case_sensitive => false }
-    validates :created_by_id, :presence => true
-    validates :updated_by_id, :presence => true
+    validates :email, presence: true, format: { with: VALID_EMAIL_REGEX }, uniqueness: { case_sensitive: false }
+    validates :created_by_id, presence: true
+    validates :updated_by_id, presence: true
   end
 end

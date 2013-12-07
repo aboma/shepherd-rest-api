@@ -3,9 +3,9 @@ module V1
     include V1::Concerns::Relate
     include V1::Concerns::Auditable
 
-    respond_to :json, :except => [:create]
     before_filter :find_portfolio, :only => [:index, :create]
     before_filter :find_asset, :only => [:index, :create]
+    respond_to :json, :except => [:create]
 
     # Either return all relationships or return relationships
     # filtered by portfolio or asset
@@ -15,30 +15,30 @@ module V1
       relations = V1::Relationship.find(:all) unless @portfolio || @asset
       respond_to do |format|
         format.json do
-          render :json => relations, :each_serializer => V1::RelationshipSerializer
+          render json: relations, :each_serializer => V1::RelationshipSerializer
         end      
       end
     end
 
     # Create relationship between asset and portfolio; if asset 
     # details are posted too, create asset first, then create
-    # relationship
+    # asset <=> portfolio relationship
     def create
-      @error = { :id => 'no portfolio id specified' } if (!@portfolio && !@error)
-      @error = { :id => 'relationship already exists' } if relation_exists?
+      @error = { id: 'no portfolio id specified' } if (!@portfolio && !@error)
+      @error = { id: 'relationship already exists' } if relation_exists?
       unless (@error)
         relation = V1::Relationship.new
         @asset = V1::Asset.new unless @asset
         created = create_relation(relation, @asset, @portfolio)
-        @error = (relation.errors.to_a + @asset.errors.to_a) if !created
+        @error = (relation.errors.to_a + @asset.errors.to_a) unless created
       end
       respond_to do |format|
         format.json do
           if @error
-            render :json => { :errors => @error }, :status => 422
+            render json: { errors: @error }, status: 422
           else
             response.headers['Location'] = relationships_path(relation)
-            render :json => relation, :serializer => V1::RelationshipSerializer
+            render json: relation, serializer: V1::RelationshipSerializer
           end
         end        
       end
@@ -49,9 +49,9 @@ module V1
       respond_to do |format|
         format.json do
           if relation
-            render :json => relation, :serializer => V1::RelationshipSerializer
+            render json: relation, serializer: V1::RelationshipSerializer
           else
-            render :json => { :errors => { :id => "relationship not found" } }, :status => 404
+            render json: { errors: { id: 'relationship not found' } }, status: 404
           end
         end
       end
@@ -61,7 +61,7 @@ module V1
     def update
       respond_to do |format|
         format.json do
-          render :json => { :errors => { :id => "changes to relationships not allowed" } }, :status => 422
+          render json: { errors: { id: 'changes to relationships not allowed' } }, status: 422
         end
       end
     end
@@ -72,9 +72,9 @@ module V1
         format.json do
           if relation
             relation.destroy
-            render :json => nil, :status => :ok 
+            render json: nil, status: :ok 
           else
-            render :json => { :errors => { :id => "relationship not found" } }, :status => 404
+            render json: { errors: { id: 'relationship not found' } }, status: 404
           end
         end        
       end
@@ -89,7 +89,7 @@ module V1
       return nil unless id
       @portfolio = V1::Portfolio.find(id)
     rescue
-      @error = { :id => "portfolio with id #{id} not found" }
+      @error = { id: "portfolio with id #{id} not found" }
     end
 
     # Find asset requested by user, if one is requested, to filter
@@ -99,7 +99,7 @@ module V1
       return nil unless id
       @asset = V1::Asset.find(id)
     rescue
-      @error = { :id => "asset with id #{id} not found" }
+      @error = { id: "asset with id #{id} not found" }
     end
 
     def find_relation
@@ -113,7 +113,7 @@ module V1
 
     def relation_exists?
       id = relation_id
-      args = { :id => id } if id
+      args = { id: id } if id
       args = { :portfolio_id => portfolio_id, :asset_id => asset_id } if (portfolio_id && asset_id)
       return V1::Relationship.exists?(args) if args
       return nil unless args

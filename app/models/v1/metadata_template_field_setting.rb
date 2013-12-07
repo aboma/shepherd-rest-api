@@ -16,16 +16,16 @@
 #
 
 class V1::MetadataTemplateFieldSetting < ActiveRecord::Base
-  belongs_to :metadata_template, :inverse_of => :metadata_template_field_settings 
+  belongs_to :metadata_template, inverse_of: :metadata_template_field_settings 
   belongs_to :metadatum_field
 
   attr_accessible :metadatum_field_id, :required, :order, :metadata_template
 
-  validates :metadatum_field_id, :presence => true
+  validates :metadatum_field_id, presence: true
   validates_inclusion_of :required, in: [true, false]
-  validates :order, :presence => true
+  validates :order, presence: true
 
-  validates :created_by_id, :presence => true
-  validates :updated_by_id, :presence => true
+  validates :created_by_id, presence: true
+  validates :updated_by_id, presence: true
 
 end

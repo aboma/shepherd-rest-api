@@ -8,7 +8,7 @@ module V1
       settings = V1::MetadataTemplateFieldSetting.all
       respond_to do |format|
         format.json do
-          render :json => settings, :each_serializer => V1::MetadataTemplateFieldSettingSerializer
+          render json: settings, each_serializer: V1::MetadataTemplateFieldSettingSerializer
         end
       end
     end

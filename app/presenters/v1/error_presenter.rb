@@ -1,15 +1,15 @@
 module V1
 class ErrorPresenter
-  
+
   attr_reader :errors
-  
+
   def initialize(err)
     @errors = err
   end
-  
+
   def as_json(include_root = false, options = {})
     error_hash = nil
-    @errors.each do |attr,msg| 
+    @errors.each do |attr, msg| 
       error_hash += {
         attr => msg
       }.merge(options)

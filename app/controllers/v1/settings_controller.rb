@@ -1,11 +1,11 @@
 module V1
   class SettingsController < V1::ApplicationController
-    respond_to :json, :except => [:create]
+    respond_to :json, except: [:create]
 
     def index
       respond_to do |format|
         format.json do
-          render :json => {}, :status => 405
+          render json: {}, status: 405
         end
       end
     end
@@ -13,7 +13,7 @@ module V1
     def show
       respond_to do |format|
         format.json do
-          render :json => Settings, :root => :setting, :serializer => V1::SettingsSerializer
+          render json: Settings, root: :setting, serializer: V1::SettingsSerializer
         end
       end
     end
@@ -21,7 +21,7 @@ module V1
     def create
       respond_to do |format|
         format.json do
-          render :json => {}, :status => 405
+          render json: {}, status: 405
         end
       end
     end
@@ -29,7 +29,7 @@ module V1
     def update
       respond_to do |format|
         format.json do
-          render :json => {}, :status => 405
+          render json: {}, status: 405
         end
       end
     end
@@ -37,7 +37,7 @@ module V1
     def destroy
       respond_to do |format|
         format.json do
-          render :json => {}, :status => 405
+          render json: {}, status: 405
         end
       end
     end

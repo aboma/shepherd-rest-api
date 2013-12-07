@@ -8,7 +8,7 @@ module V1
       fields = V1::MetadatumField.all
       respond_to do |format|
         format.json do
-          render :json => fields, :each_serializer => V1::MetadatumFieldSerializer
+          render json: fields, each_serializer: V1::MetadatumFieldSerializer
         end
       end
     end
@@ -17,24 +17,24 @@ module V1
       respond_to do |format|
         format.json do
           if @field
-            render :json => @field, :serializer => V1::MetadatumFieldSerializer
+            render json: @field, serializer: V1::MetadatumFieldSerializer
           else 
-            render :json => {}, :status => 404
+            render json: {}, status: 404
           end
         end
       end
     end
 
     def create
+      @field = V1::MetadatumField.new
       respond_to do |format|
         format.json do
-          @field = V1::MetadatumField.new
           if update_field(@field)
             response.headers['Location'] = metadatum_field_path(@field)
-            render :json => @field, :serializer => V1::MetadatumFieldSerializer
+            render json: @field, serializer: V1::MetadatumFieldSerializer
           else 
             status = conflict? ? :conflict : :unprocessable_entity
-            render :json => { :errors => @field.errors }, :status => status
+            render json: { errors: @field.errors }, status: status
           end
         end
       end
@@ -44,15 +44,15 @@ module V1
       respond_to do |format|
         format.json do
           unless @field 
-            render :json => {}, :status => :not_found
+            render json: {}, status: :not_found
             return
           end
           if update_field(@field)
             @field.reload
-            render :json => @field, :serializer => V1::MetadatumFieldSerializer
+            render json: @field, serializer: V1::MetadatumFieldSerializer
           else 
             status = conflict? ? :conflict : :unprocessable_entity
-            render :json => { :errors => @field.errors }, :status => status 
+            render json: { errors: @field.errors }, status: status 
           end
         end
       end
@@ -61,17 +61,17 @@ module V1
     def destroy
       respond_to do |format|
         format.json do
-          render :json => nil, :status => :not_found unless @field
+          render json: nil, status: :not_found unless @field
           if @field
             begin
               @field.destroy
               if @field.destroyed?
-                render :json => nil, :status => :ok
+                render json: nil, status: :ok
               else
-                render :json => { :error => @field.errors }, :status => :unprocessable_entity
+                render json: { error: @field.errors }, status: :unprocessable_entity
               end
             rescue 
-              render :json => { :error => @field.errors }, :status => :unprocessable_entity
+              render json: { error: @field.errors }, status: :unprocessable_entity
             end
           end
         end

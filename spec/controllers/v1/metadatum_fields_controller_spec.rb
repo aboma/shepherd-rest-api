@@ -158,7 +158,7 @@ describe V1::MetadatumFieldsController, type: :controller do
             post_field(FactoryGirl.attributes_for(:v1_metadatum_field), :json)
           end
           it_should_behave_like 'an action that responds with JSON'       
-          it_should_behave_like 'responds with success 200 status code'
+          it_should_behave_like 'responds with success 201 status code'
           it_should_behave_like 'responds with Location header'
         end
       end

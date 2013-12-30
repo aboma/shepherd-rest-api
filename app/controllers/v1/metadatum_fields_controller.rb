@@ -31,7 +31,7 @@ module V1
         format.json do
           if update_field(@field)
             response.headers['Location'] = metadatum_field_path(@field)
-            render json: @field, serializer: V1::MetadatumFieldSerializer
+            render json: @field, serializer: V1::MetadatumFieldSerializer, status: :created
           else 
             status = conflict? ? :conflict : :unprocessable_entity
             render json: { errors: @field.errors }, status: status

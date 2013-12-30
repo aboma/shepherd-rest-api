@@ -41,7 +41,7 @@ describe V1::SessionsController, type: :controller do
             @body = JSON.parse(response.body) 
           end
           it_should_behave_like 'an action that responds with JSON'       
-          it_should_behave_like 'responds with success 200 status code'
+          it_should_behave_like 'responds with success 201 status code'
           it 'returns two fields' do
             @body['session'].should have(2).items          
           end

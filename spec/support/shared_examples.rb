@@ -78,6 +78,10 @@ module ShepherdSharedExamples
     it { should respond_with 200 }
   end
 
+  shared_examples_for 'responds with success 201 status code' do
+    it { should respond_with 201 }
+  end
+
   shared_examples_for 'responds with 404 not found' do
     it { should respond_with 404 }
   end      

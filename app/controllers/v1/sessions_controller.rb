@@ -13,7 +13,7 @@ module V1
             sign_in(resource_name, user) 
             user.reset_authentication_token! unless Settings.demo_version || user.authentication_token.nil?
             set_auth_token_cookie
-            render status: 200, json: { session: { success: true, auth_token: current_user.authentication_token } }
+            render status: :created, json: { session: { success: true, auth_token: current_user.authentication_token } }
           end
         end
       end

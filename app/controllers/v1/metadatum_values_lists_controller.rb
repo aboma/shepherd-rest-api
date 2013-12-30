@@ -34,7 +34,7 @@ module V1
             list = V1::MetadatumValuesList.new
             if update_list(list)
               response.headers['Location'] = metadatum_values_list_path(list)
-              render json: list, root: 'metadatum_values_list', serializer: V1::MetadatumValuesListSerializer
+              render json: list, root: 'metadatum_values_list', serializer: V1::MetadatumValuesListSerializer, status: :created
             else
               render json: { errors: list.errors }, status: :unprocessable_entity
             end

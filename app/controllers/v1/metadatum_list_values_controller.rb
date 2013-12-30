@@ -32,7 +32,7 @@ module V1
           value = V1::MetadatumListValue.new
           if update_value(value)
             response.headers['Location'] = metadatum_list_value_path(value)
-            render json: value, root: 'metadatum_list_value', serializer: V1::MetadatumListValueSerializer
+            render json: value, root: 'metadatum_list_value', serializer: V1::MetadatumListValueSerializer, status: :created
           else
             render json: { errors: value.errors }, status: :unprocessable_entity
           end

@@ -152,7 +152,7 @@ describe V1::MetadataTemplatesController, type: :controller do
             post_template(FactoryGirl.attributes_for(:v1_metadata_template), :json)
           end
           it_should_behave_like 'an action that responds with JSON'       
-          it_should_behave_like 'responds with success 200 status code'
+          it_should_behave_like 'responds with success 201 status code'
           it_should_behave_like 'responds with Location header'
           context 'with associated field settings' do
             it 'creates the field settings as well' do

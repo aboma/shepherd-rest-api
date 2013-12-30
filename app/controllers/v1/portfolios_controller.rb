@@ -21,7 +21,7 @@ module V1
         format.json do
           if update_portfolio(@portfolio)
             response.headers['Location'] = portfolio_path(@portfolio)
-            render json: @portfolio, serializer: V1::PortfolioSerializer
+            render json: @portfolio, serializer: V1::PortfolioSerializer, status: :created
           else 
             status = conflict? ? :conflict : :unprocessable_entity
             render json: { errors: @portfolio.errors }, status: status

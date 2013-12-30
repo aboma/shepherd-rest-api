@@ -240,7 +240,7 @@ describe V1::AssetsController, type: :controller do
             post_asset(FactoryGirl.attributes_for(:v1_asset), :json)
           end
           it_should_behave_like 'an action that responds with JSON'       
-          it_should_behave_like 'responds with success 200 status code'
+          it_should_behave_like 'responds with success 201 status code'
           it_should_behave_like 'responds with Location header'
         end
       end

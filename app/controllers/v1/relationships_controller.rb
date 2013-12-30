@@ -38,7 +38,7 @@ module V1
             render json: { errors: @error }, status: 422
           else
             response.headers['Location'] = relationships_path(relation)
-            render json: relation, serializer: V1::RelationshipSerializer
+            render json: relation, serializer: V1::RelationshipSerializer, status: :created
           end
         end        
       end

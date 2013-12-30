@@ -157,12 +157,8 @@ describe V1::UsersController, type: :controller do
             post_user(FactoryGirl.attributes_for(:v1_user), :json)
           end
           it_should_behave_like 'an action that responds with JSON'       
-          it 'responds with success 200 status code' do
-            response.status.should == 200       
-          end
-          it 'responds with Location header' do
-            response.header['Location'].should be_present
-          end
+          it_should_behave_like 'responds with success 201 status code'
+          it_should_behave_like 'responds with Location header'
         end
       end
     end

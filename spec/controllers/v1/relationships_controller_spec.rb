@@ -146,8 +146,8 @@ describe V1::RelationshipsController, type: :controller do
                post_relation(attrs, :json)
             end        
           end
-          it "should return 200 code for format #{format}" do
-            response.status.should == 200  
+          it "should return 201 created code for format #{format}" do
+            response.status.should == 201  
           end
         end          
       end
@@ -167,12 +167,8 @@ describe V1::RelationshipsController, type: :controller do
             end
           end
           it_should_behave_like 'an action that responds with JSON'       
-          it 'responds with success 200 status code' do
-            response.status.should == 200       
-          end
-          it 'responds with Location header' do
-            response.header['Location'].should be_present
-          end
+          it_should_behave_like 'responds with success 201 status code'
+          it_should_behave_like 'responds with Location header'
         end
         context 'with invalid attributes' do
           context 'portfolio does not exist' do

@@ -26,7 +26,7 @@ module V1
         format.json do
           if update_asset(@asset)
             response.headers['Location'] = assets_path(@asset)
-            render json: @asset, serializer: V1::AssetSerializer
+            render json: @asset, serializer: V1::AssetSerializer, status: :created
           else
             status = conflict? ? :conflict : :unprocessable_entity
             render json: { errors: @asset.errors }, status: status

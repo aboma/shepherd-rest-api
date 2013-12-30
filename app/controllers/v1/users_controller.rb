@@ -32,7 +32,7 @@ module V1
             user = V1::User.new
             if update_user(user)
               response.headers['Location'] = user_path(user)
-              render json: user, serializer: V1::UserSerializer
+              render json: user, serializer: V1::UserSerializer, status: :created
             else
               render json: { errors: user.errors }, status: :unprocessable_entity
             end

@@ -136,7 +136,7 @@ describe V1::MetadatumValuesListsController, type: :controller do
             post_list(FactoryGirl.attributes_for(:v1_values_list), :json)
           end
           it_should_behave_like 'an action that responds with JSON'       
-          it_should_behave_like 'responds with success 200 status code'
+          it_should_behave_like 'responds with success 201 status code'
           it_should_behave_like 'responds with Location header'
           context 'with associated values' do
             it 'creates those values as well' do

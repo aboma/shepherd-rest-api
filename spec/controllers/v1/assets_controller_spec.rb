@@ -29,6 +29,8 @@ describe V1::AssetsController, type: :controller do
     FactoryGirl.create(:v1_relationship, attrs)
   end
 
+  # create metadatum values with either valid or invalid data, depending
+  # on input to method
   def given_metadata_attrs_with(state)
     metadatum = FactoryGirl.attributes_for(:v1_metadatum_value)
     field = FactoryGirl.create(:v1_metadatum_field)
@@ -46,6 +48,8 @@ describe V1::AssetsController, type: :controller do
     yield attrs
   end
 
+  # create asset with valid or invalid metadata, depending upon options
+  # input
   def given_asset_attrs_with(options)
     attrs = []
     if (options[:invalid_field]) 
@@ -131,9 +135,7 @@ describe V1::AssetsController, type: :controller do
           @parsed = JSON.parse(response.body)
         end
         it_should_behave_like 'an action that responds with JSON'
-        it 'responds with 404 not found' do
-          response.status.should == 404
-        end      
+        it_should_behave_like 'responds with 404 not found'
       end 
     end
   end
@@ -158,7 +160,7 @@ describe V1::AssetsController, type: :controller do
             post_asset(FactoryGirl.attributes_for(:v1_asset), format)          
           end
           it "should return 406 code for format #{format}" do
-            response.status.should == 406  
+            expect(response.status).to eq(406)
           end
           it 'does not create the asset' do
             expect do 
@@ -183,7 +185,7 @@ describe V1::AssetsController, type: :controller do
             end
             it 'return 409 conflict' do
               post_asset(invalid_attrs, :json)
-              response.status.should == 409
+              expect(response.status).to eq(409)
             end
           end
           context 'invalid metadata field' do
@@ -216,7 +218,7 @@ describe V1::AssetsController, type: :controller do
           end
           it 'responds with 422 unprocessable entity' do
             post_asset(invalid_attrs, :json)
-            response.status.should == 422
+            expect(response.status).to eq(422)
           end
         end
 
@@ -238,12 +240,8 @@ describe V1::AssetsController, type: :controller do
             post_asset(FactoryGirl.attributes_for(:v1_asset), :json)
           end
           it_should_behave_like 'an action that responds with JSON'       
-          it 'responds with success 200 status code' do
-            response.status.should == 200       
-          end
-          it 'responds with Location header' do
-            response.header['Location'].should be_present
-          end
+          it_should_behave_like 'responds with success 200 status code'
+          it_should_behave_like 'responds with Location header'
         end
       end
     end
@@ -297,7 +295,7 @@ describe V1::AssetsController, type: :controller do
               given_metadata_attrs_with(:blank_value) do |attrs|
                 update_asset(existing_asset.id, attrs, :json)
               end
-              response.status.should == 422
+              expect(response.status).to eq(422)
             end
             it 'returns metadata cant be blank message' do
               given_metadata_attrs_with(:blank_value) do |attrs|
@@ -312,7 +310,7 @@ describe V1::AssetsController, type: :controller do
               given_metadata_attrs_with(:invalid_boolean_value) do |attrs|
                 update_asset(existing_asset.id, attrs, :json)
               end
-              response.status.should == 422
+              expect(response.status).to eq(422)
             end
             it 'returns invalid metadatum value message' do
               given_metadata_attrs_with(:invalid_boolean_value) do |attrs|
@@ -334,7 +332,7 @@ describe V1::AssetsController, type: :controller do
               given_metadata_attrs_with(:invalid_field) do |attrs|
                 update_asset(existing_asset.id, attrs, :json)
               end
-              response.status.should == 422
+              expect(response.status).to eq(422)
             end
             it 'gives error messages' do
               given_metadata_attrs_with(:invalid_field) do |attrs|
@@ -376,9 +374,7 @@ describe V1::AssetsController, type: :controller do
             update_asset(existing_asset.id, { name: 'newname' }, :json)
           end
           it_should_behave_like 'an action that responds with JSON'       
-          it 'responds with success 200 status code' do
-            response.status.should == 200       
-          end
+          it_should_behave_like 'responds with success 200 status code'
         end
       end
     end

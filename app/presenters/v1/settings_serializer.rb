@@ -1,7 +1,11 @@
 module V1
   class SettingsSerializer < V1::ShepherdSerializer
 
-    attributes :field_types, :demo_version
+    attributes :id, :field_types, :demo_version
+
+    def id
+      1
+    end
 
     def field_types
       object.field_types.join(',')

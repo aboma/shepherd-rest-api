@@ -54,9 +54,7 @@ describe V1::MetadatumValuesListsController, type: :controller do
           get :show, id: list.id + 111, format: :json
         end
         it_should_behave_like 'an action that responds with JSON'
-        it 'responds with 404 not found' do
-          response.status.should == 404
-        end
+        it_should_behave_like 'responds with 404 not found'
       end
     end
   end
@@ -81,7 +79,7 @@ describe V1::MetadatumValuesListsController, type: :controller do
             post_list(FactoryGirl.attributes_for(:v1_values_list), format)        
           end
           it "should return 406 code for format #{format}" do
-            response.status.should == 406  
+            expect(response.status).to eq(406)
           end
           it 'does not create the values list' do
             expect do 
@@ -108,7 +106,7 @@ describe V1::MetadatumValuesListsController, type: :controller do
           end
           it 'responds with 409 conflict' do
             post_list(dup_attrs, :json)
-            response.status.should == 409
+            expect(response.status).to eq(409)
           end
         end
         context 'missing required attributes' do
@@ -124,7 +122,7 @@ describe V1::MetadatumValuesListsController, type: :controller do
           end
           it 'responds with 422 unprocessable entity' do
             post_list(invalid_attrs, :json)
-            response.status.should == 422
+            expect(response.status).to eq(422)
           end
         end
 
@@ -175,9 +173,7 @@ describe V1::MetadatumValuesListsController, type: :controller do
           before :each do
             update_list({ description: :boom }, format )
           end
-          it 'returns 406 not acceptable code' do
-            response.status.should == 406
-          end
+          it_should_behave_like 'responds with 406 not acceptable' 
         end
       end
       context 'JSON format' do
@@ -197,7 +193,7 @@ describe V1::MetadatumValuesListsController, type: :controller do
             it 'returns status code 404 not found' do
               list.id = '1111'   # change metadatum_list_value id to one that does not exist
               update_list({ name: 'test' }, :json )
-              response.status.should == 404
+              expect(response.status).to eq(404)
             end
           end
         end
@@ -229,11 +225,9 @@ describe V1::MetadatumValuesListsController, type: :controller do
               delete_list(list_to_delete.id, format)
             end.to_not change(V1::MetadatumValuesList, :count)
           end
-          before :each do
-            delete_list(list.id, format)    
-          end
           it "should return 406 code for format #{format}" do
-            response.status.should == 406  
+            delete_list(list.id, format)    
+            expect(response.status).to eq(406)  
           end
         end          
       end
@@ -241,7 +235,7 @@ describe V1::MetadatumValuesListsController, type: :controller do
         it 'decreases number of lists by 1' do   
           expect do
             delete_list(list_to_delete.id, :json)
-          end.to change{V1::MetadatumValuesList.count}.by(-1)
+          end.to change(V1::MetadatumValuesList, :count).by(-1)
         end
         it 'deletes associated list values as well' do
           attrs = FactoryGirl.attributes_for(:v1_value)
@@ -253,11 +247,11 @@ describe V1::MetadatumValuesListsController, type: :controller do
         end
         it 'should respond with JSON' do
           delete_list(list.id, :json)
-          response.header['Content-Type'].should include 'application/json'          
+          expect(response.header['Content-Type']).to include('application/json')
         end
         it 'responds with success 200 status code' do
           delete_list(list.id, :json)
-          response.status.should == 200       
+          expect(response.status).to eq(200)
         end
       end
     end

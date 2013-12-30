@@ -78,6 +78,14 @@ module ShepherdSharedExamples
     it { should respond_with 200 }
   end
 
+  shared_examples_for 'responds with 404 not found' do
+    it { should respond_with 404 }
+  end      
+
+  shared_examples_for 'responds with 406 not acceptable' do
+    it { should respond_with 406 }
+  end      
+
   shared_examples_for 'an auditable model' do
     describe 'requires a created by user id' do
       before { subject.created_by_id = nil }

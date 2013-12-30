@@ -54,10 +54,10 @@ describe V1::MetadatumField do
       before { field.type = 'bananas' }
       it { should_not be_valid }
       specify { field.save.should be false }
-      specify { 
+      specify do 
         field.save
         field.errors[:type].to_s.should =~ /.*bananas is not in list:.*/
-      }
+      end
     end
   end
 

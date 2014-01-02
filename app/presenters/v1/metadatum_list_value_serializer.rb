@@ -3,6 +3,6 @@ module V1
 
     attributes :id, :value, :description
 
-    has_one :metadatum_values_list, :serializer => V1::MetadatumValuesList, :embed => :id
+    has_one :metadatum_values_list, serializer: V1::MetadatumValuesList, embed: :id
   end
 end

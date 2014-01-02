@@ -14,7 +14,7 @@ class ErrorPresenter
         attr => msg
       }.merge(options)
     end
-    error_hash = { :errors => error_hash } if include_root
+    error_hash = { errors: error_hash } if include_root
     error_hash
   end
 end

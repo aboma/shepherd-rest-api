@@ -3,13 +3,13 @@ module V1
 
     attributes :id, :required, :order, :created_at, :updated_at
 
-    has_one :metadatum_field, :embed => :ids
+    has_one :metadatum_field, embed: :ids
 
     def attributes
       hash = super
-      hash[:links] = [
-        { :rel => 'self', :href => metadata_template_field_setting_url(id) }
-      ]
+      hash[:links] = {
+        :self => metadata_template_field_setting_url(id) 
+      }
       hash
     end
 

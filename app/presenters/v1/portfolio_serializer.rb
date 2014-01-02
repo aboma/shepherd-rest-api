@@ -8,9 +8,10 @@ module V1
 
     def attributes
       hash = super
-      hash[:links] = [
-        { :rel => 'self', :href => portfolio_url(id) }
-      ]
+      hash[:links] = { 
+          self: portfolio_url(id),
+          relationships: relationships_url({ portfolio_id: id, format: nil }) 
+      }
       hash
     end
   end

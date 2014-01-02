@@ -3,13 +3,13 @@ module V1
 
     attributes :id, :name, :description, :created_at, :created_by_id, :updated_at, :updated_by_id
 
-    has_many :metadatum_list_values, :serializer => V1::MetadatumListValueSerializer, :embed => :objects
+    has_many :metadatum_list_values, serializer: V1::MetadatumListValueSerializer, embed: :objects
 
     def attributes
       hash = super
-      hash[:links] = [
-        { :rel => 'self', :href => metadatum_values_list_url(id) }
-      ]
+      hash[:links] = {
+        self: metadatum_values_list_url(id)
+      }
       hash
     end
 

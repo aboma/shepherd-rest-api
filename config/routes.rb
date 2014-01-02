@@ -15,9 +15,9 @@ ShepherdDAM::Application.routes.draw do
 
     # serve assets under root directory or portfolio directory
     scope '(portfolios/:portfolio_id)' do 
+      resources :relationships, :only => [:index, :show, :create, :destroy], :defaults => { :format => :json } 
       resources :assets, :defaults => { :format => :json } do
-        resources :files, :only => [:show], :format => "html"
-        resources :relationships, :only => [:index, :show, :create, :destroy], :defaults => { :format => :json }
+        resources :files, :only => [:show], :format => :html
       end
     end
 

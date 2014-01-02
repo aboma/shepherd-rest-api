@@ -3,8 +3,8 @@ module V1
 
     attributes :id, :metadatum_value
 
-    has_one :asset, :embed => :ids, :include => false
-    has_one :metadatum_field, :embed => :ids, :include => false
+    has_one :asset, embed: :ids, include: false
+    has_one :metadatum_field, embed: :ids, include: false
 
   end
 end

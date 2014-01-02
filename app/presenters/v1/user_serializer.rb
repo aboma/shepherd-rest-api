@@ -4,9 +4,9 @@ module V1
 
     def attributes
       hash = super
-      hash[:links] = [
-        { :rel => 'self', :href => user_url(id) }
-      ]
+      hash[:links] = {
+        self: user_url(id)
+      }
       hash
     end
 

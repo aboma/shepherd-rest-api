@@ -3,13 +3,13 @@ module V1
 
     attributes :id, :name, :description, :type, :created_at, :updated_at
 
-    has_one :allowed_values_list, :embed => :ids, :include => false
+    has_one :allowed_values_list, embed: :ids, include: false
 
     def attributes
       hash = super
-      hash[:links] = [
-        { :rel => 'self', :href => metadatum_field_url(id) }
-      ]
+      hash[:links] = { 
+          self: metadatum_field_url(id)
+      }
       hash
     end
 

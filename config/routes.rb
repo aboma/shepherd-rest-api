@@ -17,6 +17,7 @@ ShepherdDAM::Application.routes.draw do
     scope '(portfolios/:portfolio_id)' do 
       resources :relationships, :only => [:index, :show, :create, :destroy], :defaults => { :format => :json } 
       resources :assets, :defaults => { :format => :json } do
+        resources :metadata, :only => [:index], :defaults => { :format => :json }
         resources :files, :only => [:show], :format => :html
       end
     end

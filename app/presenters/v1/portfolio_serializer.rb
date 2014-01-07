@@ -4,7 +4,7 @@ module V1
 
     attributes :id, :name, :description, :created_at, :updated_at
 
-    has_one :metadata_template, :embed => :ids, :include => false
+    has_one :metadata_template, embed: :ids, include: false
 
     def attributes
       hash = super

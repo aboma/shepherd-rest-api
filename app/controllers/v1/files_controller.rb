@@ -19,8 +19,9 @@ module V1
         format.html do
           if @asset
             file_path = get_file_path_requested
+            logger.info 'file requested is: ' + file_path
             disposition = params[:download] ? 'attachment' : 'inline'
-            content_type = params[:id] == 'file' ? @asset.content_type : determine_content_type(file) 
+            content_type = params[:id] == 'file' ? @asset.content_type : determine_content_type(file_path) 
             logger.info "sending file from location #{file_path} as #{content_type}"
             send_file file_path, type: content_type, disposition: disposition 
           else
@@ -58,9 +59,9 @@ module V1
   private
 
     def get_file_path_requested
-      @asset.file.path
-      @asset.file.image.path if params[:id] == 'image'
-      @asset.file.thumb.path if params[:id] == 'thumb'
+      return @asset.file.image.path if params[:id] == 'image'
+      return @asset.file.thumb.path if params[:id] == 'thumb'
+      return @asset.file.path
     end
 
     def find_asset

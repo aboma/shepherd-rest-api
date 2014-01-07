@@ -8,7 +8,7 @@ module V1
       lists = V1::MetadatumValuesList.all
       respond_to do |format|
         format.json do
-          render json: lists, root: 'metadatum_values_lists', :each_serializer => V1::MetadatumValuesListSerializer
+          render json: lists, root: :metadatum_values_lists, each_serializer: V1::MetadatumValuesListSerializer
         end
       end
     end

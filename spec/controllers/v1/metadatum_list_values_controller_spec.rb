@@ -3,14 +3,6 @@ require 'spec_helper'
 describe V1::MetadatumListValuesController, type: :controller do
   include LoginHelper
 
-  before :all do 
-    create_test_user
-  end
-
-  after :all do
-    destroy_test_user
-  end
-
   def given_value_with_attrs(options)
     attrs = FactoryGirl.attributes_for(:v1_value)
     attrs[:metadatum_values_list_id] = FactoryGirl.create(:v1_values_list).id if options[:valid_value]
@@ -59,7 +51,7 @@ describe V1::MetadatumListValuesController, type: :controller do
 
     context 'with valid authorization token' do 
       def post_value attrs, format
-        request.env['X-AUTH-TOKEN'] = @auth_token
+        login_user
         post :create, metadatum_list_value: attrs, format: format 
       end  
       context 'with XML or HTML format' do
@@ -69,9 +61,7 @@ describe V1::MetadatumListValuesController, type: :controller do
               post_value(attrs, format)
             end
           end
-          it "should return 406 code for format #{format}" do
-            response.status.should == 406  
-          end
+          it_should_behave_like 'responds with 406 not acceptable'
           it 'does not create the value' do
             expect do 
               given_value_with_attrs({ valid_value: true }) do |attrs|
@@ -95,10 +85,10 @@ describe V1::MetadatumListValuesController, type: :controller do
                 post_value(invalid_attrs, :json)
               end.to_not change(V1::MetadatumListValue, :count)
             end
-            it 'responds with 422 unprocessable entity' do
+            before :each do
               post_value(invalid_attrs, :json)
-              response.status.should == 422
             end
+            it_should_behave_like 'responds with 422 unprocessable entity'
           end
           context 'with invalid metadata list id' do
             let(:invalid_attrs) do 
@@ -112,10 +102,10 @@ describe V1::MetadatumListValuesController, type: :controller do
                 post_value(invalid_attrs, :json)
               end.to_not change(V1::MetadatumListValue, :count)
             end
-            it 'responds with 422 unprocessable entity' do
+            before :each do
               post_value(invalid_attrs, :json)
-              response.status.should == 422
             end
+            it_should_behave_like 'responds with 422 unprocessable entity'
           end
           context 'with invalid metadata list id' do
             let(:invalid_attrs) do 
@@ -140,10 +130,10 @@ describe V1::MetadatumListValuesController, type: :controller do
                 post_value(invalid_attrs, :json)
               end.to_not change(V1::MetadatumListValue, :count)
             end
-            it 'responds with 422 unprocessable entity' do
+            before :each do
               post_value(invalid_attrs, :json)
-              response.status.should == 422
             end
+            it_should_behave_like 'responds with 422 unprocessable entity'
           end
           context 'missing metadata_value_list_id' do
             let(:invalid_attrs) {
@@ -157,10 +147,10 @@ describe V1::MetadatumListValuesController, type: :controller do
                 post_value(invalid_attrs, :json)
               end.to_not change(V1::MetadatumListValue, :count)
             end
-            it 'responds with 422 unprocessable entity' do
+            before :each do
               post_value(invalid_attrs, :json)
-              response.status.should == 422
             end
+            it_should_behave_like 'responds with 422 unprocessable entity'
           end
         end
         context 'with valid attributes' do

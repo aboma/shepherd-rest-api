@@ -3,15 +3,6 @@ require 'spec_helper'
 describe V1::RelationshipsController, type: :controller do
   include LoginHelper
 
-  # get a valid authorization to use on requests
-  before :all do
-    create_test_user
-  end
-
-  after :all do
-    destroy_test_user
-  end
-
   def given_relation_attrs_with(options)
     attrs = FactoryGirl.attributes_for(:v1_relationship)
     attrs[:asset_id] = FactoryGirl.create(:v1_asset).id if options[:valid_asset]
@@ -38,7 +29,7 @@ describe V1::RelationshipsController, type: :controller do
     end
     context 'with valid authorization token' do
       def get_index(format)
-        request.env['X-AUTH-TOKEN'] = @auth_token
+        login_user
         get :index, format: format 
       end
       context 'with XML or HTML format' do
@@ -46,9 +37,7 @@ describe V1::RelationshipsController, type: :controller do
           before :each do 
             get_index(format) 
           end
-          it "should return 406 code for format #{format}" do
-            response.status.should == 406  
-          end
+          it_should_behave_like 'responds with 406 not acceptable'
         end
       end
       context 'with JSON format' do
@@ -75,7 +64,7 @@ describe V1::RelationshipsController, type: :controller do
 
     context 'with valid authorization token' do
       def get_relation(format)
-        request.env['X-AUTH-TOKEN'] = @auth_token
+        login_user
         get :show, id: relation.id, format: format
       end
       context 'with XML or HTML format' do
@@ -83,9 +72,7 @@ describe V1::RelationshipsController, type: :controller do
           before :each do
             get_relation(format) 
           end
-          it "should return 406 code for format #{format}" do
-            response.status.should == 406  
-          end
+          it_should_behave_like 'responds with 406 not acceptable'
         end
       end
       context 'with JSON format' do
@@ -94,9 +81,7 @@ describe V1::RelationshipsController, type: :controller do
             get_relation(:json) 
           end
           it_should_behave_like 'an action that responds with JSON'
-          it 'responds with success 200 status code' do
-            response.status.should == 200       
-          end
+          it_should_behave_like 'responds with success 200 status code'
           it 'responds with the asked for portfolio' do
             @parsed = JSON.parse(response.body)
             @parsed['relationship']['id'].should == relation.id
@@ -108,13 +93,11 @@ describe V1::RelationshipsController, type: :controller do
         context 'invalid relationship id' do
           before :each do
             relation.id += 5
-            request.env['X-AUTH-TOKEN'] = @auth_token
+            login_user
             get :show, id: relation.id, format: :json
             @parsed = JSON.parse(response.body)
           end
-          it 'responds with 404 not found' do
-            response.status.should == 404
-          end
+          it_should_behave_like 'responds with 404 not found'
           it 'responds with error message' do
             @parsed['errors']['id'].should == 'relationship not found'
           end
@@ -134,7 +117,7 @@ describe V1::RelationshipsController, type: :controller do
 
     context 'with valid authorization token' do 
       def post_relation attrs, format        
-        request.env['X-AUTH-TOKEN'] = @auth_token
+        login_user
         post :create, relationship: attrs, format: format 
       end
       # create action accepts all formats to make it easier to 
@@ -146,9 +129,7 @@ describe V1::RelationshipsController, type: :controller do
                post_relation(attrs, :json)
             end        
           end
-          it "should return 201 created code for format #{format}" do
-            response.status.should == 201  
-          end
+          it_should_behave_like 'responds with success 201 status code'
         end          
       end
       context 'with JSON format' do
@@ -185,9 +166,7 @@ describe V1::RelationshipsController, type: :controller do
               end
             end
             it_should_behave_like 'an action that responds with JSON'       
-            it 'responds with unprocessable 422 status code' do
-              response.status.should == 422       
-            end
+            it_should_behave_like 'responds with 422 unprocessable entity'
             it 'responds with missing portfolio error' do
               parsed = JSON.parse(response.body)
               parsed['errors']['id'].should =~ /portfolio with id \d+ not found/
@@ -207,9 +186,7 @@ describe V1::RelationshipsController, type: :controller do
               end
             end
             it_should_behave_like 'an action that responds with JSON'       
-            it 'responds with unprocessable 422 status code' do
-              response.status.should == 422       
-            end
+            it_should_behave_like 'responds with 422 unprocessable entity'
             it 'responds with missing portfolio error' do
               parsed = JSON.parse(response.body)
               parsed['errors']['id'].should =~ /asset with id \d+ not found/
@@ -223,9 +200,7 @@ describe V1::RelationshipsController, type: :controller do
               end
             end
             it_should_behave_like 'an action that responds with JSON'       
-            it 'responds with unprocessable 422 status code' do
-              response.status.should == 422   
-            end
+            it_should_behave_like 'responds with 422 unprocessable entity'
             it 'responds with missing portfolio error' do
               parsed = JSON.parse(response.body)
               parsed['errors']['id'].should =~ /relationship already exists/
@@ -247,7 +222,7 @@ describe V1::RelationshipsController, type: :controller do
 
     context 'with valid authorization token' do
       def update_relation id, attrs, format
-        request.env['X-AUTH-TOKEN'] = @auth_token
+        login_user
         post :update, id: id, relationship: attrs, format: format 
       end  
       context 'with XML or HTML format' do
@@ -257,9 +232,7 @@ describe V1::RelationshipsController, type: :controller do
                update_relation(relation.id, attrs, format)
              end        
           end
-          it "returns 406 code for format #{format}" do
-            response.status.should == 406  
-          end
+          it_should_behave_like 'responds with 406 not acceptable'
         end          
       end
       # Updating a relationship should not be possible: only create and delete
@@ -270,9 +243,7 @@ describe V1::RelationshipsController, type: :controller do
           end
         end
         it_should_behave_like 'an action that responds with JSON'
-        it 'returns 422 unprocessable entity' do
-          response.status.should == 422
-        end
+        it_should_behave_like 'responds with 422 unprocessable entity'
       end
     end
   end
@@ -290,7 +261,7 @@ describe V1::RelationshipsController, type: :controller do
     end         
     context 'with valid authorization token' do
       def delete_relation(id, format)
-        request.env['X-AUTH-TOKEN'] = @auth_token
+        login_user
         delete :destroy, id: id, format: format 
       end
       context 'with XML or HTML format' do
@@ -303,9 +274,7 @@ describe V1::RelationshipsController, type: :controller do
           before :each do
             delete_relation(rel.id, format)    
           end
-          it "should return 406 code for format #{format}" do
-            response.status.should == 406  
-          end
+          it_should_behave_like 'responds with 406 not acceptable'
         end          
       end
       context 'with JSON format' do

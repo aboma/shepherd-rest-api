@@ -9,6 +9,8 @@ Devise.setup do |config|
   # Configure the class responsible to send e-mails.
   # config.mailer = "Devise::Mailer"
 
+  config.secret_key = 'fa4ba625486b601fb034fd8d99f658312e281ed180e480629cfabb8a125d5e827880c671ed79da5951981b5c73b12ec1bdd17e873acf84f912408c7e8723f652'
+
   # ==> ORM configuration
   # Load and configure the ORM. Supports :active_record (default) and
   # :mongoid (bson_ext recommended) by default. Other ORMs may be
@@ -125,7 +127,7 @@ Devise.setup do |config|
   # The time you want to timeout the user session without activity. After this
   # time the user will be asked for credentials again. Default is 30 minutes.
   # config.timeout_in = 30.minutes
-  
+
   # If true, expires auth token on session timeout.
   # config.expire_auth_token_on_timeout = false
 

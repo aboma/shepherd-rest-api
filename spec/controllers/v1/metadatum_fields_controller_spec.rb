@@ -3,14 +3,6 @@ require 'spec_helper'
 describe V1::MetadatumFieldsController, type: :controller do
   include LoginHelper
 
-  before :all do 
-    create_test_user
-  end
-
-  after :all do
-    destroy_test_user
-  end
-
   let(:field) { FactoryGirl.create(:v1_metadatum_field) }
 
   ### get INDEX =========================================================
@@ -39,7 +31,7 @@ describe V1::MetadatumFieldsController, type: :controller do
     context 'with valid authorization token' do
       context 'with valid field id' do
         before :each do
-          request.env['X-AUTH-TOKEN'] = @auth_token
+          login_user
           get :show, id: field.id, format: :json
           @parsed = JSON.parse(response.body)
         end
@@ -50,14 +42,12 @@ describe V1::MetadatumFieldsController, type: :controller do
       end
       context 'invalid field id' do
         before :each do
-          request.env['X-AUTH-TOKEN'] = @auth_token
+          login_user
           get :show, id: field.id + 111, format: :json
           @parsed = JSON.parse(response.body)
         end
         it_should_behave_like 'an action that responds with JSON'
-        it 'responds with 404 not found' do
-          response.status.should == 404
-        end
+        it_should_behave_like 'responds with 404 not found'
       end
     end
   end
@@ -73,7 +63,7 @@ describe V1::MetadatumFieldsController, type: :controller do
 
     context 'with valid authorization token' do 
       def post_field attrs, format
-        request.env['X-AUTH-TOKEN'] = @auth_token
+        login_user
         post :create, metadatum_field: attrs, format: format 
       end  
       context 'with XML or HTML format' do
@@ -81,9 +71,7 @@ describe V1::MetadatumFieldsController, type: :controller do
           before :each do
             post_field(FactoryGirl.attributes_for(:v1_metadatum_field), format)        
           end
-          it "should return 406 code for format #{format}" do
-            response.status.should == 406  
-          end
+          it_should_behave_like 'responds with 406 not acceptable'
           it 'does not create the field' do
             expect do 
               post_field(FactoryGirl.attributes_for(:v1_metadatum_field), format)
@@ -124,10 +112,10 @@ describe V1::MetadatumFieldsController, type: :controller do
                 post_field(invalid_attrs, :json)
               end.to_not change(V1::MetadatumField, :count)
             end
-            it 'responds with 422 unprocessable entity' do
+            before :each do
               post_field(invalid_attrs, :json)
-              response.status.should == 422
             end
+            it_should_behave_like 'responds with 422 unprocessable entity'
           end
         end
         context 'missing required attributes' do
@@ -141,11 +129,10 @@ describe V1::MetadatumFieldsController, type: :controller do
               post_field(invalid_attrs, :json)
             end.to_not change(V1::MetadatumField, :count)
           end
-          #subject {}
-          it 'responds with 422 unprocessable entity' do
+          before :each do
             post_field(invalid_attrs, :json)
-            response.status.should == 422
           end
+          it_should_behave_like 'responds with 422 unprocessable entity'
         end
 
         context 'with valid attributes' do
@@ -176,7 +163,7 @@ describe V1::MetadatumFieldsController, type: :controller do
 
     context 'with valid authorization token' do
       def post_update_field attrs, format
-        request.env['X-AUTH-TOKEN'] = @auth_token
+        login_user
         post :update, id: field.id, metadatum_field: attrs, format: format 
       end  
       context 'with XML or HTML format' do
@@ -184,9 +171,7 @@ describe V1::MetadatumFieldsController, type: :controller do
           before :each do
             post_update_field({ name: 'new name' } , format)
           end
-          it "returns 406 code for format #{format}" do
-            response.status.should == 406  
-          end
+          it_should_behave_like 'responds with 406 not acceptable'
         end          
       end
       context 'JSON format' do
@@ -235,7 +220,7 @@ describe V1::MetadatumFieldsController, type: :controller do
     end         
     context 'with valid authorization token' do
       def delete_field(id, format)
-        request.env['X-AUTH-TOKEN'] = @auth_token
+        login_user
         delete :destroy, id: id, format: format
       end
       context 'with XML or HTML format' do
@@ -248,9 +233,7 @@ describe V1::MetadatumFieldsController, type: :controller do
           before :each do
             delete_field(field_to_delete.id, format)    
           end
-          it "should return 406 code for format #{format}" do
-            response.status.should == 406  
-          end
+          it_should_behave_like 'responds with 406 not acceptable'
         end          
       end
       context 'with JSON format' do

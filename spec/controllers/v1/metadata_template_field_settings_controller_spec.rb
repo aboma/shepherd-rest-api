@@ -3,14 +3,6 @@ require 'spec_helper'
 describe V1::MetadataTemplateFieldSettingsController, type: :controller do
   include LoginHelper
 
-  before :all do 
-    create_test_user
-  end
-
-  after :all do
-    destroy_test_user
-  end
-
   let(:setting) { FactoryGirl.create(:v1_field_setting) }
 
   describe 'get INDEX' do

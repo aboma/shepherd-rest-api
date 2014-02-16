@@ -3,16 +3,7 @@ require 'spec_helper'
 describe V1::AssetsController, type: :controller do
   include LoginHelper
 
-  # get a valid authorization to use on requests
-  before :all do
-    create_test_user
-  end
-
-  after :all do
-    destroy_test_user
-  end
-
-    # global helper methods
+  # global helper methods
   let(:portfolio) { FactoryGirl.create(:v1_portfolio) }
   let(:asset) { FactoryGirl.create(:v1_asset) }
   let(:relationship) { create_relationship }
@@ -87,6 +78,7 @@ describe V1::AssetsController, type: :controller do
       it_should_behave_like 'JSON controller index action'
       context 'given portfolio id' do
         it 'should return assets for that portfolio' do
+          login_user
           ass = FactoryGirl.create(:v1_asset)
           port = FactoryGirl.create(:v1_portfolio)
           rel_attrs = FactoryGirl.attributes_for(:v1_relationship)
@@ -95,7 +87,6 @@ describe V1::AssetsController, type: :controller do
           FactoryGirl.create(:v1_relationship, rel_attrs)
           # create another relationship
           rel2 = create_relationship
-          request.env['X-AUTH-TOKEN'] = @auth_token
           get :index, portfolio_id: portfolio.id, format: :json
           parsed = JSON.parse(response.body)
           # make sure only second relationship is returned
@@ -119,7 +110,7 @@ describe V1::AssetsController, type: :controller do
     context 'with valid authorization token' do
       context 'valid asset id' do
         before :each do
-          request.env['X-AUTH-TOKEN'] = @auth_token
+          login_user
           get :show, id: asset.id, format: :json
           @parsed = JSON.parse(response.body)
         end
@@ -130,7 +121,7 @@ describe V1::AssetsController, type: :controller do
       end
       context 'invalid asset id' do
         before :each do
-          request.env['X-AUTH-TOKEN'] = @auth_token
+          login_user
           get :show, id: asset.id + 111, format: :json
           @parsed = JSON.parse(response.body)
         end
@@ -151,7 +142,7 @@ describe V1::AssetsController, type: :controller do
 
     context 'with valid authorization token' do 
       def post_asset attrs, format
-        request.env['X-AUTH-TOKEN'] = @auth_token
+        login_user
         post :create, asset: attrs, format: format 
       end  
       context 'with XML or HTML format' do
@@ -159,9 +150,7 @@ describe V1::AssetsController, type: :controller do
           before :each do
             post_asset(FactoryGirl.attributes_for(:v1_asset), format)          
           end
-          it "should return 406 code for format #{format}" do
-            expect(response.status).to eq(406)
-          end
+          it_should_behave_like 'responds with 406 not acceptable'
           it 'does not create the asset' do
             expect do 
               post_asset(FactoryGirl.attributes_for(:v1_asset), format)
@@ -268,7 +257,7 @@ describe V1::AssetsController, type: :controller do
         new_asset
       end
       def update_asset(id, attrs, format)
-        request.env['X-AUTH-TOKEN'] = @auth_token
+        login_user
         put :update, id: id, asset: attrs, format: format 
       end
       context 'HTML or XML format' do
@@ -276,9 +265,7 @@ describe V1::AssetsController, type: :controller do
           before :each do
             update_asset(existing_asset.id, { description: :boom }, format )
           end
-          it 'returns 406 not acceptable code' do
-            response.status.should == 406
-          end
+          it_should_behave_like 'responds with 406 not acceptable'
         end
       end
       context 'with JSON format' do

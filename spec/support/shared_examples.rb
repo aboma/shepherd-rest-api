@@ -1,4 +1,7 @@
+require 'support/login_helper'
+
 module ShepherdSharedExamples
+  include LoginHelper
 
   # This shared example requires an action parameter
   # that passes a function that calls the controller 
@@ -12,21 +15,12 @@ module ShepherdSharedExamples
     end
 
     [:json, :xml, :html].each do |format|            
-      context 'without authorization token' do   
+      context 'without authorization' do   
         it 'should return 401 unauthorized code for #{format}' do
           args_hash[:format] = format
           action(args_hash)
           expect(response.status).to eq(401)
         end     
-      end
-
-      context 'with invalid authorization token' do
-        it 'should return 401 unauthorized code for #{format}' do
-          args_hash[:format] = format
-          request.env['X-AUTH-TOKEN'] = '111'
-          action(args_hash)
-          expect(response.status).to eq(401)
-        end
       end
     end
   end
@@ -35,20 +29,20 @@ module ShepherdSharedExamples
   # to see that it returns 406 for other formats and 200
   # for JSON format
   shared_examples_for 'JSON controller index action' do
-    def get_index(format, token)
-      request.env['X-AUTH-TOKEN'] = token if token
+    def get_index(format)
+      login_user
       get :index, format: format
     end
 
     [:xml, :html].each do |format| 
       it 'should return 406 code for format #{format}' do
-        get_index format, @auth_token
+        get_index format
         expect(response.status).to eq(406)
       end 
     end    
 
     before :each do
-      get_index :json, @auth_token 
+      get_index :json 
     end
 
     it_should_behave_like 'an action that responds with JSON'
@@ -56,7 +50,7 @@ module ShepherdSharedExamples
 
   shared_examples_for 'JSON controller show action' do
     def get_show(format, token)
-      request.env['X-AUTH-TOKEN'] = token if token
+      login_user
       get :show, format: format
     end
   end
@@ -64,6 +58,7 @@ module ShepherdSharedExamples
   # Test whether response content type returned is JSON
   shared_examples_for 'an action that responds with JSON' do    
     it 'responds with JSON format' do
+      #expect(response).to respond_with_content_type(:json)
       expect(response.header['Content-Type']).to include('application/json')
     end
   end
@@ -82,12 +77,24 @@ module ShepherdSharedExamples
     it { should respond_with 201 }
   end
 
+  shared_examples_for 'responds with 401 unauthorized' do
+    it { should respond_with 401 }
+  end      
+
   shared_examples_for 'responds with 404 not found' do
     it { should respond_with 404 }
   end      
 
+  shared_examples_for 'responds with 405 method not allowed error' do
+    it { should respond_with 405 }
+  end
+
   shared_examples_for 'responds with 406 not acceptable' do
     it { should respond_with 406 }
+  end      
+
+  shared_examples_for 'responds with 422 unprocessable entity' do
+    it { should respond_with 422 }
   end      
 
   shared_examples_for 'an auditable model' do

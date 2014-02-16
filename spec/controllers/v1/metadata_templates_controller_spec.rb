@@ -3,14 +3,6 @@ require 'spec_helper'
 describe V1::MetadataTemplatesController, type: :controller do
   include LoginHelper
 
-  before :all do 
-    create_test_user
-  end
-
-  after :all do
-    destroy_test_user
-  end
-
   def given_template(options)
     template = FactoryGirl.create(:v1_metadata_template)
     if options && options[:field_settings]
@@ -51,7 +43,7 @@ describe V1::MetadataTemplatesController, type: :controller do
     context 'with valid authorization token' do
       context 'with valid template id' do
         before :each do
-          request.env['X-AUTH-TOKEN'] = @auth_token
+          login_user
           get :show, id: template.id, format: :json
           @parsed = JSON.parse(response.body)
         end
@@ -62,13 +54,11 @@ describe V1::MetadataTemplatesController, type: :controller do
       end
       context 'invalid template id' do
         before :each do
-          request.env['X-AUTH-TOKEN'] = @auth_token
+          login_user
           get :show, id: template.id + 111, format: :json
         end
         it_should_behave_like 'an action that responds with JSON'
-        it 'responds with 404 not found' do
-          response.status.should == 404
-        end
+        it_should_behave_like 'responds with 404 not found'
       end
     end
   end
@@ -84,7 +74,7 @@ describe V1::MetadataTemplatesController, type: :controller do
 
     context 'with valid authorization token' do 
       def post_template attrs, format
-        request.env['X-AUTH-TOKEN'] = @auth_token
+        login_user
         post :create, metadata_template: attrs, format: format 
       end  
       context 'with XML or HTML format' do
@@ -92,9 +82,7 @@ describe V1::MetadataTemplatesController, type: :controller do
           before :each do
             post_template(FactoryGirl.attributes_for(:v1_metadata_template), format)        
           end
-          it "should return 406 code for format #{format}" do
-            response.status.should == 406  
-          end
+          it_should_behave_like 'responds with 406 not acceptable'
           it 'does not create the template' do
             expect do 
               post_template(FactoryGirl.attributes_for(:v1_metadata_template), format)
@@ -136,10 +124,10 @@ describe V1::MetadataTemplatesController, type: :controller do
               post_template(invalid_attrs, :json)
             end.to_not change(V1::MetadataTemplate, :count)
           end
-          it 'responds with 422 unprocessable entity' do
+          before :each do
             post_template(invalid_attrs, :json)
-            response.status.should == 422
           end
+          it_should_behave_like 'responds with 422 unprocessable entity'
         end
 
         context 'with valid attributes' do
@@ -182,7 +170,7 @@ describe V1::MetadataTemplatesController, type: :controller do
     end
     context 'authorized user' do
       def update_template(attrs, format)
-        request.env['X-AUTH-TOKEN'] = @auth_token
+        login_user
         put :update, id: template.id, metadata_template: attrs, format: format         
       end
       context 'HTML or XML format' do
@@ -190,9 +178,7 @@ describe V1::MetadataTemplatesController, type: :controller do
           before :each do
             update_template({ description: :boom }, format )
           end
-          it 'returns 406 not acceptable code' do
-            response.status.should == 406
-          end
+          it_should_behave_like 'responds with 406 not acceptable'
         end
       end
       context 'JSON format' do
@@ -202,20 +188,18 @@ describe V1::MetadataTemplatesController, type: :controller do
             @parsed = JSON.parse(response.body)
           end
           it_should_behave_like 'an action that responds with JSON'
-          it 'returns 200 success status code' do
-            response.status.should == 200
-          end
+          it_should_behave_like 'responds with success 200 status code'
           it 'returns the updated metadata template' do
             @parsed['metadata_template']['id'].should == template.id
           end
         end
         context 'invalid input' do
           describe 'invalid template id' do
-            it 'returns status code 404 not found' do
+            before :each do
               template.id = '1111'   # change metadata_template id to one that does not exist
               update_template({ name: 'test' }, :json )
-              response.status.should == 404
             end
+            it_should_behave_like 'responds with 404 not found'
           end
           describe 'already existing template name' do
             it 'returns status 409 conflict' do
@@ -243,7 +227,7 @@ describe V1::MetadataTemplatesController, type: :controller do
     end         
     context 'with valid authorization token' do
       def delete_template(id, format)
-        request.env['X-AUTH-TOKEN'] = @auth_token
+        login_user
         delete :destroy, id: id, format: format 
       end
       context 'with XML or HTML format' do
@@ -256,9 +240,7 @@ describe V1::MetadataTemplatesController, type: :controller do
           before :each do
             delete_template(template_to_delete.id, format)    
           end
-          it "should return 406 code for format #{format}" do
-            response.status.should == 406  
-          end
+          it_should_behave_like 'responds with 406 not acceptable'
         end          
       end
       context 'with JSON format' do
@@ -275,17 +257,14 @@ describe V1::MetadataTemplatesController, type: :controller do
             delete_template(template_with_field_settings.id, :json)
           end.to change(V1::MetadataTemplateFieldSetting, :count).by(-1)
         end
-        it 'should respond with JSON' do
-          delete_template(template_with_field_settings.id, :json)
-          response.header['Content-Type'].should include 'application/json'          
-        end
-        it 'responds with success 200 status code' do
-          delete_template(template_with_field_settings.id, :json)
-          response.status.should == 200       
+        context "" do
+          before :each do
+            delete_template(template_with_field_settings.id, :json)
+          end
+          it_should_behave_like 'an action that responds with JSON'       
+          it_should_behave_like 'responds with success 200 status code'
         end
       end
     end
   end
-
-
 end

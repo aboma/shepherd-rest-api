@@ -5,15 +5,6 @@ require 'spec_helper'
 describe V1::PortfoliosController, type: :controller do
   include LoginHelper
 
-  # get a valid authorization to use on requests
-  before :all do
-    create_test_user
-  end
-
-  after :all do
-    destroy_test_user
-  end
-
   let(:port) { FactoryGirl.create(:v1_portfolio) }
 
   ### GET INDEX ==================================================
@@ -43,14 +34,12 @@ describe V1::PortfoliosController, type: :controller do
     context 'with valid authorization token' do
       context 'valid portfolio id' do      
         before :each do
-          request.env['X-AUTH-TOKEN'] = @auth_token
+          login_user
           get :show, id: port.id, format: :json
           @parsed = JSON.parse(response.body)
         end
         it_should_behave_like 'an action that responds with JSON'
-        it 'responds with success 200 status code' do
-          response.status.should == 200       
-        end
+        it_should_behave_like 'responds with success 200 status code'
         it 'responds with the asked for portfolio' do
           @parsed['portfolio']['id'].should == port.id
         end
@@ -61,12 +50,10 @@ describe V1::PortfoliosController, type: :controller do
       context 'invalid portfolio id' do
         before :each do
           port.id += 5
-          request.env['X-AUTH-TOKEN'] = @auth_token
+          login_user
           get :show, id: port.id, format: :json
         end
-        it 'responds with 404 not found' do
-          response.status.should == 404
-        end
+        it_should_behave_like 'responds with 404 not found'
       end
     end 
   end
@@ -82,7 +69,7 @@ describe V1::PortfoliosController, type: :controller do
 
     context 'with valid authorization token' do 
       def post_portfolio attrs, format
-        request.env['X-AUTH-TOKEN'] = @auth_token
+        login_user
         post :create, portfolio: attrs, format: format 
       end  
       context 'with XML or HTML format' do
@@ -90,9 +77,7 @@ describe V1::PortfoliosController, type: :controller do
           before :each do
             post_portfolio(FactoryGirl.attributes_for(:v1_portfolio), format)          
           end
-          it "should return 406 code for format #{format}" do
-            response.status.should == 406  
-          end
+          it_should_behave_like 'responds with 406 not acceptable'
         end          
       end    
       context 'with JSON format' do    
@@ -100,9 +85,7 @@ describe V1::PortfoliosController, type: :controller do
           before :each do
             post_portfolio({ inv_attr: 'invalid attribute' }, :json)
           end
-          it 'responds with 422 unprocessable entity' do
-            response.status.should == 422
-          end
+          it_should_behave_like 'responds with 422 unprocessable entity'
         end
         context 'with invalid attributes' do
           let!(:existing_port) { port }
@@ -119,7 +102,7 @@ describe V1::PortfoliosController, type: :controller do
             end
             it 'responds with 409 conflict' do
               post_portfolio(attrs, :json)
-              response.status.should == 409 
+              expect(response.status).to eq(409)
             end
           end
         end
@@ -154,7 +137,7 @@ describe V1::PortfoliosController, type: :controller do
 
     context 'authorized user' do
       def update_portfolio(attrs, format)
-        request.env['X-AUTH-TOKEN'] = @auth_token
+        login_user
         put :update, id: port.id, portfolio: attrs , format: format         
       end
       context 'HTML or XML format' do
@@ -162,9 +145,7 @@ describe V1::PortfoliosController, type: :controller do
           before :each do
             update_portfolio({ description: :boom }, format )
           end
-          it 'returns 406 not acceptable code' do
-            response.status.should == 406
-          end
+          it_should_behave_like 'responds with 406 not acceptable'
         end
       end
       context 'JSON format' do
@@ -174,9 +155,7 @@ describe V1::PortfoliosController, type: :controller do
             @parsed = JSON.parse(response.body)
           end
           it_should_behave_like 'an action that responds with JSON'
-          it 'returns 200 success status code' do
-            response.status.should == 200
-          end
+          it_should_behave_like 'responds with success 200 status code'
           it 'returns the updated portfolio' do
             @parsed['portfolio']['id'].should == port.id
           end
@@ -186,7 +165,7 @@ describe V1::PortfoliosController, type: :controller do
             it 'returns status code 404 not found' do
               port.id = '1111'   # change portfolio id to one that does not exist
               update_portfolio( { name: 'test' }, :json )
-              response.status.should == 404
+              expect(response.status).to eq(404)
             end
           end
         end
@@ -208,14 +187,14 @@ describe V1::PortfoliosController, type: :controller do
 
     context 'with valid authorization token' do
       def delete_portfolio(id, format)
-        request.env['X-AUTH-TOKEN'] = @auth_token
+        login_user
         delete :destroy, id: id, format: format 
       end
       context 'with XML or HTML format' do
         [:xml, :html].each do |format| 
           it "should return 406 not acceptable for #{format}" do
             delete_portfolio(existing_port.id, format)
-            response.status.should == 406
+            expect(response.status).to eq(406)
           end
           it 'does not delete a portfolio' do
             expect do
@@ -233,7 +212,7 @@ describe V1::PortfoliosController, type: :controller do
           end
           it 'returns status code 200 success' do
             delete_portfolio(existing_port.id, :json)
-            response.status.should == 200
+            expect(response.status).to eq(200)
           end
         end
         context 'invalid portfolio number specified' do
@@ -245,7 +224,7 @@ describe V1::PortfoliosController, type: :controller do
           end
           it 'returns 404 not found status code' do
             delete_portfolio(invalid_id, :json)
-            response.status.should == 404
+            expect(response.status).to eq(404)
           end
         end
       end

@@ -3,14 +3,6 @@ require 'spec_helper'
 describe V1::MetadatumValuesListsController, type: :controller do
   include LoginHelper
 
-  before :all do 
-    create_test_user
-  end
-
-  after :all do
-    destroy_test_user
-  end
-
   let(:list) { FactoryGirl.create(:v1_values_list) }
 
   ### INDEX ======================================================
@@ -39,7 +31,7 @@ describe V1::MetadatumValuesListsController, type: :controller do
     context 'with valid authorization token' do
       context 'with valid values list id' do
         before :each do
-          request.env['X-AUTH-TOKEN'] = @auth_token
+          login_user
           get :show, id: list.id, format: :json
           @parsed = JSON.parse(response.body)
         end
@@ -50,7 +42,7 @@ describe V1::MetadatumValuesListsController, type: :controller do
       end
       context 'invalid values list id' do
         before :each do
-          request.env['X-AUTH-TOKEN'] = @auth_token
+          login_user
           get :show, id: list.id + 111, format: :json
         end
         it_should_behave_like 'an action that responds with JSON'
@@ -70,7 +62,7 @@ describe V1::MetadatumValuesListsController, type: :controller do
 
     context 'with valid authorization token' do 
       def post_list attrs, format
-        request.env['X-AUTH-TOKEN'] = @auth_token
+        login_user
         post :create, metadatum_values_list: attrs, format: format
       end  
       context 'with XML or HTML format' do
@@ -78,9 +70,7 @@ describe V1::MetadatumValuesListsController, type: :controller do
           before :each do
             post_list(FactoryGirl.attributes_for(:v1_values_list), format)        
           end
-          it "should return 406 code for format #{format}" do
-            expect(response.status).to eq(406)
-          end
+          it_should_behave_like 'responds with 406 not acceptable'
           it 'does not create the values list' do
             expect do 
               post_list(FactoryGirl.attributes_for(:v1_values_list), format)
@@ -165,7 +155,7 @@ describe V1::MetadatumValuesListsController, type: :controller do
 
     context 'authorized user' do
       def update_list(attrs, format)
-        request.env['X-AUTH-TOKEN'] = @auth_token
+        login_user
         put :update, id: list.id, metadatum_values_list: attrs , format: format         
       end
       context 'HTML or XML format' do
@@ -215,7 +205,7 @@ describe V1::MetadatumValuesListsController, type: :controller do
     end         
     context 'with valid authorization token' do
       def delete_list(id, format)
-        request.env['X-AUTH-TOKEN'] = @auth_token
+        login_user
         delete :destroy, id: id, format: format 
       end
       context 'with XML or HTML format' do
@@ -245,13 +235,12 @@ describe V1::MetadatumValuesListsController, type: :controller do
             delete_list(list_to_delete, :json)
           end.to change(V1::MetadatumListValue, :count).by(-1)
         end
-        it 'should respond with JSON' do
-          delete_list(list.id, :json)
-          expect(response.header['Content-Type']).to include('application/json')
-        end
-        it 'responds with success 200 status code' do
-          delete_list(list.id, :json)
-          expect(response.status).to eq(200)
+        context "" do
+          before :each do
+            delete_list(list.id, :json)
+          end
+          it_should_behave_like 'an action that responds with JSON'
+          it_should_behave_like 'responds with success 200 status code'
         end
       end
     end

@@ -4,7 +4,7 @@ gem 'rails', '~> 3.2.14'
 gem 'puma', '~> 2.6.0'
 gem 'capistrano-puma', require: false
 gem 'pg', '~> 0.14.1'
-gem 'devise', '~> 2.2.3'
+gem 'devise', '~> 3.2.0'
 gem 'rmagick', '~> 2.13.1'
 gem 'carrierwave', '~> 0.8.0'
 gem "active_model_serializers", "~> 0.7.0"

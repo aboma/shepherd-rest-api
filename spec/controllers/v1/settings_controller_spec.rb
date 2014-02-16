@@ -3,15 +3,6 @@ require 'spec_helper'
 describe V1::SettingsController, type: :controller do
   include LoginHelper
 
-  # get a valid authorization to use on requests
-  before :all do
-    create_test_user
-  end
-
-  after :all do
-    destroy_test_user
-  end
-
   ### GET INDEX ==================================================
   describe 'get INDEX' do
     context 'unauthorized user' do
@@ -21,9 +12,9 @@ describe V1::SettingsController, type: :controller do
         end      
       end 
     end
-    context 'with valid authorization token' do
+    context 'with valid authorization' do
       def get_index(format)
-        request.env['X-AUTH-TOKEN'] = @auth_token
+        login_user
         get :index, format: format 
       end
       context 'with XML or HTML format' do
@@ -31,26 +22,23 @@ describe V1::SettingsController, type: :controller do
           before :each do 
             get_index(format) 
           end
-          it "returns 406 code for format #{format}" do
-            response.status.should == 406  
-          end
+          it_should_behave_like 'responds with 406 not acceptable'
         end
       end
       context 'with JSON format' do
         before :each do 
           get_index(:json) 
         end  
-        it 'returns 405 method not allowed error' do
-          response.status.should == 405
-        end
+        it_should_behave_like 'responds with 405 method not allowed error'
       end
     end
   end
 
+  ### GET SHOW ==================================================
   describe 'get SHOW' do
-    context 'with valid authorization token' do
+    context 'with valid authorization' do
       def get_setting(format)
-        request.env['X-AUTH-TOKEN'] = @auth_token
+        login_user
         get :show, id: 1, format: format
       end
       context 'with XML or HTML format' do
@@ -58,9 +46,7 @@ describe V1::SettingsController, type: :controller do
           before :each do
             get_setting(format) 
           end
-          it "should return 406 code for format #{format}" do
-            response.status.should == 406  
-          end
+          it_should_behave_like 'responds with 406 not acceptable'
         end
       end
       context 'with JSON format' do
@@ -73,6 +59,7 @@ describe V1::SettingsController, type: :controller do
     end
   end
 
+  ### POST CREATE ===============================================
   describe 'post CREATE' do
     it_should_behave_like 'a protected action' do
       let(:data) { '' }
@@ -81,9 +68,9 @@ describe V1::SettingsController, type: :controller do
       end   
     end
 
-    context 'with valid authorization token' do 
+    context 'with valid authorization' do 
       def post_setting attrs, format
-        request.env['X-AUTH-TOKEN'] = @auth_token
+        login_user
         post :create, setting: attrs, format: format 
       end  
       context 'with XML or HTML format' do
@@ -91,18 +78,14 @@ describe V1::SettingsController, type: :controller do
           before :each do
             post_setting({}, format)        
           end
-          it "should return 406 code for format #{format}" do
-            response.status.should == 406  
-          end
+          it_should_behave_like 'responds with 406 not acceptable'
         end          
       end    
       context 'with JSON format' do   
         before :each do
           post_setting({}, :json)
         end
-        it 'returns 405 method not allowed error' do
-          response.status.should == 405
-        end
+        it_should_behave_like 'responds with 405 method not allowed error'
       end
     end
   end
@@ -116,9 +99,9 @@ describe V1::SettingsController, type: :controller do
       end   
     end
 
-    context 'with valid authorization token' do
+    context 'with valid authorization' do
       def post_update_setting id, attrs, format
-        request.env['X-AUTH-TOKEN'] = @auth_token
+        login_user
         post :update, id: id, setting: attrs, format: format 
       end  
       context 'with XML or HTML format' do
@@ -126,9 +109,7 @@ describe V1::SettingsController, type: :controller do
           before :each do
             post_update_setting(1, {}, format)
           end
-          it "returns 406 code for format #{format}" do
-            response.status.should == 406  
-          end
+          it_should_behave_like 'responds with 406 not acceptable'
         end          
       end
       context 'with JSON format' do
@@ -136,9 +117,7 @@ describe V1::SettingsController, type: :controller do
           post_update_setting(1, {}, :json)
         end
         it_should_behave_like 'an action that responds with JSON'
-        it 'returns 405 method not allowed error' do
-          response.status.should == 405
-        end
+        it_should_behave_like 'responds with 405 method not allowed error'
       end
     end
   end
@@ -153,9 +132,9 @@ describe V1::SettingsController, type: :controller do
         end   
       end
     end         
-    context 'with valid authorization token' do
+    context 'with valid authorization' do
       def delete_setting(id, format)
-        request.env['X-AUTH-TOKEN'] = @auth_token
+        login_user
         delete :destroy, id: id, format: format 
       end
       context 'with XML or HTML format' do
@@ -163,9 +142,7 @@ describe V1::SettingsController, type: :controller do
           before :each do
             delete_setting(1, format)    
           end
-          it "should return 406 code for format #{format}" do
-            response.status.should == 406  
-          end
+          it_should_behave_like 'responds with 406 not acceptable'
         end          
       end
       context 'with JSON format' do
@@ -173,9 +150,7 @@ describe V1::SettingsController, type: :controller do
           delete_setting(1, :json)
         end
         it_should_behave_like 'an action that responds with JSON'
-        it 'responds with 405 method not allowed error' do
-          response.status.should == 405
-        end
+        it_should_behave_like 'responds with 405 method not allowed error'
       end
     end
   end

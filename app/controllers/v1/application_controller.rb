@@ -1,6 +1,5 @@
 class V1::ApplicationController < ApplicationController
   skip_before_filter :verify_authenticity_token
-  prepend_before_filter :get_auth_token
   before_filter :authenticate_user!, :except => :cors_preflight_check
   after_filter :cors_set_access_control_headers, :log_user
 
@@ -12,16 +11,6 @@ class V1::ApplicationController < ApplicationController
   end
 
   private
-
-  # get authorization token from HTTP header if it is not in the URL parameters
-  def get_auth_token
-    params[:auth_token] = request.headers['X-AUTH-TOKEN'] || cookies[:auth_token]
-    #params[:auth_token] ||= session[:auth_token]
-    unless request.method == 'OPTIONS'
-      logger.info '>>> AUTH_TOKEN MISSING' unless params[:auth_token]
-      logger.info '>>> no API version specfied' unless request.headers['X-API-Version']
-    end
-  end 
 
   # For all responses in this controller, return the CORS access control headers. 
   def cors_set_access_control_headers

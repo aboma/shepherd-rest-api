@@ -5,9 +5,9 @@ ShepherdDAM::Application.routes.draw do
 
     devise_scope :user do
       resources :users, :only => [:index, :create, :show, :update], :defaults => { :format => :json }
-      resources :sessions, :only => [:index, :create, :destroy, :show]
+      resources :sessions, :only => [:index, :create, :destroy, :show], :defaults => { :format => :json }
       get "logout" => "sessions#destroy", :as => "logout"
-      get "login" => "sessions#new", :as => "login"
+      get "login" => "sessions#create", :as => "login"
     end
 
     resources :settings, :defaults => { :format => :json }
